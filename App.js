@@ -7,15 +7,24 @@ import { requestUserPermission } from "./utils/notificationService";
 
 import { useColorScheme } from "react-native";
 import { DefaultTheme } from "@react-navigation/native";
-import axios from "axios";
-import { appUpdateFunction } from "./Components/appUpdate/appUpdatex";
 
 export default function App() {
   useEffect(() => {
     const unlockOrientation = async () => {
       await ScreenOrientation.unlockAllOrientations();
     };
-    CheckForUpdate();
+    // CheckForUpdate();
+
+    // const notificationService = new FCMNotificationService();
+    // notificationService
+    //   .updateFCMToken()
+    //   .then(() => {
+    //     console.log("FCM token updated successfully");
+    //   })
+    //   .catch((error) => {
+    //     console.error("Failed to update FCM token:", error);
+    //   });
+
     return () => {
       unlockOrientation();
     };
@@ -32,29 +41,29 @@ export default function App() {
     },
   };
 
-  const CheckForUpdate = async () => {
-    // const reponse = await axios.post("/app-update", {
-    //   app_name: "meadhikari",
-    //   app_type: "Android",
-    // });
+  // const CheckForUpdate = async () => {
+  // const reponse = await axios.post("/app-update", {
+  //   app_name: "meadhikari",
+  //   app_type: "Android",
+  // });
 
-    const reponse = {
-      appId: "com.sc.meadhikari",
-      softUpdate: 0,
-      forceUpdate: 1,
-      buildNo: 1,
-      iosBuildNo: 102,
-      version: "6.1.8",
-      title: "Update Available",
-      message:
-        "A new version of the app is available. Please update to the latest version.",
-      downloadUrl:
-        "https://play.google.com/store/apps/details?id=com.globalassignmenthelp&hl=en",
-      playIcon: "",
-    };
+  // const reponse = {
+  //   appId: "com.sc.meadhikari",
+  //   softUpdate: 0,
+  //   forceUpdate: 1,
+  //   buildNo: 1,
+  //   iosBuildNo: 102,
+  //   version: "6.1.8",
+  //   title: "Update Available",
+  //   message:
+  //     "A new version of the app is available. Please update to the latest version.",
+  //   downloadUrl:
+  //     "https://play.google.com/store/apps/details?id=com.globalassignmenthelp&hl=en",
+  //   playIcon: "",
+  // };
 
-    appUpdateFunction(reponse);
-  };
+  // appUpdateFunction(reponse);
+  // };
 
   // const lightTheme = {
   //   dark: false,
@@ -76,7 +85,9 @@ export default function App() {
     <NavigationContainer theme={lightTheme}>
       {/* <CopilotProvider tooltipStyle={style}> */}
       <GlobalRefreshProvider>
+        {/* <AppUpdateWrapper appUpdate={reponse}> */}
         <RouteNavigation></RouteNavigation>
+        {/* </AppUpdateWrapper> */}
       </GlobalRefreshProvider>
       {/* </CopilotProvider> */}
     </NavigationContainer>

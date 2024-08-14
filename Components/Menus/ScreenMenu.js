@@ -40,6 +40,21 @@ const ScreenMenu = () => {
 
   const Stack = createNativeStackNavigator();
 
+  const reponse = {
+    appId: "com.sc.meadhikari",
+    softUpdate: 0,
+    forceUpdate: 1,
+    buildNo: 1,
+    iosBuildNo: 102,
+    version: "6.1.8",
+    title: "Update Available",
+    message:
+      "A new version of the app is available. Please update to the latest version.",
+    downloadUrl:
+      "https://play.google.com/store/apps/details?id=com.globalassignmenthelp&hl=en",
+    playIcon: "",
+  };
+
   return (
     <Stack.Navigator initialRouteName="Login">
       {/* conditions to access toute */}
@@ -56,7 +71,7 @@ const ScreenMenu = () => {
           <Stack.Screen
             name="Blog"
             component={Blog}
-            options={{ headerShown: false }}
+            options={{ headerShown: true, headerTitle: "Blog" }}
           />
 
           <Stack.Screen

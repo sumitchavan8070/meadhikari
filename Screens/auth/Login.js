@@ -45,7 +45,7 @@ const Login = ({ navigation }) => {
       setLoading(false);
 
       navigation.navigate("Home");
-      console.log("Login Data==> ", { email, password });
+      // console.log("Login Data==> ", { email, password });
       // console.log("Information Entered By User : ", { email, password });
     } catch (error) {
       alert(error.message);
