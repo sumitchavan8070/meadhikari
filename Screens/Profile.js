@@ -34,6 +34,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import Subscription from "../Components/Subscription/Subscription";
 import CloudinaryProfilePic from "../Components/Profile/CloudinaryProfilePic";
 import { Entypo } from "@expo/vector-icons";
+import BetaHomePageBanner from "../Components/BetaBanner/BetaHomePageBanner";
+import PricingPlanComponent from "../Components/Subscription/PricingPlanComponent";
 
 const UserProfilePage = () => {
   const [state, setState] = useContext(AuthContext);
@@ -754,7 +756,10 @@ const UserProfilePage = () => {
           )}
         </TouchableOpacity>
 
-        <Subscription></Subscription>
+        <BetaHomePageBanner username={"username"} />
+
+        {/* <Subscription></Subscription> */}
+        <PricingPlanComponent></PricingPlanComponent>
 
         <View style={styles.infoContainer}>
           <View style={styles.tabsContainer}>

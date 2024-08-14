@@ -35,7 +35,7 @@ const MenuContainerComponent = () => {
   //   navigation.navigate("CommonScreen");
   // };
   const handleDonatePress = () => {
-    navigation.navigate("Test");
+    navigation.navigate("DonationScreen");
   };
 
   const handleSubClick = () => {

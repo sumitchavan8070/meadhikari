@@ -30,6 +30,7 @@ import FeedbackForm from "../Feedback/FeedbackForm";
 import test from "../../Screens/Test";
 import Test from "../../Screens/Test";
 import FilterExam from "../../Screens/FilterExam";
+import DonationScreen from "../Subscription/DonationScreen";
 
 const ScreenMenu = () => {
   //global state
@@ -179,6 +180,11 @@ const ScreenMenu = () => {
             name="Test"
             component={Test}
             options={{ headerShown: true, headerTitle: "Feedback" }}
+          />
+          <Stack.Screen
+            name="DonationScreen"
+            component={DonationScreen}
+            options={{ headerShown: false, headerTitle: "Donation" }}
           />
         </>
       ) : (

@@ -9,8 +9,58 @@ import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 
 const Subscription = () => {
+  const subscriptions = [
+    {
+      title: "Silver Plan",
+      duration: "3 Months",
+      price: "₹ 110",
+      features: [
+        "- Solve Unlimited PYQ",
+        "- Solve Unlimited Test",
+        "- Create Unlimited Test",
+        "- Share Unlimited Test",
+      ],
+      colors: ["#DDE1E2", "#A0A0BA"],
+      borderColor: "#A0A0BA",
+      stripColor: "#A0A0BA",
+      backgroundColor: "#E4E9E8",
+      id: "silver",
+    },
+    {
+      title: "Gold Plan",
+      duration: "6 Months",
+      price: "₹ 149",
+      features: [
+        "- Solve Unlimited PYQ",
+        "- Solve Unlimited Test",
+        "- Create Unlimited Test",
+        "- Share Unlimited Test",
+      ],
+      colors: ["#FFD700", "#FFA500"],
+      borderColor: "#FFA500",
+      stripColor: "#FFA500",
+      backgroundColor: "#FFD700",
+      id: "gold",
+    },
+    {
+      title: "Diamond Plan",
+      duration: "1 Year",
+      price: "₹ 249",
+      features: [
+        "- Solve Unlimited PYQ",
+        "- Solve Unlimited Test",
+        "- Create Unlimited Test",
+        "- Share Unlimited Test",
+      ],
+      colors: ["#020024", "#090979", "#00D4FF"],
+      borderColor: "#00D4FF",
+      stripColor: "#090979",
+      backgroundColor: "#c7cae6",
+      id: "diamond",
+    },
+  ];
+
   const handleBuySubscription = (tier) => {
-    // Handle logic for buying subscription
     console.log(`Buying ${tier} subscription`);
   };
 
@@ -20,91 +70,44 @@ const Subscription = () => {
       style={{ marginVertical: 10 }}
       showsHorizontalScrollIndicator={false}
     >
-      <View style={[styles.subCardSilver]}>
-        {/* <Text style={styles.cardTitle}>Silver</Text> */}
-        <View style={styles.silverHeaderStrip}>
-          <View style={styles.silverStrip}></View>
-          <View style={styles.stripContent}>
-            <Text style={styles.planTitle}>Silver Plan</Text>
-            <Text style={styles.planDuration}>3 Months</Text>
-          </View>
-        </View>
-        <Text style={styles.priceText}>₹ 99</Text>
-        <Text>- Solve Unlimited PYQ</Text>
-        <Text>- Solve Unlimited Test</Text>
-        <Text>- Create Unlimited Test</Text>
-        <Text>- Share Unlimited Test</Text>
-
-        <TouchableOpacity
-          style={styles.buyButton}
-          onPress={() => handleBuySubscription("silver")}
+      {subscriptions.map((sub) => (
+        <View
+          key={sub.id}
+          style={[styles.subCard, { borderColor: sub.borderColor }]}
         >
-          <LinearGradient
-            colors={["#DDE1E2", "#A0A0BA"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={[StyleSheet.absoluteFill, styles.buyButton]}
+          <View
+            style={[
+              styles.headerStrip,
+              { backgroundColor: sub.backgroundColor },
+            ]}
           >
-            <Text style={styles.buttonText}>Buy</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
-      <View style={[styles.subCardGold]}>
-        <View style={styles.goldHeaderStrip}>
-          <View style={styles.goldStrip}></View>
-          <View style={styles.stripContent}>
-            <Text style={styles.planTitle}>Gold Plan</Text>
-            <Text style={styles.planDuration}>6 Months</Text>
+            <View
+              style={[styles.strip, { backgroundColor: sub.stripColor }]}
+            ></View>
+            <View style={styles.stripContent}>
+              <Text style={styles.planTitle}>{sub.title}</Text>
+              <Text style={styles.planDuration}>{sub.duration}</Text>
+            </View>
           </View>
-        </View>
-        <Text style={styles.priceText}>₹ 149</Text>
-        <Text>- Solve Unlimited PYQ</Text>
-        <Text>- Solve Unlimited Test</Text>
-        <Text>- Create Unlimited Test</Text>
-        <Text>- Share Unlimited Test</Text>
-
-        <TouchableOpacity
-          style={styles.buyButton}
-          onPress={() => handleBuySubscription("gold")}
-        >
-          <LinearGradient
-            colors={["#FFD700", "#FFA500"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={[StyleSheet.absoluteFill, styles.buyButton]}
+          <Text style={styles.priceText}>{sub.price}</Text>
+          {sub.features.map((feature, index) => (
+            <Text key={index}>{feature}</Text>
+          ))}
+          <TouchableOpacity
+            style={styles.buyButton}
+            onPress={() => handleBuySubscription(sub.id)}
           >
-            <Text style={styles.buttonText}>Buy</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
-      <View style={[styles.subCardDiamond]}>
-        <View style={styles.diamondHeaderStrip}>
-          <View style={styles.diamondStrip}></View>
-          <View style={styles.stripContent}>
-            <Text style={styles.planTitle}>Diamond Plan</Text>
-            <Text style={styles.planDuration}>1 Year</Text>
-          </View>
+            <LinearGradient
+              colors={sub.colors}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[StyleSheet.absoluteFill, styles.buyButton]}
+            >
+              <Text style={styles.buttonText}>Buy</Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
-        <Text style={styles.priceText}>₹ 249</Text>
-        <Text>- Solve Unlimited PYQ</Text>
-        <Text>- Solve Unlimited Test</Text>
-        <Text>- Create Unlimited Test</Text>
-        <Text>- Share Unlimited Test</Text>
-
-        <TouchableOpacity
-          style={styles.buyButton}
-          onPress={() => handleBuySubscription("diamond")}
-        >
-          <LinearGradient
-            colors={["#020024", "#090979", "#00D4FF"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={[StyleSheet.absoluteFill, styles.buyButton]}
-          >
-            <Text style={styles.buttonText}>Buy</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
+      ))}
     </ScrollView>
   );
 };
@@ -116,90 +119,34 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontWeight: "bold",
   },
-  silverHeaderStrip: {
+  headerStrip: {
     height: 40,
     flexDirection: "row",
-    backgroundColor: "#E4E9E8",
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     marginTop: 10,
   },
-  silverStrip: {
+  strip: {
     height: 40,
     width: 6,
-    backgroundColor: "#A0A0BA",
   },
   stripContent: {
     paddingHorizontal: 10,
     justifyContent: "center",
   },
-  goldHeaderStrip: {
-    height: 40,
-    flexDirection: "row",
-    backgroundColor: "#FFD700",
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    marginTop: 10,
-  },
-  goldStrip: {
-    height: 40,
-    width: 6,
-    backgroundColor: "#FFA500",
-  },
-  diamondHeaderStrip: {
-    height: 40,
-    flexDirection: "row",
-    backgroundColor: "#c7cae6",
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-    marginTop: 10,
-  },
-  diamondStrip: {
-    height: 40,
-    width: 6,
-    backgroundColor: "#090979",
-  },
   planTitle: {
     fontWeight: "bold",
     fontSize: 15,
-    // color: Color.primaryColor,
   },
   planDuration: { fontSize: 12 },
-  subCardSilver: {
+  subCard: {
     width: 200,
     height: 300,
     borderWidth: 1,
-    borderColor: "#A0A0BA",
     borderRadius: 30,
     marginRight: 10,
     padding: 10,
     justifyContent: "space-between",
-  },
-  subCardGold: {
-    width: 200,
-    height: 300,
-    borderWidth: 1,
-    borderColor: "#FFA500",
-    borderRadius: 30,
-    marginRight: 10,
-    padding: 10,
-    justifyContent: "space-between",
-  },
-  subCardDiamond: {
-    width: 200,
-    height: 300,
-    borderWidth: 1,
-    borderColor: "#00D4FF",
-    borderRadius: 30,
-    marginRight: 10,
-    padding: 10,
-    justifyContent: "space-between",
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: "black",
   },
   buyButton: {
     width: "100%",
@@ -219,3 +166,203 @@ const styles = StyleSheet.create({
 });
 
 export default Subscription;
+
+// import React from "react";
+// import {
+//   View,
+//   Text,
+//   TouchableOpacity,
+//   StyleSheet,
+//   Dimensions,
+// } from "react-native";
+// import { LinearGradient } from "expo-linear-gradient";
+// import Carousel from "react-native-x-carousel";
+// const { width } = Dimensions.get("window");
+
+// const Subscription = () => {
+//   const subscriptions = [
+//     {
+//       title: "Silver Plan",
+//       duration: "3 Months",
+//       price: "₹ 110",
+//       features: [
+//         "- Solve Unlimited PYQ",
+//         "- Solve Unlimited Test",
+//         "- Create Unlimited Test",
+//         "- Share Unlimited Test",
+//       ],
+//       colors: ["#DDE1E2", "#A0A0BA"],
+//       borderColor: "#A0A0BA",
+//       stripColor: "#A0A0BA",
+//       backgroundColor: "#E4E9E8",
+//       id: "silver",
+//     },
+//     {
+//       title: "Gold Plan",
+//       duration: "6 Months",
+//       price: "₹ 149",
+//       features: [
+//         "- Solve Unlimited PYQ",
+//         "- Solve Unlimited Test",
+//         "- Create Unlimited Test",
+//         "- Share Unlimited Test",
+//       ],
+//       colors: ["#FFD700", "#FFA500"],
+//       borderColor: "#FFA500",
+//       stripColor: "#FFA500",
+//       backgroundColor: "#FFD700",
+//       id: "gold",
+//     },
+//     {
+//       title: "Diamond Plan",
+//       duration: "1 Year",
+//       price: "₹ 249",
+//       features: [
+//         "- Solve Unlimited PYQ",
+//         "- Solve Unlimited Test",
+//         "- Create Unlimited Test",
+//         "- Share Unlimited Test",
+//       ],
+//       colors: ["#020024", "#090979", "#00D4FF"],
+//       borderColor: "#00D4FF",
+//       stripColor: "#090979",
+//       backgroundColor: "#c7cae6",
+//       id: "diamond",
+//     },
+//   ];
+
+//   const handleBuySubscription = (tier) => {
+//     console.log(`Buying ${tier} subscription`);
+//   };
+
+//   const renderItem = (sub) => (
+//     <View
+//       key={sub.id}
+//       style={[styles.subCard, { borderColor: sub.borderColor }]}
+//     >
+//       <View
+//         style={[styles.headerStrip, { backgroundColor: sub.backgroundColor }]}
+//       >
+//         <View
+//           style={[styles.strip, { backgroundColor: sub.stripColor }]}
+//         ></View>
+//         <View style={styles.stripContent}>
+//           <Text style={styles.planTitle}>{sub.title}</Text>
+//           <Text style={styles.planDuration}>{sub.duration}</Text>
+//         </View>
+//       </View>
+//       <Text style={styles.priceText}>{sub.price}</Text>
+//       {sub.features.map((feature, index) => (
+//         <Text key={index}>{feature}</Text>
+//       ))}
+//       <TouchableOpacity
+//         style={styles.buyButton}
+//         onPress={() => handleBuySubscription(sub.id)}
+//       >
+//         <LinearGradient
+//           colors={sub.colors}
+//           start={{ x: 0, y: 0 }}
+//           end={{ x: 1, y: 0 }}
+//           style={styles.gradientStyle}
+//         >
+//           <Text style={styles.buttonText}>Buy</Text>
+//         </LinearGradient>
+//       </TouchableOpacity>
+//     </View>
+//   );
+
+//   return (
+//     <View style={styles.car}>
+//       <Carousel
+//         // pagination
+//         renderItem={renderItem}
+//         data={subscriptions}
+//         loop
+//         autoplay
+//         autoplayInterval={3000}
+//         sliderWidth={width}
+//         itemWidth={width * 0.8}
+//         inactiveSlideScale={0.8} // Scales down the non-active slides
+//         inactiveSlideOpacity={0.4} // Lo
+//         activeSlideAlignment="center" // Centers the active slide
+//         containerCustomStyle={styles.carouselContainer}
+//         contentContainerCustomStyle={styles.carouselContentContainer}
+//         enableMomentum
+//       />
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   carouselContainer: {
+//     overflow: "visible", // Ensures neighboring cards are visible
+//   },
+//   carouselContentContainer: {
+//     paddingLeft: 20, // Adjust to show part of the previous card
+//     paddingRight: 20, // Adjust to show part of the next card
+//   },
+//   car: {
+//     width: width,
+//     justifyContent: "center",
+//     alignItems: "center",
+//   },
+//   priceText: {
+//     fontSize: 32,
+//     alignSelf: "center",
+//     marginTop: 20,
+//     fontWeight: "bold",
+//   },
+//   headerStrip: {
+//     height: 40,
+//     flexDirection: "row",
+//     borderTopRightRadius: 10,
+//     borderBottomRightRadius: 10,
+//     marginTop: 10,
+//   },
+//   strip: {
+//     height: 40,
+//     width: 6,
+//   },
+//   stripContent: {
+//     paddingHorizontal: 10,
+//     justifyContent: "center",
+//   },
+//   planTitle: {
+//     fontWeight: "bold",
+//     fontSize: 15,
+//   },
+//   planDuration: { fontSize: 12 },
+//   subCard: {
+//     width: 200,
+//     height: 300,
+//     borderWidth: 1,
+//     borderRadius: 30,
+//     marginRight: 10,
+//     padding: 10,
+//     justifyContent: "space-between",
+//   },
+//   buyButton: {
+//     width: "100%",
+//     height: 40,
+//     borderRadius: 20,
+//     alignItems: "center",
+//     justifyContent: "center",
+//     marginTop: 10,
+//     flexDirection: "row",
+//     marginBottom: 10,
+//   },
+//   gradientStyle: {
+//     width: "100%",
+//     height: "100%",
+//     justifyContent: "center",
+//     alignItems: "center",
+//     borderRadius: 20,
+//   },
+//   buttonText: {
+//     color: "white",
+//     fontWeight: "bold",
+//     fontSize: 16,
+//   },
+// });
+
+// export default Subscription;

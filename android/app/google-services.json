@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "6698747106",
+    "project_id": "meadhikari",
+    "storage_bucket": "meadhikari.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6698747106:android:734190d2056853cac18abb",
+        "android_client_info": {
+          "package_name": "com.sc.meadhikari"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "6698747106-n6a9covdetreoi7haspf77v874jv77fn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAR9RQkRMxMR-QTWcMGnAMQDSXtWsW9Ho"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "6698747106-n6a9covdetreoi7haspf77v874jv77fn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
