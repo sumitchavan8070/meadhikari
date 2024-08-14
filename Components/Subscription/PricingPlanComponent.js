@@ -7,6 +7,7 @@ import {
   FlatList,
 } from "react-native";
 import RazorpayCheckout from "react-native-razorpay";
+import globalStrings from "../../utils/globalStrings";
 
 const pricingPlans = [
   {
@@ -50,14 +51,14 @@ const PricingPlanComponent = () => {
 
   const handlePayment = () => {
     console.log("function started ");
-    console.log("function started " + process.env.RAZOR_PAY_KEY);
+    console.log("function started " + globalStrings.RAZOR_PAY_KEY);
 
     const options = {
       animation: false,
       description: "Thank you for your purchase",
       image: "",
       currency: "INR",
-      key: process.env.RAZOR_PAY_KEY,
+      key: globalStrings.RAZOR_PAY_KEY,
       amount: amount * 100,
       name: "MeAdhikari",
       prefill: {

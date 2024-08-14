@@ -10,7 +10,7 @@ const defaultConfig = {
   currency: "INR",
   description: "Thank you for your purchase",
   image: "https://example.com/your-default-image.png", // Default image URL
-  keyId: "rzp_test_default_key", // Default Razorpay key ID
+  keyId: "rzp_test_9Oqxns8kejKZpZ", // Default Razorpay key ID
   companyName: "MeAdhikari",
   prefill: {
     email: state.user.email,
