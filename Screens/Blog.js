@@ -111,7 +111,7 @@ const Blog = () => {
   return (
     <View style={styles.blogscreen}>
       {/* Header */}
-      {/* <HeaderMenu /> */}
+      <HeaderMenu />
 
       {/* Blog content goes here */}
       {/* <ScrollView contentContainerStyle={styles.container}>

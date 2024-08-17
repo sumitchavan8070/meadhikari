@@ -114,11 +114,11 @@ const HeaderMenu = () => {
         <Image
           style={styles.profile}
           contentFit="cover"
-          source={require("../../assets/all/profilePic.png")}
+          source={require("../../assets/profile.png")}
         />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("FeedbackForm")}>
+      <TouchableOpacity onPress={() => navigation.navigate("DonationScreen")}>
         <Image
           style={styles.icon}
           contentFit="cover"
@@ -131,13 +131,14 @@ const HeaderMenu = () => {
 
 const styles = StyleSheet.create({
   icon: {
-    width: 40,
-    height: 40,
+    width: 47,
+    height: 47,
     alignSelf: "center",
+    borderRadius: 28.5, // Added borderRadius to make it circular
   },
   profile: {
-    width: 57,
-    height: 56,
+    width: 47,
+    height: 47,
     borderRadius: 28.5, // Added borderRadius to make it circular
   },
   header: {

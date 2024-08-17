@@ -71,7 +71,7 @@ const ScreenMenu = () => {
           <Stack.Screen
             name="Blog"
             component={Blog}
-            options={{ headerShown: true, headerTitle: "Blog" }}
+            options={{ headerShown: false, headerTitle: "Blog" }}
           />
 
           <Stack.Screen

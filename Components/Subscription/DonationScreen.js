@@ -182,7 +182,7 @@
 // });
 
 // export default DonationScreen;
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -194,16 +194,57 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { handlePaymentWithRazorPay } from "../Payments/PayWithRazorpayFunction";
+import { AuthContext } from "../../Context/authContext";
+import LottieView from "lottie-react-native";
+import loadingAnimation from "../../assets/donationfile.json";
+import RazorpayPaymentAlert from "../Alert/RazorpayPaymentAlert";
 
 const DonationScreen = () => {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [selectedAmount, setSelectedAmount] = useState(null);
   const [customAmount, setCustomAmount] = useState("");
 
+  const [state, setState] = useContext(AuthContext);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(true);
+
+  const handlePaymentSuccess = (data) => {
+    // setAlertMessage("Payment Successful! Thank you for your purchase." + data);
+    setIsSuccess(true);
+
+    setAlertMessage(
+      "Your generosity helps us make a difference. Thank you for your support!"
+    );
+
+    setAlertVisible(true);
+  };
+
+  const handlePaymentFailure = (error) => {
+    setIsSuccess(false);
+
+    setAlertMessage(
+      "Something went wrong, but your support means the world to us. Please try again."
+    );
+    setAlertVisible(true);
+  };
+
+  const handleCloseAlert = () => {
+    setAlertVisible(false);
+  };
+
   const handleDonate = (amount) => {
     setSelectedAmount(amount);
-    console.log(`Donating ₹${amount}`);
-    // Add your donation logic here
+    // console.log(`Donating ₹${amount}`);
+    handlePaymentWithRazorPay(
+      state,
+      amount,
+      "Thanks for Donation",
+      "Donation Page",
+      handlePaymentSuccess,
+      handlePaymentFailure
+    );
   };
 
   Animated.timing(fadeAnim, {
@@ -214,11 +255,23 @@ const DonationScreen = () => {
 
   return (
     <LinearGradient colors={["#1c1c1c", "#333333"]} style={styles.container}>
+      <RazorpayPaymentAlert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={handleCloseAlert}
+        isSuccess={isSuccess}
+      />
       <Animated.View style={{ ...styles.imageContainer, opacity: fadeAnim }}>
-        <Image
+        {/* <Image
           source={{
             uri: "https://png.pngtree.com/png-clipart/20230111/original/pngtree-donation-box-and-charity-concept-png-image_8902949.png",
           }}
+          style={styles.image}
+        /> */}
+        <LottieView
+          source={loadingAnimation} // Replace with your animation JSON file
+          autoPlay
+          loop={true}
           style={styles.image}
         />
       </Animated.View>
@@ -276,22 +329,26 @@ const DonationScreen = () => {
         </Text>
       )}
 
-      {selectedAmount && (
-        <TouchableOpacity
-          style={[styles.customAmountButton, styles.shadow]}
-          onPress={() => handleDonate(customAmount)}
+      {/* {selectedAmount && ( */}
+      <TouchableOpacity
+        style={[styles.customAmountButton, styles.shadow]}
+        onPress={() => handleDonate(customAmount)}
+      >
+        <LinearGradient
+          colors={["#ff9900", "#ff3300"]}
+          style={styles.gradientButton}
         >
-          <LinearGradient
-            colors={["#ff9900", "#ff3300"]}
-            style={styles.gradientButton}
-          >
-            {/* <FontAwesome5 name="dollar-sign" size={18} color="white" /> */}
-            <Text style={styles.customAmountText}>
-              Donate ₹{selectedAmount}
-            </Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      )}
+          {/* <FontAwesome5 name="dollar-sign" size={18} color="white" /> */}
+          {/* <Text style={styles.customAmountText}>Donate ₹{selectedAmount}</Text> */}
+          <Text style={styles.customAmountText}>
+            Donate
+            {selectedAmount && selectedAmount !== 0
+              ? ` ₹${selectedAmount}`
+              : ""}
+          </Text>
+        </LinearGradient>
+      </TouchableOpacity>
+      {/* // )} */}
     </LinearGradient>
   );
 };
@@ -307,8 +364,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   image: {
-    width: 150,
-    height: 150,
+    width: 250,
+    height: 250,
     resizeMode: "contain",
   },
   heading: {
