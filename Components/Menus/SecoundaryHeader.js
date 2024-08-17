@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   topnavexamdetail: {
-    top: "10%",
+    // top: "10%",
     borderRadius: Border.br_3xs,
     // shadowColor: "rgba(0, 0, 0, 0.25)",
     // shadowOffset: {
