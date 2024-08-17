@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     flexDirection: "row",
-    paddingVertical: 10,
+    paddingBottom: 10,
   },
 });
 
