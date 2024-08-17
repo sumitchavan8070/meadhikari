@@ -1,52 +1,233 @@
+// import React, { useEffect, useState } from "react";
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   TouchableOpacity,
+//   useWindowDimensions,
+// } from "react-native";
+// import { getExamCatList } from "../Api/examCatApi";
+// import SecoundaryHeader from "../Components/Menus/SecoundaryHeader";
+// import PDFViewer from "../Components/PDF/PDFViewer";
+// import { useNavigation } from "@react-navigation/native";
+
+// // Function to convert Google Drive PDF URLs
+// const getDrivePdfUrl = (url) => {
+//   const match = url.match(/drive.google.com\/file\/d\/(.+?)\/view/);
+//   if (match) {
+//     return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+//   }
+//   console.log("url" + url);
+
+//   return url;
+// };
+
+// const ExamDetailPage = ({ route }) => {
+//   const [categoriesData, setCategoriesData] = useState([]);
+//   const [eDetails, setEDetails] = useState({});
+//   const navigation = useNavigation();
+
+//   const { params } = route;
+
+//   // Get Exam Detail
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const data = await getExamCatList();
+//         setCategoriesData(data);
+
+//         const getExam = data.find((item) => item._id === params?._id);
+//         setEDetails(getExam);
+//       } catch (error) {
+//         console.error("Error fetching exam details:", error);
+//       }
+//     };
+
+//     if (categoriesData.length === 0) {
+//       fetchData();
+//     }
+//   }, [params?._id, categoriesData]);
+
+//   const handleSolveBtn = () => {
+//     const examDetailCatName = eDetails.catName;
+//     const examDetailId = eDetails._id;
+
+//     const detailPageValue = {
+//       _id: examDetailId,
+//       catName: examDetailCatName,
+//     };
+
+//     navigation.navigate("ChooseExam", {
+//       detailPageValue: detailPageValue,
+//     });
+//   };
+
+//   const handleModifyBtn = () => {
+//     const examDetailCatName = eDetails.catName;
+//     const examDetailId = eDetails._id;
+
+//     const detailPageValue = {
+//       _id: examDetailId,
+//       catName: examDetailCatName,
+//     };
+
+//     navigation.navigate("ChooseExam", {
+//       detailPageValue: detailPageValue,
+//     });
+//   };
+
+//   const { width } = useWindowDimensions();
+
+//   // Prepare PDF files with converted URLs
+//   const pdfFiles = (eDetails.pdfFiles || []).map((file) => ({
+//     heading: file.heading,
+//     source: getDrivePdfUrl(file.source), // Convert the URL if needed
+//   }));
+
+//   console.log("pdfFiles" + JSON.stringify(pdfFiles));
+
+//   return (
+//     <View style={styles.main}>
+//       <SecoundaryHeader pageName="Exam Details" />
+//       <View style={{ flex: 1, margin: 10 }}>
+//         <Text style={styles.title}>{eDetails?.catName}</Text>
+
+//         {/* PDFViewer component now handles dynamic PDF list */}
+//         <PDFViewer pdfFiles={pdfFiles} />
+
+//         <View style={styles.btnContainer}>
+//           <TouchableOpacity style={styles.btnModify} onPress={handleModifyBtn}>
+//             <Text style={styles.txtModify}>Modify Test</Text>
+//           </TouchableOpacity>
+//           <TouchableOpacity style={styles.btnSolve} onPress={handleSolveBtn}>
+//             <Text style={styles.txtSolve}>Solve Paper</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   main: { flex: 1, backgroundColor: "#fff" },
+//   btnContainer: {
+//     display: "flex",
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     width: "80%",
+//     position: "absolute",
+//     bottom: "10%",
+//     height: "8%",
+//     alignContent: "center",
+//     alignItems: "center",
+//     alignSelf: "center",
+//     borderRadius: 15,
+//   },
+//   btnSolve: {
+//     backgroundColor: "#007BFF",
+//     borderRadius: 15,
+//     flexDirection: "row",
+//     alignItems: "center",
+//     justifyContent: "center",
+//     paddingHorizontal: 16,
+//     paddingVertical: 13,
+//   },
+//   btnModify: {
+//     borderRadius: 15,
+//     backgroundColor: "#6c757d",
+//     borderStyle: "solid",
+//     borderColor: "#007BFF",
+//     borderWidth: 1,
+//     flexDirection: "row",
+//     alignItems: "center",
+//     justifyContent: "center",
+//     paddingHorizontal: 16,
+//     paddingVertical: 8,
+//   },
+//   txtModify: {
+//     fontSize: 16,
+//     textTransform: "capitalize",
+//     fontWeight: "700",
+//     color: "#007BFF",
+//     textAlign: "center",
+//   },
+//   txtSolve: {
+//     fontSize: 16,
+//     textTransform: "capitalize",
+//     fontWeight: "700",
+//     color: "#fff",
+//     textAlign: "center",
+//   },
+//   title: {
+//     textTransform: "uppercase",
+//     fontWeight: "600",
+//     color: "#000",
+//     textAlign: "left",
+//     fontSize: 24,
+//     margin: 10,
+//   },
+// });
+
+// export default ExamDetailPage;
+
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   useWindowDimensions,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import Icon from "react-native-vector-icons/FontAwesome"; // Or any other icon library
 import { getExamCatList } from "../Api/examCatApi";
-import { Image } from "expo-image";
-import { Border, Color, FontFamily, FontSize, Padding } from "../GlobalStyles";
-import { useNavigation } from "@react-navigation/native";
-import HTML from "react-native-render-html";
 import SecoundaryHeader from "../Components/Menus/SecoundaryHeader";
 import PDFViewer from "../Components/PDF/PDFViewer";
+import { useNavigation } from "@react-navigation/native";
+
+// Function to convert Google Drive PDF URLs
+const getDrivePdfUrl = (url) => {
+  const match = url.match(/drive.google.com\/file\/d\/(.+?)\/view/);
+  if (match) {
+    return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  }
+  console.log("url" + url);
+
+  return url;
+};
 
 const ExamDetailPage = ({ route }) => {
   const [categoriesData, setCategoriesData] = useState([]);
   const [eDetails, setEDetails] = useState({});
   const navigation = useNavigation();
 
+  const { params } = route;
+
   // Get Exam Detail
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getExamCatList();
-      setCategoriesData(data);
+      try {
+        const data = await getExamCatList();
+        setCategoriesData(data);
 
-      // Find product details after fetching categories data
-      const getExam = data.find((item) => item._id === params?._id);
-      //  console.log("getExam", getExam);
-      setEDetails(getExam);
+        const getExam = data.find((item) => item._id === params?._id);
+        setEDetails(getExam);
+      } catch (error) {
+        console.error("Error fetching exam details:", error);
+      }
     };
 
-    // Fetch data only when categoriesData is empty
     if (categoriesData.length === 0) {
       fetchData();
     }
-  }, [params?._id, categoriesData]); // Dependency array ensures useEffect runs when these values change
-
-  //console.log(route);
-  const { params } = route;
+  }, [params?._id, categoriesData]);
 
   const handleSolveBtn = () => {
-    const examDetailCatName = eDetails.catName; // Replace "your_exam_detail_id" with the actual ID
+    const examDetailCatName = eDetails.catName;
     const examDetailId = eDetails._id;
 
     const detailPageValue = {
-      _id: examDetailId, // Initialize with empty string or set the actual ID if available
+      _id: examDetailId,
       catName: examDetailCatName,
     };
 
@@ -55,38 +236,15 @@ const ExamDetailPage = ({ route }) => {
     });
   };
 
-  const handleModifyBtn = () => {
-    // navigation.navigate("ChooseExam");
-    const examDetailCatName = eDetails.catName; // Replace "your_exam_detail_id" with the actual ID
-    const examDetailId = eDetails._id;
+  const { width } = useWindowDimensions();
 
-    const detailPageValue = {
-      _id: examDetailId, // Initialize with empty string or set the actual ID if available
-      catName: examDetailCatName,
-    };
+  // Prepare PDF files with converted URLs
+  const pdfFiles = (eDetails.pdfFiles || []).map((file) => ({
+    heading: file.heading,
+    source: getDrivePdfUrl(file.source), // Convert the URL if needed
+  }));
 
-    navigation.navigate("ChooseExam", {
-      detailPageValue: detailPageValue,
-    });
-  };
-
-  const { width } = useWindowDimensions(); // Destructure width from useWindowDimensions()
-  const containsHTML = /<[a-z][\s\S]*>/i.test(eDetails?.des);
-
-  const pdfUri = "https://mpsc.nic.in/advt/Advt22Dec2021.pdf"; // Replace with your PDF URL
-  const pdfFile = require("../assets/groupbandcscheme.pdf");
-
-  const pdfFiles = [
-    {
-      heading: "Syllabus",
-      source: "https://mpsc.nic.in/advt/Advt22Dec2021.pdf",
-    },
-    {
-      heading: "Scheme",
-      source: require("../assets/groupbandcscheme.pdf"),
-    },
-    // Add more PDF files as needed
-  ];
+  console.log("pdfFiles" + JSON.stringify(pdfFiles));
 
   return (
     <View style={styles.main}>
@@ -94,155 +252,51 @@ const ExamDetailPage = ({ route }) => {
       <View style={{ flex: 1, margin: 10 }}>
         <Text style={styles.title}>{eDetails?.catName}</Text>
 
+        {/* PDFViewer component now handles dynamic PDF list */}
         <PDFViewer pdfFiles={pdfFiles} />
-
-        <View style={styles.btnContainer}>
-          <TouchableOpacity style={styles.btnModify} onPress={handleModifyBtn}>
-            <Text style={styles.txtModify}>Modify Test</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.btnSolve} onPress={handleSolveBtn}>
-            <Text style={styles.txtSolve}>Solve Paper</Text>
-          </TouchableOpacity>
-        </View>
       </View>
+
+      {/* Floating Action Button */}
+      <TouchableOpacity style={styles.fabContainer} onPress={handleSolveBtn}>
+        <LinearGradient
+          colors={["#007BFF", "#00BFFF"]} // Gradient colors
+          style={styles.fab}
+        >
+          <Icon name="arrow-right" size={20} color="#fff" />
+        </LinearGradient>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  main: { flex: 1, backgroundColor: Color.colorWhite },
-  htmlContainer: {
-    // flex: 1,
-    borderWidth: 10,
-    borderColor: "red", // Default border color
-  },
-  // main: { gap: 100 },
-  cardTxt: {
-    color: Color.colorWhite,
-    fontWeight: "bold",
-    fontSize: 16,
-    textAlign: "left",
-    margin: 5,
-    left: "5%",
-  },
-  latestCard: {
-    backgroundColor: Color.red,
-    display: "flex",
-    width: "95%",
-    marginBottom: "10%",
-    // height: 200,
-    // alignItems: "center",
-    alignSelf: "center",
-    borderRadius: 20,
-    paddingVertical: 10,
-    marginVertical: 10,
-  },
-
-  btnContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "80%",
+  main: { flex: 1, backgroundColor: "#fff" },
+  fabContainer: {
     position: "absolute",
-    bottom: "10%",
-    height: "8%",
-    alignContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-    borderRadius: 15,
+    bottom: 20,
+    right: 20,
+    zIndex: 1000, // Ensure the FAB is above other elements
   },
-  btnSolve: {
-    backgroundColor: Color.primaryColor,
-    borderRadius: Border.br_3xs,
-    backgroundColor: Color.primaryColor,
-    flexDirection: "row",
-    alignItems: "center",
+  fab: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     justifyContent: "center",
-    paddingHorizontal: Padding.p_16xl,
-    paddingVertical: 13,
-  },
-  btnModify: {
-    borderRadius: Border.br_3xs,
-    backgroundColor: Color.secoundaryBtnColor,
-    borderStyle: "solid",
-    borderColor: Color.primaryColor,
-    borderWidth: 1,
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: Padding.p_16xl,
-    paddingVertical: Padding.p_2xs,
-  },
-
-  txtModify: {
-    fontSize: FontSize.size_xs,
-    textTransform: "capitalize",
-    fontWeight: "700",
-    // fontFamily: FontFamily.interBold,
-    color: Color.primaryColor,
-    textAlign: "center",
-  },
-  txtSolve: {
-    fontSize: FontSize.size_xs,
-    textTransform: "capitalize",
-    fontWeight: "700",
-    // fontFamily: FontFamily.interBold,
-    color: Color.colorWhite,
-    textAlign: "center",
-  },
-
-  descriptionContainer: {
-    backgroundColor: Color.secoundaryBtnColor,
-    margin: 10,
-    padding: 20,
-    borderRadius: 15,
-    width: "95%",
-    marginBottom: "20%",
-  },
-  desText: {
-    textAlign: "left",
-    padding: 10,
-    fontSize: FontSize.size_sm,
-    marginBottom: 50,
-  },
-  headingCard: {
-    // backgroundColor: Color.primaryColor,
-    // borderRadius: 15,
-  },
-  container: {
-    backgroundColor: Color.colorWhite,
-    marginTop: "15%",
-  },
-  catimg: {
-    height: 200,
-    width: "95%",
-    margin: 10,
-    borderRadius: 15,
-    // shadowColor: "rgba(0, 0, 0, 0.25)",
-    shadowColor: Color.primaryColor,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowRadius: 4,
-    elevation: 4,
-    shadowOpacity: 1,
-    // borderColor: Color.primaryColor,
-    // borderWidth: 2,
+    elevation: 8, // For Android shadow
+    shadowColor: "#000", // For iOS shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   title: {
     textTransform: "uppercase",
     fontWeight: "600",
-    // fontFamily: FontFamily.interSemiBold,
-    color: Color.colorBlack,
-    // display: "flex",
-    justifyContent: "center",
-    width: "95%",
-    // height: 24,
+    color: "#000",
     textAlign: "left",
-    fontSize: FontSize.size_lg,
-    alignItems: "center",
+    fontSize: 24,
     margin: 10,
+    alignSelf: "center",
   },
 });
 
