@@ -1,0 +1,17 @@
+export const productData = [
+  require("../../assets/allicons/mpsc.png"),
+  require("../../assets/allicons/police.png"),
+  require("../../assets/allicons/krushi.png"),
+  require("../../assets/allicons/dmer.png"),
+  require("../../assets/allicons/gst.png"),
+  require("../../assets/allicons/aadivashiVibhag.png"),
+  require("../../assets/allicons/aarogya.png"),
+  require("../../assets/allicons/karagruha.png"),
+  require("../../assets/allicons/maharastraColor.png"),
+  require("../../assets/allicons/mahasul.png"),
+  require("../../assets/allicons/mahilaBalvikas.png"),
+  require("../../assets/allicons/nyayvibhag.png"),
+  require("../../assets/allicons/pashusanvardhan.png"),
+  require("../../assets/allicons/pwd.png"),
+  require("../../assets/allicons/vanvibhag.png"),
+];

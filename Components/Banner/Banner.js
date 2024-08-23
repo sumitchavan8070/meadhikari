@@ -243,7 +243,7 @@
 
 // export default Banner;
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -258,26 +258,26 @@ import axios from "axios";
 
 const { width } = Dimensions.get("window");
 
-const Banner = () => {
-  const [banners, setBanners] = useState([]);
-  const [loading, setLoading] = useState(true);
+const Banner = ({ banners, bannerLoading }) => {
+  // const [loading, setLoading] = useState(true);
+  // const [banners, setBanners] = useState([]);
 
-  useEffect(() => {
-    // Fetch banners from API
-    const fetchBanners = async () => {
-      try {
-        const response = await axios.get("/banner/get-all");
-        const sortedBanners = response.data.sort((a, b) => a.index - b.index); // Sort banners by index
-        setBanners(sortedBanners);
-      } catch (error) {
-        console.error("Error fetching banners:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useLayoutEffect(() => {
+  //   // Fetch banners from API
+  //   const fetchBanners = async () => {
+  //     try {
+  //       const response = await axios.get("/banner/get-all");
+  //       const sortedBanners = response.data.sort((a, b) => a.index - b.index); // Sort banners by index
+  //       setBanners(sortedBanners);
+  //     } catch (error) {
+  //       console.error("Error fetching banners:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchBanners();
-  }, []);
+  //   fetchBanners();
+  // }, []);
 
   const renderItem = (data) => (
     <View key={data._id} style={styles.cardContainer}>
@@ -299,13 +299,13 @@ const Banner = () => {
     </View>
   );
 
-  if (loading) {
-    return (
-      <View style={[styles.container, styles.loadingContainer]}>
-        <ActivityIndicator size="large" color="#007aff" />
-      </View>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <View style={[styles.container, styles.loadingContainer]}>
+  //       <ActivityIndicator size="large" color="#007aff" />
+  //     </View>
+  //   );
+  // }
 
   return (
     <View style={styles.container}>

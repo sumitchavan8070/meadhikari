@@ -31,6 +31,7 @@ import test from "../../Screens/Test";
 import Test from "../../Screens/Test";
 import FilterExam from "../../Screens/FilterExam";
 import DonationScreen from "../Subscription/DonationScreen";
+import SplashScreen from "../../Screens/auth/SplashScreen";
 
 const ScreenMenu = () => {
   //global state
@@ -56,7 +57,7 @@ const ScreenMenu = () => {
   };
 
   return (
-    <Stack.Navigator initialRouteName="Login">
+    <Stack.Navigator initialRouteName="Splash">
       {/* conditions to access toute */}
       {/* {authenticatedUser ? (<>true condition</>) :(<>false condition</>)} */}
 
@@ -204,6 +205,11 @@ const ScreenMenu = () => {
         </>
       ) : (
         <>
+          <Stack.Screen
+            name="Splash"
+            component={SplashScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="Register"
             component={Register}

@@ -27,6 +27,7 @@ export const Color = {
   extraRed: "#ff0000",
   lighYellow: "#ffffed",
   darkGreen: "#008000",
+  text: "#000",
 };
 /* Paddings */
 export const Padding = {

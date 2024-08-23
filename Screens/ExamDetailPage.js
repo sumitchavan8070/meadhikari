@@ -369,6 +369,7 @@ import { useNavigation } from "@react-navigation/native";
 import RNFS from "react-native-fs";
 import IosAlertWithImage from "../Components/Alert/IosAlertWithImage";
 import LoadingAnimation from "../Components/Loader/loader"; // Import the LoadingAnimation component
+import PushNotification from "react-native-push-notification";
 
 const getDrivePdfUrl = (url) => {
   const match = url.match(/drive.google.com\/file\/d\/(.+?)\/view/);
@@ -422,8 +423,11 @@ const ExamDetailPage = ({ route }) => {
   const pdfFiles = (eDetails.pdfFiles || []).map((file, index) => ({
     heading: file.heading,
     source: getDrivePdfUrl(file.source),
+    // source: { uri: encodeURI(file.source) },
     filename: `pdf_${index}.pdf`,
   }));
+
+  console.log("pdfFiles" + JSON.stringify(pdfFiles));
 
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(true);
@@ -447,21 +451,100 @@ const ExamDetailPage = ({ route }) => {
     setLoading(false); // Stop loader
   };
 
+  // const handleDownlaodPdf = async (url, filename) => {
+  //   setLoading(true); // Start loader
+  //   try {
+  //     const downloadDest = `${RNFS.ExternalDirectoryPath}/${filename}`;
+  //     const options = {
+  //       fromUrl: url,
+  //       toFile: downloadDest,
+  //       background: true,
+  //     };
+  //     await RNFS.downloadFile(options).promise;
+  //     handlePdfDownloadSuccess();
+  //   } catch (error) {
+  //     handlePdfDownloadFailure(error);
+  //   }
+  // };
+
   const handleDownlaodPdf = async (url, filename) => {
     setLoading(true); // Start loader
     try {
-      const downloadDest = `${RNFS.DocumentDirectoryPath}/${filename}`;
+      const downloadDest = `${RNFS.DownloadDirectoryPath}/${filename}`; // Save to Downloads folder
+      // console.log("Download destination:", downloadDest); // Log the download path for debugging
+
       const options = {
         fromUrl: url,
         toFile: downloadDest,
         background: true,
       };
+
       await RNFS.downloadFile(options).promise;
-      handlePdfDownloadSuccess();
+      handlePdfDownloadSuccess(); // Show success message
     } catch (error) {
-      handlePdfDownloadFailure(error);
+      handlePdfDownloadFailure(error); // Handle errors
+    } finally {
+      setLoading(false); // Stop loader
     }
   };
+  // const handleDownlaodPdf = async (url, filename) => {
+  //   setLoading(true);
+  //   const notificationId = Math.random().toString(); // Unique ID for the notification
+  //   const channelId = "download-channel"; // Ensure this matches the channelId created above
+
+  //   try {
+  //     const downloadDest = `${RNFS.DownloadDirectoryPath}/${filename}`;
+  //     const options = {
+  //       fromUrl: url,
+  //       toFile: downloadDest,
+  //       background: true,
+  //       progressDivider: 1,
+  //       begin: () => {
+  //         PushNotification.localNotification({
+  //           id: notificationId,
+  //           title: "Download in Progress",
+  //           message: `Downloading ${filename}`,
+  //           ongoing: true,
+  //           progress: 0, // Initial progress
+  //           channelId, // Pass the channel ID here
+  //         });
+  //       },
+  //       progress: (res) => {
+  //         const progressPercent = Math.floor(
+  //           (res.bytesWritten / res.contentLength) * 100
+  //         );
+  //         PushNotification.localNotification({
+  //           id: notificationId,
+  //           title: "Download in Progress",
+  //           message: `Downloading ${filename}`,
+  //           progress: progressPercent,
+  //           channelId, // Pass the channel ID here
+  //         });
+  //       },
+  //     };
+
+  //     await RNFS.downloadFile(options).promise;
+  //     PushNotification.localNotification({
+  //       id: notificationId,
+  //       title: "Download Complete",
+  //       message: `${filename} downloaded successfully`,
+  //       ongoing: false,
+  //       channelId, // Pass the channel ID here
+  //     });
+  //     handlePdfDownloadSuccess();
+  //   } catch (error) {
+  //     PushNotification.localNotification({
+  //       id: notificationId,
+  //       title: "Download Failed",
+  //       message: `Failed to download ${filename}`,
+  //       ongoing: false,
+  //       channelId, // Pass the channel ID here
+  //     });
+  //     handlePdfDownloadFailure(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <View style={styles.main}>
