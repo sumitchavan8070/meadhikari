@@ -7,6 +7,7 @@ import { requestUserPermission } from "./utils/notificationService";
 
 import { useColorScheme } from "react-native";
 import { DefaultTheme } from "@react-navigation/native";
+import PushNotification from "react-native-push-notification";
 
 export default function App() {
   useEffect(() => {
@@ -24,6 +25,17 @@ export default function App() {
     //   .catch((error) => {
     //     console.error("Failed to update FCM token:", error);
     //   });
+
+    PushNotification.createChannel(
+      {
+        channelId: "download-channel", // Unique channel ID
+        channelName: "Download Notifications", // User-visible name of the channel
+        channelDescription: "Notifications for file downloads", // Description of the channel
+        importance: 4, // Importance level (4 = HIGH)
+        vibrate: true, // Enable vibration
+      },
+      (created) => console.log(`Notification channel created: '${created}'`) // Callback to know if the channel was created
+    );
 
     return () => {
       unlockOrientation();
