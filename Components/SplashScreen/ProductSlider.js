@@ -81,7 +81,7 @@ const ProductSlider = () => {
       <AutoScroll
         style={styles.autoScroll}
         endPaddingWidth={0}
-        duration={10000}
+        duration={25000}
       >
         <View style={styles.gridContainer}>
           {rows.map((row, rowIndex) => {

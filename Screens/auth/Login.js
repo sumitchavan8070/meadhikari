@@ -870,7 +870,7 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar backgroundColor={COLORS.primary} barStyle="light-content" />
       {loading && <LoadingAnimation visible={loading} loop={true} />}
 
       <IosAlertWithImage
@@ -881,11 +881,10 @@ const Login = ({ navigation }) => {
       />
 
       <View style={styles.header}>
-        <ProductSlider></ProductSlider>
+        {/* <ProductSlider></ProductSlider> */}
+        <Text style={styles.text_header}>Welcome!</Text>
       </View>
       <Animatable.View animation="fadeInUpBig" style={styles.footer}>
-        <Text style={styles.text_header}>Welcome!</Text>
-
         <Text style={[styles.text_footer, { color: colors.text }]}>Email</Text>
         <View style={styles.action}>
           <FontAwesome name="envelope" color={colors.text} size={20} />
@@ -1013,13 +1012,13 @@ const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primary,
   },
   header: {
     flex: 1,
-    // justifyContent: "flex-end",
-    // paddingHorizontal: 20,
-    paddingBottom: 80,
+    justifyContent: "flex-end",
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   footer: {
     flex: 3,
@@ -1030,7 +1029,7 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
   text_header: {
-    color: Color.primaryColor,
+    color: "#fff",
     fontWeight: "bold",
     fontSize: 30,
     marginBottom: 15,

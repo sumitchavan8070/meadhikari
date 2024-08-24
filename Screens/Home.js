@@ -519,9 +519,9 @@ const HomeScreen = () => {
         </Animatable.View>
 
         {/* Exam Section */}
-        <Animatable.View animation="slideInUp" duration={1000} delay={1000}>
-          <Exam />
-        </Animatable.View>
+        {/* <Animatable.View animation="slideInUp" duration={1000} delay={1000}> */}
+        <Exam />
+        {/* </Animatable.View> */}
 
         {/* Menu Container */}
         <Animatable.View animation="slideInUp" duration={1000} delay={1200}>
