@@ -36,6 +36,7 @@ import CloudinaryProfilePic from "../Components/Profile/CloudinaryProfilePic";
 import { Entypo } from "@expo/vector-icons";
 import BetaHomePageBanner from "../Components/BetaBanner/BetaHomePageBanner";
 import PricingPlanComponent from "../Components/Subscription/PricingPlanComponent";
+import ActiveSubscriptionPlan from "../Components/Subscription/ActiveSubscriptionPlan";
 
 const UserProfilePage = () => {
   const [state, setState] = useContext(AuthContext);
@@ -737,12 +738,23 @@ const UserProfilePage = () => {
     }, [state.user.profilePic])
   );
 
+  const plan = {
+    id: "basic",
+    name: "Silver Plan",
+    price: "€10 / user",
+    features: [
+      "Get started with messaging",
+      "Flexible team meetings",
+      "5 TB cloud storage",
+    ],
+  };
+
   return (
     <View style={styles.profileScreen}>
       {loading && <LoadingAnimation visible={loading} loop={true} />}
 
       <ScrollView style={styles.scroll}>
-        <TouchableOpacity onPress={pickImage}>
+        {/* <TouchableOpacity onPress={pickImage}>
           {defaultProfilePic.includes("http") ? (
             <Image
               source={{ uri: defaultProfilePic }}
@@ -754,12 +766,15 @@ const UserProfilePage = () => {
               style={styles.profilePic}
             />
           )}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
-        <BetaHomePageBanner username={"username"} />
+        <HeaderMenu />
+        <ActiveSubscriptionPlan plan={plan}></ActiveSubscriptionPlan>
+        <PricingPlanComponent
+        // pricingPlans={pricingPlans}
+        ></PricingPlanComponent>
 
         {/* <Subscription></Subscription> */}
-        <PricingPlanComponent></PricingPlanComponent>
 
         <View style={styles.infoContainer}>
           <View style={styles.tabsContainer}>
@@ -940,7 +955,7 @@ const styles = StyleSheet.create({
   },
 
   scroll: {
-    padding: 20,
+    // padding: 20,
   },
   profileScreen: {
     flex: 1,

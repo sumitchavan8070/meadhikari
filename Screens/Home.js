@@ -494,27 +494,27 @@ const HomeScreen = () => {
         )}
         {/* //Header */}
 
-        <Animatable.View animation="slideInUp" duration={1000}>
+        <Animatable.View animation="slideInUp" duration={5000}>
           <HeaderMenu />
         </Animatable.View>
 
         {/* Banner */}
-        <Animatable.View animation="slideInUp" duration={1000} delay={200}>
+        <Animatable.View animation="slideInUp" duration={5000} delay={600}>
           <Banner banners={banners} bannerLoading={bannerLoading} />
         </Animatable.View>
 
         {/* Join Box */}
-        <Animatable.View animation="slideInUp" duration={1000} delay={400}>
+        <Animatable.View animation="slideInUp" duration={5000} delay={800}>
           <JoinBox />
         </Animatable.View>
 
         {/* Beta Home Page Banner */}
-        <Animatable.View animation="slideInUp" duration={1000} delay={600}>
+        <Animatable.View animation="slideInUp" duration={5000} delay={1000}>
           <BetaHomePageBanner username={state.user.name} />
         </Animatable.View>
 
         {/* Category Component */}
-        <Animatable.View animation="slideInUp" duration={1000} delay={800}>
+        <Animatable.View animation="slideInUp" duration={3000} delay={800}>
           <CategoryComponent mainCatName="Exams" />
         </Animatable.View>
 
@@ -524,12 +524,12 @@ const HomeScreen = () => {
         {/* </Animatable.View> */}
 
         {/* Menu Container */}
-        <Animatable.View animation="slideInUp" duration={1000} delay={1200}>
+        <Animatable.View animation="slideInUp" duration={3000} delay={1200}>
           <MenuContainerComponent />
         </Animatable.View>
 
         {/* Question Paper Section */}
-        <Animatable.View animation="slideInUp" duration={1000} delay={1400}>
+        <Animatable.View animation="slideInUp" duration={3000} delay={1400}>
           <CategoryComponent
             mainCatName="Exam wise Question Papers"
             handleLinkText={handleLinkText}

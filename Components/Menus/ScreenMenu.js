@@ -41,23 +41,24 @@ const ScreenMenu = () => {
 
   const Stack = createNativeStackNavigator();
 
-  const reponse = {
-    appId: "com.sc.meadhikari",
-    softUpdate: 0,
-    forceUpdate: 1,
-    buildNo: 1,
-    iosBuildNo: 102,
-    version: "6.1.8",
-    title: "Update Available",
-    message:
-      "A new version of the app is available. Please update to the latest version.",
-    downloadUrl:
-      "https://play.google.com/store/apps/details?id=com.globalassignmenthelp&hl=en",
-    playIcon: "",
-  };
+  // const reponse = {
+  //   appId: "com.sc.meadhikari",
+  //   softUpdate: 0,
+  //   forceUpdate: 1,
+  //   buildNo: 1,
+  //   iosBuildNo: 102,
+  //   version: "6.1.8",
+  //   title: "Update Available",
+  //   message:
+  //     "A new version of the app is available. Please update to the latest version.",
+  //   downloadUrl:
+  //     "https://play.google.com/store/apps/details?id=com.globalassignmenthelp&hl=en",
+  //   playIcon: "",
+  // };
 
   return (
-    <Stack.Navigator initialRouteName="Splash">
+    // <Stack.Navigator initialRouteName="Splash">
+    <Stack.Navigator initialRouteName={authenticatedUser ? "Home" : "Splash"}>
       {/* conditions to access toute */}
       {/* {authenticatedUser ? (<>true condition</>) :(<>false condition</>)} */}
 
