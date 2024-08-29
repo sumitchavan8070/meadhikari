@@ -126,20 +126,20 @@ import React, { useEffect, useState, useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-// import { AuthContext } from "../context/AuthContext"; // Adjust path as necessary
 import axios from "axios"; // Ensure axios is installed and imported
+import { AuthContext } from "../../Context/authContext";
 
 const ActiveSubscriptionPlan = () => {
-  //   const [state] = useContext(AuthContext);
+  const [state, setState] = useContext(AuthContext);
   const [plan, setPlan] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [duration, setDuration] = useState("");
 
-  //   const { subscriptionPlanID, isSubscriptionActive } = state.user;
-  const subscriptionPlanID = "66cae559267f0f6cedde1fff";
+  const { subscriptionPlanID, isSubscriptionActive } = state.user;
+  // const subscriptionPlanID = "66cae559267f0f6cedde1fff";
+  // const isSubscriptionActive = true;
 
-  const isSubscriptionActive = true;
   useEffect(() => {
     const fetchPlan = async () => {
       try {
@@ -186,9 +186,18 @@ const ActiveSubscriptionPlan = () => {
   //   return <Text>Loading...</Text>;
   // }
 
+  // if (error) {
+  //   return null;
+  //   // <Text>{error}</Text>;
+  // }
+
+  // if (!isSubscriptionActive || !plan) {
+  //   return null;
+  //   // <Text>No plan available</Text>;
+  // }
+
   if (error) {
-    return null;
-    // <Text>{error}</Text>;
+    return <Text>{error}</Text>;
   }
 
   if (!isSubscriptionActive || !plan) {
