@@ -82,36 +82,85 @@ const PricingPlanComponent = () => {
   //   }
   // };
 
+  // const handlePaymentSuccess = async (data, subscriptionPlanID) => {
+  //   try {
+  //     const response = await axios.put(
+  //       `/update-subscription/${state.user._id}`,
+  //       {
+  //         newPlanId: subscriptionPlanID, // Use subscriptionPlanID if available
+  //         purchasePaymentId: data.razorpay_payment_id, // Payment ID from Razorpay
+  //       }
+  //     );
+  //     // console.log(response.data.message);
+  //     let authData = await AsyncStorage.getItem("@auth");
+  //     authData = JSON.parse(authData);
+
+  //     // Prepare updated user data
+  //     const updatedUser = {
+  //       ...authData.user,
+  //       subscriptionPlanID: subscriptionPlanID,
+  //       isSubscriptionActive: true,
+  //     };
+
+  //     // Update AsyncStorage only if there's a change
+  //     if (
+  //       authData.user.subscriptionPlanID !== subscriptionPlanID ||
+  //       authData.user.isSubscriptionActive !== true
+  //     ) {
+  //       authData.user = updatedUser;
+  //       await AsyncStorage.setItem("@auth", JSON.stringify(authData));
+  //     }
+
+  //     // Update global state
+  //     setState((prevState) => ({
+  //       ...prevState,
+  //       user: updatedUser,
+  //     }));
+
+  //     setIsSuccess(true);
+  //     setAlertMessage("Congratulations 🎉! Your Subscription is now Active.");
+  //     setAlertVisible(true);
+  //   } catch (error) {
+  //     console.error("Error updating subscription:", error);
+  //   }
+  // };
+
   const handlePaymentSuccess = async (data, subscriptionPlanID) => {
     try {
       const response = await axios.put(
         `/update-subscription/${state.user._id}`,
         {
-          newPlanId: subscriptionPlanID, // Use subscriptionPlanID if available
+          newPlanId: subscriptionPlanID,
           purchasePaymentId: data.razorpay_payment_id, // Payment ID from Razorpay
         }
       );
-      // console.log(response.data.message);
+
+      // Extract updated subscription details from the response
+      const updatedSubscriptionDetails = response.data.user;
       let authData = await AsyncStorage.getItem("@auth");
       authData = JSON.parse(authData);
 
-      // Prepare updated user data
+      // Prepare updated user data with the new subscription details
       const updatedUser = {
         ...authData.user,
-        subscriptionPlanID: subscriptionPlanID,
-        isSubscriptionActive: true,
+        subscriptionPlanID: updatedSubscriptionDetails.subscriptionPlanID,
+        isSubscriptionActive: updatedSubscriptionDetails.isSubscriptionActive,
+        subscriptionStartDate: updatedSubscriptionDetails.subscriptionStartDate,
+        subscriptionExpiryDate:
+          updatedSubscriptionDetails.subscriptionExpiryDate,
+        purchasePaymentId: updatedSubscriptionDetails.purchasePaymentId,
       };
 
-      // Update AsyncStorage only if there's a change
+      // Update AsyncStorage only if there's a change in subscription details
       if (
-        authData.user.subscriptionPlanID !== subscriptionPlanID ||
-        authData.user.isSubscriptionActive !== true
+        authData.user.subscriptionPlanID !== updatedUser.subscriptionPlanID ||
+        authData.user.isSubscriptionActive !== updatedUser.isSubscriptionActive
       ) {
         authData.user = updatedUser;
         await AsyncStorage.setItem("@auth", JSON.stringify(authData));
       }
 
-      // Update global state
+      // Update global state with the new subscription details
       setState((prevState) => ({
         ...prevState,
         user: updatedUser,
@@ -122,6 +171,10 @@ const PricingPlanComponent = () => {
       setAlertVisible(true);
     } catch (error) {
       console.error("Error updating subscription:", error);
+      setAlertMessage(
+        "There was an error updating your subscription. Please try again."
+      );
+      setAlertVisible(true);
     }
   };
 

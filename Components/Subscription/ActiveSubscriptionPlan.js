@@ -126,8 +126,11 @@ import React, { useEffect, useState, useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import Fontisto from "react-native-vector-icons/Fontisto";
+
 import axios from "axios"; // Ensure axios is installed and imported
 import { AuthContext } from "../../Context/authContext";
+import { Color } from "../../GlobalStyles";
 
 const ActiveSubscriptionPlan = () => {
   const [state, setState] = useContext(AuthContext);
@@ -135,10 +138,18 @@ const ActiveSubscriptionPlan = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [duration, setDuration] = useState("");
+  const [daysLeft, setDaysLeft] = useState(0);
 
-  const { subscriptionPlanID, isSubscriptionActive } = state.user;
+  const {
+    subscriptionPlanID,
+    isSubscriptionActive,
+    subscriptionStartDate,
+    subscriptionExpiryDate,
+  } = state.user;
   // const subscriptionPlanID = "66cae559267f0f6cedde1fff";
   // const isSubscriptionActive = true;
+
+  // console.log("subscriptionExpiryDate" + JSON.stringify(state.user));
 
   useEffect(() => {
     const fetchPlan = async () => {
@@ -207,6 +218,27 @@ const ActiveSubscriptionPlan = () => {
 
   const { name, price, features } = plan;
 
+  // console.log("Plan Recived :" + JSON.stringify(plan));
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  // Utility function to calculate days left until expiry
+  const calculateDaysLeft = (expiryDateString) => {
+    const today = new Date();
+    const expiryDate = new Date(expiryDateString);
+    const differenceInTime = expiryDate - today;
+    const differenceInDays = Math.ceil(
+      differenceInTime / (1000 * 60 * 60 * 24)
+    );
+    return differenceInDays;
+  };
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -215,9 +247,28 @@ const ActiveSubscriptionPlan = () => {
         end={{ x: 1, y: 1 }}
         style={styles.gradientBackground}
       >
-        <View style={styles.activeLabelContainer}>
-          <Text style={styles.activeLabelText}>Active Plan</Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View style={styles.activeLabelContainer}>
+            <Text style={styles.activeLabelText}>Active Plan</Text>
+          </View>
+          <View style={styles.expiryContainer}>
+            <FontAwesome5 name="clock" size={16} style={styles.iconDate} />
+            {/* <Text style={styles.expiryDateText}>
+              {formatDate(subscriptionExpiryDate)}
+            </Text> */}
+
+            <Text style={styles.daysLeftText}>
+              {calculateDaysLeft(subscriptionExpiryDate)} {"Days"}
+            </Text>
+          </View>
         </View>
+
+        {/* <View style={styles.daysLeftContainer}>
+          <Text style={styles.daysLeftText}>
+            {calculateDaysLeft(subscriptionExpiryDate)}
+          </Text>
+        </View> */}
+
         <View style={styles.header}>
           <FontAwesome5
             name="crown"
@@ -230,6 +281,28 @@ const ActiveSubscriptionPlan = () => {
         <Text style={styles.planPrice}>
           ₹{price} - {duration}
         </Text>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            paddingVertical: 10,
+          }}
+        >
+          <View style={{ flexDirection: "row" }}>
+            <Fontisto name="date" size={16} style={styles.iconDate} />
+            <Text style={styles.expiryDateText}>
+              {formatDate(subscriptionStartDate)}
+            </Text>
+          </View>
+          <Text>To</Text>
+          <View style={{ flexDirection: "row" }}>
+            <Fontisto name="date" size={16} style={styles.iconDate} />
+            <Text style={styles.expiryDateText}>
+              {formatDate(subscriptionExpiryDate)}
+            </Text>
+          </View>
+        </View>
         <View style={styles.divider}></View>
         <View style={styles.featuresList}>
           {features.map((feature, index) => (
@@ -250,6 +323,27 @@ const ActiveSubscriptionPlan = () => {
 };
 
 const styles = StyleSheet.create({
+  activeLabelContainer: {
+    alignSelf: "flex-start",
+    backgroundColor: "#FF8C00",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginBottom: 20,
+  },
+  expiryContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    position: "relative",
+    marginBottom: 20,
+  },
+  iconDate: {
+    marginRight: 5,
+    color: "#FF8C00",
+  },
+  expiryDateText: {
+    fontSize: 16,
+  },
   container: {
     padding: 5,
     borderRadius: 15,
@@ -265,14 +359,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 20,
   },
-  activeLabelContainer: {
-    alignSelf: "flex-start",
-    backgroundColor: "#FF8C00",
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    marginBottom: 20,
-  },
+
   activeLabelText: {
     fontSize: 14,
     fontWeight: "600",
