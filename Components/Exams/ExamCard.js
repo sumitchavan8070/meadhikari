@@ -27,7 +27,7 @@ const ExamCard = ({ item }) => {
         <View style={[styles.card]}>
           <Image
             style={[styles.upperCardBlock, styles.cardPosition]}
-            contentFit="cover"
+            contentFit="contain"
             source={{ uri: item?.image }}
           />
           <View style={[styles.lowerCardBlock, styles.cardPosition]} />
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     bottom: "35.58%",
     borderTopLeftRadius: Border.br_11xl,
     borderTopRightRadius: Border.br_11xl,
-    backgroundColor: Color.colorGray,
+    // backgroundColor: Color.lighYellow,
     maxWidth: "100%",
     overflow: "hidden",
     maxHeight: "100%",
@@ -97,15 +97,17 @@ const styles = StyleSheet.create({
     width: "91.27%",
     top: "71.15%",
     left: "8.73%",
-    fontSize: FontSize.size_xs,
+    fontSize: 14,
+    paddingHorizontal: 5,
     textTransform: "capitalize",
     fontWeight: "700",
     // fontFamily: FontFamily.interBold,
     color: Color.colorBlack,
-    textAlign: "left",
-    display: "flex",
+    textAlign: "center",
+    // display: "flex",
     alignItems: "center",
-    position: "absolute",
+    justifyContent: "center",
+    // position: "absolute",
   },
   card: {
     width: 229,

@@ -190,7 +190,7 @@ const ScreenMenu = () => {
           <Stack.Screen
             name="FeedbackForm"
             component={FeedbackForm}
-            options={{ headerShown: true, headerTitle: "Feedback" }}
+            options={{ headerShown: false, headerTitle: "Feedback" }}
           />
 
           <Stack.Screen

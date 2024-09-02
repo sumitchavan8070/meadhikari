@@ -30,7 +30,7 @@ const PostAlert = ({ isVisible, onClose, message }) => {
 
 const styles = StyleSheet.create({
   animation: {
-    width: "70",
+    width: "70%",
     height: "70%",
     alignSelf: "center",
   },

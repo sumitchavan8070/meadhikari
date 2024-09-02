@@ -15,6 +15,7 @@ import LoadingAnimation from "../Loader/loader";
 import { LinearGradient } from "expo-linear-gradient";
 import { setGestureState } from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MessageAlert from "../Alert/MessageAlert";
 
 const JoinBox = () => {
   const [testId, setTestId] = useState("");
@@ -22,9 +23,15 @@ const JoinBox = () => {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
+  const [messageAlertVisible, setMessageAlertVisible] = useState(false);
+  const [messageAlertText, setMessageAlertText] = useState("");
+  const [messageAlertTitle, setMessageAlertTitle] = useState("");
+
   const handleTestJoin = () => {
     if (!testId) {
-      alert("Please Enter Test Code");
+      // alert("Please Enter Test Code");
+      setMessageAlertVisible(true);
+      setMessageAlertText("Please Enter Test Code");
       return;
     }
     setLoading(true);
@@ -32,7 +39,9 @@ const JoinBox = () => {
   };
   const handleGroupJoin = async () => {
     if (!GroupShareId) {
-      alert("Please Enter Group Code");
+      // alert("Please Enter Group Code");
+      setMessageAlertVisible(true);
+      setMessageAlertText("Please Enter Group Code");
       return;
     }
 
@@ -54,11 +63,15 @@ const JoinBox = () => {
 
       if (response.data.status === "success") {
         navigation.navigate("GroupDetailPage");
-        Alert.alert("Success", "You have successfully joined the group.");
+        // Alert.alert("Success", "You have successfully joined the group.");
+        setMessageAlertVisible(true);
+        setMessageAlertText("You have successfully joined the group.");
       }
     } catch (error) {
       console.error("Error joining group:", error);
-      Alert.alert("Error", error.response?.data?.message || "Server Error");
+      // Alert.alert("Error", error.response?.data?.message || "Server Error");
+      setMessageAlertVisible(true);
+      setMessageAlertText(error.response?.data?.message || "Server Error");
     }
   };
 
@@ -76,13 +89,21 @@ const JoinBox = () => {
         });
         setLoading(false);
       } else {
-        console.log("Custom test not found.");
+        // console.log("Custom test not found.");
+        setMessageAlertVisible(true);
+        setMessageAlertText("Test not found");
         setLoading(false);
       }
     } catch (error) {
       setLoading(false);
-      alert(error.response.data.message);
+      // alert(error.response.data.message);
+      setMessageAlertVisible(true);
+      setMessageAlertText(error.response.data.message);
     }
+  };
+
+  const onMessageAlertClose = () => {
+    setMessageAlertVisible(false);
   };
 
   return (
@@ -107,6 +128,13 @@ const JoinBox = () => {
               <Text style={styles.linkText}>Join Test</Text>
             </TouchableOpacity>
           </View> */}
+
+          {messageAlertVisible && (
+            <MessageAlert
+              message={messageAlertText}
+              onClose={onMessageAlertClose}
+            />
+          )}
           <View style={styles.searchContainer}>
             <TextInput
               style={styles.groupInput}

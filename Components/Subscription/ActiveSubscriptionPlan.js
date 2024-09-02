@@ -166,7 +166,7 @@ const ActiveSubscriptionPlan = () => {
               case 30:
                 return "1 month";
               case 180:
-                return "3 months";
+                return "6 months";
               case 365:
                 return "1 year";
               default:
@@ -229,13 +229,29 @@ const ActiveSubscriptionPlan = () => {
   };
 
   // Utility function to calculate days left until expiry
+  // const calculateDaysLeft = (expiryDateString) => {
+  //   const today = new Date();
+  //   const expiryDate = new Date(expiryDateString);
+  //   const differenceInTime = expiryDate - today;
+  //   const differenceInDays = Math.ceil(
+  //     differenceInTime / (1000 * 60 * 60 * 24)
+  //   );
+  //   return differenceInDays;
+  // };
   const calculateDaysLeft = (expiryDateString) => {
+    // Get today's date and set the time to 12:00 AM
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to 12:00 AM
+    // Get the expiry date and set the time to 12:00 AM
     const expiryDate = new Date(expiryDateString);
+    expiryDate.setHours(0, 0, 0, 0); // Set time to 12:00 AM
+    // Calculate the difference in time (milliseconds)
     const differenceInTime = expiryDate - today;
+    // Convert the difference from milliseconds to days
     const differenceInDays = Math.ceil(
       differenceInTime / (1000 * 60 * 60 * 24)
     );
+
     return differenceInDays;
   };
 
@@ -253,21 +269,11 @@ const ActiveSubscriptionPlan = () => {
           </View>
           <View style={styles.expiryContainer}>
             <FontAwesome5 name="clock" size={16} style={styles.iconDate} />
-            {/* <Text style={styles.expiryDateText}>
-              {formatDate(subscriptionExpiryDate)}
-            </Text> */}
-
             <Text style={styles.daysLeftText}>
               {calculateDaysLeft(subscriptionExpiryDate)} {"Days"}
             </Text>
           </View>
         </View>
-
-        {/* <View style={styles.daysLeftContainer}>
-          <Text style={styles.daysLeftText}>
-            {calculateDaysLeft(subscriptionExpiryDate)}
-          </Text>
-        </View> */}
 
         <View style={styles.header}>
           <FontAwesome5

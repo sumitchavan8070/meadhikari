@@ -1,125 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-// import { Image } from "expo-image";
-// import FontAwesome from "react-native-vector-icons/FontAwesome";
-// import { Color } from "../../GlobalStyles";
-// import axios from "axios";
-
-// const PostCard = ({ post }) => {
-//   const [user, setUser] = useState(null);
-
-//   useEffect(() => {
-//     if (post.postedBy && !user) {
-//       fetchUserById(post.postedBy);
-//     }
-//   }, [post]);
-
-//   const fetchUserById = async (userId) => {
-//     try {
-//       const response = await axios.get(`/${userId}`);
-//       setUser(response.data.user);
-//     } catch (error) {
-//       console.error("Error fetching user by ID:", error);
-//     }
-//   };
-
-//   return (
-//     <View style={styles.cardContainer}>
-//       {/* User profile and name */}
-//       <View style={styles.userInfo}>
-//         <Image
-//           style={styles.userProfileImage}
-//           source={{ uri: user?.profilePic }}
-//         />
-//         <View>
-//           <Text style={styles.userName}>{user?.name}</Text>
-//           <Text style={styles.spon}>Sponsored</Text>
-//         </View>
-//       </View>
-
-//       <Image
-//         style={[styles.img]}
-//         contentFit="cover"
-//         source={{ uri: post?.imageUrl }}
-//       />
-
-//       {/* Bottom icons */}
-//       <View style={styles.iconContainer}>
-//         <View style={styles.rightIcons}>
-//           <TouchableOpacity style={styles.iconButton}>
-//             <FontAwesome name="heart-o" size={24} color={Color.primaryColor} />
-//           </TouchableOpacity>
-//         </View>
-//         <TouchableOpacity style={styles.bookmarkButton}>
-//           <FontAwesome name="bookmark-o" size={24} color={Color.primaryColor} />
-//         </TouchableOpacity>
-//       </View>
-
-//       <Text style={styles.desUsername}>
-//         {user?.name}
-//         <Text style={styles.desTxt}> {post.description}</Text>
-//       </Text>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   desUsername: {
-//     fontWeight: "600",
-//     marginTop: 10,
-//   },
-//   desTxt: { fontWeight: "100" },
-//   img: {
-//     width: "100%",
-//     aspectRatio: 1,
-//     resizeMode: "cover",
-//   },
-//   cardContainer: {
-//     width: "90%",
-//     borderRadius: 10,
-//     borderWidth: 1,
-//     borderColor: "#ccc",
-//     padding: 10,
-//     marginBottom: 10,
-//     backgroundColor: "#fff",
-//     alignSelf: "center",
-//   },
-//   userInfo: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     marginBottom: 10,
-//     gap: 10,
-//   },
-//   userName: {
-//     marginRight: 10,
-//     fontSize: 14,
-//   },
-//   spon: { fontSize: 12 },
-//   userProfileImage: {
-//     width: 30,
-//     height: 30,
-//     borderRadius: 20,
-//   },
-//   iconContainer: {
-//     display: "flex",
-//     flexDirection: "row",
-//     alignItems: "center",
-//     justifyContent: "space-between",
-//     marginTop: 10,
-//   },
-//   rightIcons: {
-//     flexDirection: "row",
-//   },
-//   iconButton: {
-//     marginHorizontal: 10,
-//   },
-//   bookmarkButton: {
-//     padding: 5,
-//   },
-// });
-
-// export default PostCard;
-
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -229,7 +107,9 @@ const PostCard = ({ post }) => {
         <View style={styles.userInfo}>
           <Image
             style={styles.userProfileImage}
-            source={{ uri: user?.profilePic }}
+            source={{
+              uri: `https://res.cloudinary.com/sdchavan/image/upload/${user?.profilePic}`,
+            }}
           />
           <View>
             <Text style={styles.userName}>{user?.name}</Text>
@@ -260,13 +140,13 @@ const PostCard = ({ post }) => {
             <Text style={styles.likeCount}>{likeCount} likes</Text>
             {/* Display like count */}
           </View>
-          <TouchableOpacity style={styles.bookmarkButton}>
+          {/* <TouchableOpacity style={styles.bookmarkButton}>
             <FontAwesome
               name="bookmark-o"
               size={24}
               color={Color.primaryColor}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {/* <Text style={styles.desUsername}>

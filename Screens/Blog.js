@@ -19,6 +19,8 @@ import PollCard from "../Components/Poll/PollCard"; // Import the PollCard compo
 import AddPostModal from "../Components/Poll/AddPostModel";
 import PostCard from "../Components/Post/PostCard";
 import LoadingAnimation from "../Components/Loader/loader";
+import loadingAnimation from "../assets/girl.json";
+import LottieView from "lottie-react-native";
 
 const Blog = () => {
   const navigation = useNavigation();
@@ -82,6 +84,19 @@ const Blog = () => {
   const renderCombinedCards = () => {
     const combinedData = [...posts, ...polls];
     combinedData.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+    if (combinedData.length === 0) {
+      return (
+        <View style={styles.noContentContainer}>
+          <LottieView
+            source={loadingAnimation}
+            autoPlay
+            loop={true}
+            style={styles.animation}
+          />
+        </View>
+      );
+    }
 
     return combinedData.map((item) => {
       if (item.imageUrl) {
@@ -202,6 +217,16 @@ const Blog = () => {
 };
 
 const styles = StyleSheet.create({
+  noContentContainer: {
+    flexGrow: 1,
+    padding: 10,
+    backgroundColor: Color.colorWhite,
+  },
+  animation: {
+    width: 500,
+    height: 500,
+    alignSelf: "center",
+  },
   bottomSpace: {
     paddingVertical: 60,
   },

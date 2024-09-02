@@ -74,57 +74,6 @@ const PricingPlanComponent = () => {
     fetchPlans();
   }, []);
 
-  // const handlePaymentSuccess = (data) => {
-  //   if (data) {
-  //     setIsSuccess(true);
-  //     setAlertMessage("Congratulations 🎉! Your Subscription is now Active.");
-  //     setAlertVisible(true);
-  //   }
-  // };
-
-  // const handlePaymentSuccess = async (data, subscriptionPlanID) => {
-  //   try {
-  //     const response = await axios.put(
-  //       `/update-subscription/${state.user._id}`,
-  //       {
-  //         newPlanId: subscriptionPlanID, // Use subscriptionPlanID if available
-  //         purchasePaymentId: data.razorpay_payment_id, // Payment ID from Razorpay
-  //       }
-  //     );
-  //     // console.log(response.data.message);
-  //     let authData = await AsyncStorage.getItem("@auth");
-  //     authData = JSON.parse(authData);
-
-  //     // Prepare updated user data
-  //     const updatedUser = {
-  //       ...authData.user,
-  //       subscriptionPlanID: subscriptionPlanID,
-  //       isSubscriptionActive: true,
-  //     };
-
-  //     // Update AsyncStorage only if there's a change
-  //     if (
-  //       authData.user.subscriptionPlanID !== subscriptionPlanID ||
-  //       authData.user.isSubscriptionActive !== true
-  //     ) {
-  //       authData.user = updatedUser;
-  //       await AsyncStorage.setItem("@auth", JSON.stringify(authData));
-  //     }
-
-  //     // Update global state
-  //     setState((prevState) => ({
-  //       ...prevState,
-  //       user: updatedUser,
-  //     }));
-
-  //     setIsSuccess(true);
-  //     setAlertMessage("Congratulations 🎉! Your Subscription is now Active.");
-  //     setAlertVisible(true);
-  //   } catch (error) {
-  //     console.error("Error updating subscription:", error);
-  //   }
-  // };
-
   const handlePaymentSuccess = async (data, subscriptionPlanID) => {
     try {
       const response = await axios.put(
@@ -262,46 +211,6 @@ const PricingPlanComponent = () => {
             </View>
           ))}
         </View>
-
-        {/* {isSubscriptionActive ? (
-          <TouchableOpacity
-            style={[
-              styles.choosePlanButton,
-              isPurchased && styles.purchasedButton,
-              item.popular && styles.popularButton,
-            ]}
-            onPress={() => handlePayment(item)} // Pass the actual price here
-            disabled={isSubscriptionActive} // Disable button if any plan is purchased
-            activeOpacity={0.8}
-          >
-            <View style={styles.buttonContent}>
-              <FontAwesome
-                name="lock"
-                size={16}
-                color="#fff"
-                style={styles.lockIcon}
-              />
-              <Text style={styles.choosePlanText}>
-                {isPurchased ? "Purchased" : "Choose Plan"}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={[
-              styles.choosePlanButton,
-              isPurchased && styles.purchasedButton,
-              item.popular && styles.popularButton,
-            ]}
-            onPress={() => handlePayment(item)} // Pass the actual price here
-            disabled={isSubscriptionActive} // Disable button if any plan is purchased
-            activeOpacity={0.8}
-          >
-            <Text style={styles.choosePlanText}>
-              {isPurchased ? "Purchased" : "Choose Plan"}
-            </Text>
-          </TouchableOpacity>
-        )} */}
 
         {!isFreePlan &&
           (isSubscriptionActive ? (

@@ -135,7 +135,9 @@ const PollCard = ({ poll, postId, approvedPolls }) => {
         <View style={styles.userInfo}>
           <Image
             style={styles.userProfileImage}
-            source={{ uri: user?.profilePic }}
+            source={{
+              uri: `https://res.cloudinary.com/sdchavan/image/upload/${user?.profilePic}`,
+            }}
           />
           <View>
             <Text style={styles.userName}>{user?.name}</Text>
@@ -179,16 +181,16 @@ const PollCard = ({ poll, postId, approvedPolls }) => {
           ))}
         </ScrollView>
         {/* Bottom icons */}
-        <View style={styles.iconContainer}>
-          <View style={styles.rightIcons}>
-            {/* <TouchableOpacity style={styles.iconButton}>
+        {/* <View style={styles.iconContainer}>
+          <View style={styles.rightIcons}> */}
+        {/* <TouchableOpacity style={styles.iconButton}>
               <FontAwesome
                 name="heart-o"
                 size={24}
                 color={Color.primaryColor}
               />
             </TouchableOpacity> */}
-          </View>
+        {/* </View>
           <TouchableOpacity style={styles.bookmarkButton}>
             <FontAwesome
               name="bookmark-o"
@@ -196,7 +198,7 @@ const PollCard = ({ poll, postId, approvedPolls }) => {
               color={Color.primaryColor}
             />
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
 
       {showConfetti && (

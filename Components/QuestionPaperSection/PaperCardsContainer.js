@@ -49,20 +49,6 @@ const PaperCardsContainer = ({ papers }) => {
     setQpYear(QPYear);
   };
 
-  // const handleOnInstructions = () => {
-  //   navigation.navigate("InstructionPage", {
-  //     questionData,
-  //     testId: "MAPYQ" + qpYear,
-  //   });
-  // };
-
-  // const handleOnSkipIntructions = () => {
-  //   // console.log("Skip is Clicked");
-  //   navigation.navigate("TestPage", {
-  //     questionData,
-  //     testId: "MAPYQ" + qpYear,
-  //   });
-  // };
   const handleOnInstructions = () => {
     if (questionData && questionData.length > 0) {
       navigation.navigate("InstructionPage", {

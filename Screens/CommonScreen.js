@@ -254,6 +254,7 @@ import CustomTest from "./CustomTest";
 import { useFocusEffect } from "@react-navigation/native";
 import socketServices from "../utils/sockertService";
 import { AuthContext } from "../Context/authContext";
+import HeaderMenu from "../Components/Menus/HeaderMenu";
 
 const Tab = createMaterialTopTabNavigator(); // Create a Tab navigator using createMaterialTopTabNavigator
 
@@ -441,6 +442,8 @@ const CommonScreen = () => {
   return (
     // <NavigationContainer>
     <View style={styles.container}>
+      {/* <HeaderMenu /> */}
+
       <Tab.Navigator
         // tabBarOptions={{
         //   labelStyle: styles.tabText,
