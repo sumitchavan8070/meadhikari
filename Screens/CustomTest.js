@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -43,13 +43,17 @@ import * as Print from "expo-print";
 import { shareAsync } from "expo-sharing";
 import { LinearGradient } from "expo-linear-gradient";
 import HTML from "react-native-render-html";
+import ChooseExamUpdated from "./examDropdown/ChooseExamUpdated";
+import FetchCatSubcatYearDropdown from "./examDropdown/FetchCatSubcatYearDropdown";
+import { AuthContext } from "../Context/authContext";
 
 const CustomTestPage = () => {
+  const [state, setState] = useContext(AuthContext);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [questionPaperData, setQuestionPaperData] = useState([]);
   const [addButtonTitle, setAddButtonTitle] = useState("");
   const [questionPaperName, setQuestionPaperName] = useState("");
-  const [preparedBy, setPreparedBy] = useState("");
+  const [preparedBy, setPreparedBy] = useState(state?.user?.username);
   const [activeTab, setActiveTab] = useState("Preview"); // State to track active tab
   const [subActiveTab, setSubActiveTab] = useState("exam"); // State to track active tab
   const [questionText, setQuestionText] = useState(""); // State for question input
@@ -61,13 +65,19 @@ const CustomTestPage = () => {
 
   const route = useRoute(); // Get the route object
   const { detailPageValue } = route.params || {}; // Destructure _id from params or use an empty object if params is undefined
-  const [selectedExamCategory, setSelectedExamCategory] = useState(
-    detailPageValue && detailPageValue._id ? detailPageValue._id : null // Check if detailPageValue and detailPageValue._id exist before accessing _id
-  );
 
-  const [selectedSubExamType, setSelectedSubExamType] = useState("");
-  const [selectedExamYear, setSelectedExamYear] = useState("");
-  const [yearDropIsVisible, setYearDropIsVisible] = useState(true);
+  //for updatedDrop
+  // const [selectedExamCategory, setSelectedExamCategory] = useState(
+  //   detailPageValue && detailPageValue._id ? detailPageValue._id : null // Check if detailPageValue and detailPageValue._id exist before accessing _id
+  // );
+  // const [selectedSubExamType, setSelectedSubExamType] = useState("");
+  // const [selectedExamYear, setSelectedExamYear] = useState("");
+  // const [yearDropIsVisible, setYearDropIsVisible] = useState(true);
+
+  const [catId, setCatId] = useState(null);
+  const [subCatId, setSubCatId] = useState(null);
+  const [yearId, setYearId] = useState(null);
+
   const [loading, setLoading] = useState(false);
 
   const [showAlert, setShowAlert] = useState(false); // State to control alert visibility
@@ -344,19 +354,13 @@ const CustomTestPage = () => {
     }
   };
 
-  useEffect(() => {
-    knowCurrentUser();
-    if (!detailPageValue || !detailPageValue._id) {
-      setSelectedExamCategory(null); // Update selectedExamCategory to null if detailPageValue or detailPageValue._id is not found
-    }
-  }, [detailPageValue]);
+  // useEffect(() => {
+  //   knowCurrentUser();
+  //   if (!detailPageValue || !detailPageValue._id) {
+  //     setSelectedExamCategory(null); // Update selectedExamCategory to null if detailPageValue or detailPageValue._id is not found
+  //   }
+  // }, [detailPageValue]);
 
-  const knowCurrentUser = async () => {
-    const data = await AsyncStorage.getItem("@auth");
-    let loginData = JSON.parse(data);
-    let username = loginData.user.username;
-    setPreparedBy(username);
-  };
   const handleOptionSelect = (index) => {
     if (selectedOption !== options[index]) {
       setSelectedOption(options[index]);
@@ -435,17 +439,17 @@ const CustomTestPage = () => {
     // console.log("selectedSubExamType" + selectedSubExamType);
     // console.log("selectedExamYear" + selectedExamYear);
 
-    if (!selectedExamCategory) {
+    if (!catId) {
       alert("Please select an exam category");
       return;
     }
 
-    if (!selectedSubExamType) {
+    if (!subCatId) {
       alert("Please select an exam type");
       return;
     }
 
-    if (yearDropIsVisible && !selectedExamYear) {
+    if (!yearId) {
       alert("Please select an exam year");
       return;
     }
@@ -459,9 +463,9 @@ const CustomTestPage = () => {
       const response = await axios.post(
         "/question-papers/getQuestionPapersByFilter",
         {
-          catID: selectedExamCategory,
-          subCatID: selectedSubExamType,
-          QPYearID: selectedExamYear,
+          catID: catId,
+          subCatID: subCatId,
+          QPYearID: yearId,
         }
       );
       const data = response.data.data;
@@ -1762,7 +1766,7 @@ const CustomTestPage = () => {
 
             {subActiveTab === "exam" && (
               <ScrollView style={styles.createTestContainer}>
-                <CreateTestPage
+                {/* <CreateTestPage
                   selectedExamCategory={selectedExamCategory}
                   selectedSubExamType={selectedSubExamType}
                   selectedExamYear={selectedExamYear}
@@ -1776,6 +1780,19 @@ const CustomTestPage = () => {
                   detailPageValue={detailPageValue}
                   createTest={true}
                 />
+                <PrimaryButton
+                  styles={styles.button}
+                  buttonTitle={loading ? "Loading..." : "Get Questions"}
+                  handleOnSubmit={onSubmitGetQuestionsExamSection}
+                  disabled={loading}
+                /> */}
+                {/* <ChooseExamUpdated></ChooseExamUpdated> */}
+                <FetchCatSubcatYearDropdown
+                  setSelectedCatId={setCatId}
+                  setSelectedSubCatId={setSubCatId}
+                  setSelectedYearId={setYearId}
+                  creatingTest={true}
+                ></FetchCatSubcatYearDropdown>
                 <PrimaryButton
                   styles={styles.button}
                   buttonTitle={loading ? "Loading..." : "Get Questions"}

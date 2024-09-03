@@ -32,6 +32,7 @@ import Test from "../../Screens/Test";
 import FilterExam from "../../Screens/FilterExam";
 import DonationScreen from "../Subscription/DonationScreen";
 import SplashScreen from "../../Screens/auth/SplashScreen";
+import ChooseExamUpdated from "../../Screens/examDropdown/ChooseExamUpdated";
 
 const ScreenMenu = () => {
   //global state
@@ -104,6 +105,12 @@ const ScreenMenu = () => {
             name="ChooseExam"
             component={ChooseExam}
             options={{ headerShown: true, headerTitle: "CHOOSE EXAM" }}
+          />
+
+          <Stack.Screen
+            name="ChooseExamUpdated"
+            component={ChooseExamUpdated}
+            options={{ headerShown: false, headerTitle: "CHOOSE EXAM" }}
           />
 
           <Stack.Screen

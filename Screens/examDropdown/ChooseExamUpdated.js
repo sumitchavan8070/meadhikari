@@ -6,27 +6,23 @@ import {
   ActivityIndicator,
   View,
 } from "react-native";
-import CustomAlert from "../Components/Alert/CustomAlertPort";
-import ChooseExamDropdown from "../Components/Dropdown/ChooseExamDropdown";
-import PrimaryButton from "../Components/Forms/PrimaryButton";
+import CustomAlert from "../../Components/Alert/CustomAlertPort";
+import ChooseExamDropdown from "../../Components/Dropdown/ChooseExamDropdown";
+import PrimaryButton from "../../Components/Forms/PrimaryButton";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
-import SecoundaryHeader from "../Components/Menus/SecoundaryHeader";
-import { Color } from "../GlobalStyles";
-import CreateTestPage from "./CreateTestPage";
-import LoadingAnimation from "../Components/Loader/loader";
-import ChooseExamAlert from "../Components/Alert/ChooseExamAlert";
-import ChooseExamAlertSuccess from "../Components/Alert/ChooseExamAlertSuccess";
+import SecoundaryHeader from "../../Components/Menus/SecoundaryHeader";
+import { Color } from "../../GlobalStyles";
+import CreateTestPage from "../CreateTestPage";
+import LoadingAnimation from "../../Components/Loader/loader";
+import ChooseExamAlert from "../../Components/Alert/ChooseExamAlert";
+import ChooseExamAlertSuccess from "../../Components/Alert/ChooseExamAlertSuccess";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import FetchCatSubcatYearDropdown from "./FetchCatSubcatYearDropdown";
+import HeaderMenu from "../../Components/Menus/HeaderMenu";
 
-const ChooseExam = ({}) => {
+const ChooseExamUpdated = ({}) => {
   const navigation = useNavigation();
-
-  // const route = useRoute(); // Get the route object
-  // const { detailPageValue } = route.params; // Destructure _id from params
-  // const [selectedExamCategory, setSelectedExamCategory] = useState(
-  //   detailPageValue._id
-  // ); // Set default value
 
   const route = useRoute(); // Get the route object
   const { detailPageValue } = route.params || {}; // Destructure _id from params or use an empty object if params is undefined
@@ -40,9 +36,6 @@ const ChooseExam = ({}) => {
     }
   }, [detailPageValue]);
 
-  // const [selectedExam, setSelectedExam] = useState("");
-  // const [selectedSubExam, setSelectedSubExam] = useState("");
-  // const [selectedYear, setSelectedYear] = useState("");
   const [questionData, setQuestionData] = useState([]);
   const [testId, setTestId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,33 +48,39 @@ const ChooseExam = ({}) => {
   // const [selectedExamCategory, setSelectedExamCategory] = useState("");
 
   const [selectedSubExamType, setSelectedSubExamType] = useState("");
-  const [selectedExamYear, setSelectedExamYear] = useState("");
-  const [yearDropIsVisible, setYearDropIsVisible] = useState(true);
-  const [distDropIsVisible, setDistDropIsVisible] = useState(true);
+
   const [selectedTimer, setSelectedTimer] = useState("1");
 
+  const [catId, setCatId] = useState(null);
+  const [subCatId, setSubCatId] = useState(null);
+  const [yearId, setYearId] = useState(null);
+
   const onSubmitChooseExam = async () => {
-    // if (!selectedExam || !selectedSubExam || !selectedYear) {
-    //   alert("Please select all options");
-    //   return;
-    // // }
     // console.log("selectedExamCategory" + selectedExamCategory);
     // console.log("selectedSubExamType" + selectedSubExamType);
     // console.log("selectedExamYear" + selectedExamYear);
     // console.log("selectedTimer" + selectedTimer);
+    // console.log("catId" + catId);
+    // console.log("subCatId" + subCatId);
+    // console.log("yearId" + yearId);
 
-    if (!selectedExamCategory) {
-      alert("Please select an exam category");
-      return;
-    }
+    // if (!catId) {
+    //   alert("Please select an exam category");
+    //   return;
+    // }
 
-    if (!selectedSubExamType) {
-      alert("Please select an exam type");
-      return;
-    }
+    // if (!subCatId) {
+    //   alert("Please select an exam type");
+    //   return;
+    // }
 
-    if (yearDropIsVisible && !selectedExamYear) {
-      alert("Please select an exam year");
+    // if (!yearId) {
+    //   alert("Please select an exam year");
+    //   return;
+    // }
+
+    if (!catId || !subCatId || !yearId) {
+      alert("Please select correct information");
       return;
     }
 
@@ -98,15 +97,12 @@ const ChooseExam = ({}) => {
       const response = await axios.post(
         "/question-papers/getQuestionPapersByFilter",
         {
-          catID: selectedExamCategory,
-          subCatID: selectedSubExamType,
-          QPYearID: selectedExamYear,
+          catID: catId,
+          subCatID: subCatId,
+          QPYearID: yearId,
         }
       );
       const incomingData = response.data.data;
-
-      // console.log("-----------res------" + JSON.stringify(response.data));
-
       const myTestData = incomingData.map(
         ({ _id, question, option1, option2, option3, option4, answer }) => ({
           _id,
@@ -118,9 +114,6 @@ const ChooseExam = ({}) => {
           answer,
         })
       );
-
-      // console.log("===> My data ==>" + JSON.stringify(myTestData));
-
       const dataAuth = await AsyncStorage.getItem("@auth");
       const loginData = JSON.parse(dataAuth);
       const creatorId = loginData.user._id;
@@ -134,14 +127,6 @@ const ChooseExam = ({}) => {
         creatorId: creatorId,
         questions: myTestData,
       });
-
-      // console.log(
-      //   "=======QuestionPaper Data====== " +
-      //     JSON.stringify(responseMainTest.data.data)
-      // );
-      // console.log(
-      //   "=======QuestionPaper Data====== " + responseMainTest.data.data
-      // );
 
       setQuestionData(responseMainTest.data.data.questions);
       setTestId(responseMainTest.data.data.testId);
@@ -164,9 +149,9 @@ const ChooseExam = ({}) => {
     navigation.navigate("InstructionPage", {
       questionData,
       testId,
-      selectedExamCategory,
-      selectedSubExamType,
-      selectedExamYear,
+      catId,
+      subCatId,
+      yearId,
       selectedTimer,
     });
   };
@@ -175,9 +160,9 @@ const ChooseExam = ({}) => {
     navigation.navigate("TestPage", {
       questionData,
       testId,
-      selectedExamCategory,
-      selectedSubExamType,
-      selectedExamYear,
+      catId,
+      subCatId,
+      yearId,
       selectedTimer,
     });
   };
@@ -188,6 +173,8 @@ const ChooseExam = ({}) => {
   return (
     <>
       {loading && <LoadingAnimation visible={loading} loop={true} />}
+
+      <HeaderMenu />
 
       {showAlert && (
         <ChooseExamAlert
@@ -210,53 +197,12 @@ const ChooseExam = ({}) => {
         style={styles.mainConatiner}
         showsVerticalScrollIndicator={false}
       >
-        {/* <SecoundaryHeader pageName="Choose Exam" /> */}
-
-        {/* <Text style={styles.txt}>Please Select Question Paper to Start Exam</Text> */}
-
-        {/* <View style={styles.stepsContainer}>
-          <Text style={styles.header}>Steps to Solve Test</Text>
-          <Text style={styles.step}>
-            <Text style={styles.stepNumber}>1. </Text>
-            Select the Examination Type, such as which exam you want to take.
-          </Text>
-          <Text style={styles.step}>
-            <Text style={styles.stepNumber}>2. </Text>
-            Choose the Exam Type wisely, like Pre, Mains, or Saral Seva.
-          </Text>
-          <Text style={styles.step}>
-            <Text style={styles.stepNumber}>3. </Text>
-            Choose other dropdown values if applicable.
-          </Text>
-          <Text style={styles.step}>
-            <Text style={styles.stepNumber}>4. </Text>
-            Select the timer you want in the exam or decide if you want a timer
-            at all.
-          </Text>
-        </View> */}
-
-        {/* <ChooseExamDropdown
-        selectedExam={selectedExam}
-        setSelectedExam={setSelectedExam}
-        selectedSubExam={selectedSubExam}
-        setSelectedSubExam={setSelectedSubExam}
-        selectedYear={selectedYear}
-        setSelectedYear={setSelectedYear}
-      /> */}
-        <CreateTestPage
-          selectedExamCategory={selectedExamCategory}
-          selectedSubExamType={selectedSubExamType}
-          selectedExamYear={selectedExamYear}
-          setSelectedExamCategory={setSelectedExamCategory}
-          setSelectedSubExamType={setSelectedSubExamType}
-          setSelectedExamYear={setSelectedExamYear}
-          yearDropIsVisible={yearDropIsVisible}
-          setYearDropIsVisible={setYearDropIsVisible}
-          // distDropIsVisible={distDropIsVisible}
-          // setDistDropIsVisible={setDistDropIsVisible}
-          detailPageValue={detailPageValue}
-          selectedTimer={selectedTimer}
+        <FetchCatSubcatYearDropdown
+          setSelectedCatId={setCatId}
+          setSelectedSubCatId={setSubCatId}
+          setSelectedYearId={setYearId}
           setSelectedTimer={setSelectedTimer}
+          selectedTimer={selectedTimer}
         />
         <PrimaryButton
           styles={styles.button}
@@ -264,14 +210,6 @@ const ChooseExam = ({}) => {
           handleOnSubmit={onSubmitChooseExam}
           disabled={loading}
         />
-        {/* {loading && <ActivityIndicator size="large" color={Color.primaryColor} />} */}
-
-        {/* <CustomAlert
-        showSingleButton
-        visible={showAlert}
-        onYes={() => setShowAlert(false)}
-        alertText="Question Paper is not available"
-      /> */}
       </ScrollView>
     </>
   );
@@ -324,4 +262,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChooseExam;
+export default ChooseExamUpdated;

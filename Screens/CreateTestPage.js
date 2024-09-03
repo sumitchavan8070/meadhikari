@@ -126,10 +126,6 @@ const CreateTestPage = ({
         <View style={[styles.dropContainer]}>
           <Text style={styles.labelText}>Timer Visiblity</Text>
           <SelectList
-            onSelect={async () => {
-              // await fetchSubExamTypes(selectedExamCategory); // Fetch sub-exam types based on selected exam category
-              // console.log(selectedTimer);
-            }}
             setSelected={setSelectedTimer}
             data={timerData}
             arrowicon={
