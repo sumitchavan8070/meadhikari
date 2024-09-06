@@ -28,6 +28,8 @@ export const Color = {
   lighYellow: "#ffffed",
   darkGreen: "#008000",
   text: "#000",
+  pink: "#FFA5BA",
+  bluerich: "#009FFF",
 };
 /* Paddings */
 export const Padding = {

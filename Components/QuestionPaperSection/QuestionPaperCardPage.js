@@ -16,6 +16,7 @@ import LottieView from "lottie-react-native";
 import PrimaryButton from "../Forms/PrimaryButton";
 import LoadingAnimation from "../Loader/loader";
 import { useNavigation } from "@react-navigation/native";
+import HeaderMenu from "../Menus/HeaderMenu";
 
 const QuestionPaperCardPage = ({ route }) => {
   const { categoryId } = route.params;
@@ -57,7 +58,7 @@ const QuestionPaperCardPage = ({ route }) => {
   return (
     <>
       {loading && <LoadingAnimation visible={loading} loop={true} />}
-
+      <HeaderMenu></HeaderMenu>
       <ScrollView contentContainerStyle={styles.container}>
         {papers?.length > 0 ? (
           <PaperCardsContainer papers={papers} />

@@ -4,65 +4,124 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Alert,
+  Animated,
+  PanResponder,
+  ImageBackground,
+  useWindowDimensions,
+  StatusBar,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as ScreenOrientation from "expo-screen-orientation";
 import { Border, Color, FontSize, Padding } from "../GlobalStyles";
 import PrimaryButton from "../Components/Forms/PrimaryButton";
 import CustomAlert from "../Components/Alert/CustomAlert";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import {
+  PanGestureHandler,
+  State,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
+
+import aboutImage from "../assets/mpsc.jpeg"; // Import your local image
+import { Image } from "expo-image";
+import HTML from "react-native-render-html";
+import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
 
 const TestPage = ({ route }) => {
   const navigation = useNavigation();
 
-  const { questionData } = route.params;
+  const {
+    questionData,
+    testId,
+    selectedExamCategory,
+    selectedSubExamType,
+    selectedExamYear,
+    // selectedTimer,
+  } = route.params;
 
-  useEffect(() => {
-    const lockOrientation = async () => {
-      await ScreenOrientation.lockAsync(
-        ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT
-      );
-    };
+  const { selectedTimer } = route.params || { selectedTimer: "1" };
 
-    lockOrientation();
+  // console.log("............---........ " + JSON.stringify(questionData));
 
-    return async () => {
-      await ScreenOrientation.lockAsync(
-        ScreenOrientation.OrientationLock.PORTRAIT
-      );
-    };
-  }, []);
+  const [questionPaper, setQuestionPaper] = useState([]);
+
+  // useEffect(() => {
+  //   const lockOrientation = async () => {
+  //     await ScreenOrientation.lockAsync(
+  //       ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT
+  //     );
+  //   };
+
+  //   lockOrientation();
+
+  //   return async () => {
+  //     await ScreenOrientation.lockAsync(
+  //       ScreenOrientation.OrientationLock.PORTRAIT
+  //     );
+  //   };
+  // }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const lockOrientation = async () => {
+        await ScreenOrientation.lockAsync(
+          ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT
+        );
+      };
+
+      lockOrientation();
+
+      return async () => {
+        await ScreenOrientation.lockAsync(
+          ScreenOrientation.OrientationLock.PORTRAIT
+        );
+      };
+    }, [])
+  );
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
-  const handleNextQuestion = () => {
-    if (currentQuestionIndex < questionData.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    }
-  };
-
-  const handlePreviousQuestion = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    }
-  };
 
   const handleQuestionClick = (index) => {
     setCurrentQuestionIndex(index);
     setSelectedQuestionCircle(index);
   };
 
-  const handleOptionClick = (optionKey) => {
-    setSelectedOptions((prevSelectedOptions) => ({
-      ...prevSelectedOptions,
-      [currentQuestionIndex]: optionKey,
-    }));
+  // const handleOptionClick = (optionKey) => {
+  //   setSelectedOptions((prevSelectedOptions) => ({
+  //     ...prevSelectedOptions,
+  //     [currentQuestionIndex]: optionKey,
+  //   }));
 
-    if (optionKey !== null) {
-      setAnsweredQuestions((prevCount) => prevCount + 1);
-    } else {
-      setAnsweredQuestions((prevCount) => prevCount - 1); // Decrement answered count if option is unselected
-    }
+  //   if (optionKey !== null) {
+  //     setAnsweredQuestions((prevCount) => prevCount + 1);
+  //   } else {
+  //     setAnsweredQuestions((prevCount) => prevCount - 1); // Decrement answered count if option is unselected
+  //   }
+  //   setSelectedQuestionCircle(currentQuestionIndex); // Reset selected question circle
+  // };
+
+  const handleOptionClick = (optionKey) => {
+    setSelectedOptions((prevSelectedOptions) => {
+      const previousOption = prevSelectedOptions[currentQuestionIndex];
+
+      // Only update answeredQuestions count if the option has changed
+      if (previousOption === undefined && optionKey !== null) {
+        // This is the first time answering this question
+        setAnsweredQuestions((prevCount) => prevCount + 1);
+      } else if (previousOption !== optionKey) {
+        // The user changed their answer
+        if (optionKey === null) {
+          setAnsweredQuestions((prevCount) => prevCount - 1); // Decrement count if answer is unselected
+        }
+      }
+
+      return {
+        ...prevSelectedOptions,
+        [currentQuestionIndex]: optionKey,
+      };
+    });
+
     setSelectedQuestionCircle(currentQuestionIndex); // Reset selected question circle
   };
 
@@ -72,12 +131,23 @@ const TestPage = ({ route }) => {
   const [selectedQuestionCircle, setSelectedQuestionCircle] = useState(null);
   const [answeredQuestions, setAnsweredQuestions] = useState(0);
   const [unansweredQuestions, setUnansweredQuestions] = useState(0);
-  const [timer, setTimer] = useState({ hours: 0, minutes: 1, seconds: 0 });
-  const [timerRunning, setTimerRunning] = useState(true);
-  const [showAlert, setShowAlert] = useState(false); // State to control the visibility of the custom alert
+  const [timer, setTimer] = useState({ hours: 0, minutes: 60, seconds: 0 });
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [totalTime, setTotalTime] = useState(false);
 
   useEffect(() => {
     let interval = null;
+    if (selectedTimer === "1") {
+      setTimerRunning(true);
+    }
+    if (selectedTimer === "2") {
+      setTimerRunning(false);
+    }
+
+    if (!selectedTimer) {
+      setTimerRunning(true);
+    }
 
     if (timerRunning) {
       interval = setInterval(() => {
@@ -85,7 +155,7 @@ const TestPage = ({ route }) => {
           clearInterval(interval);
           setTimerRunning(false);
           Alert.alert("Time Up!", "The timer limit has been reached.", [
-            { text: "OK", onPress: () => handleTimeUp() },
+            { text: "OK", onPress: () => handleYesButton() },
           ]);
         } else {
           setTimer((prevTimer) => {
@@ -103,7 +173,7 @@ const TestPage = ({ route }) => {
     }
 
     return () => clearInterval(interval);
-  }, [timer, timerRunning]);
+  }, [selectedTimer, timer, timerRunning]);
 
   const handleTimeUp = () => {
     console.log("Timer limit reached");
@@ -116,42 +186,214 @@ const TestPage = ({ route }) => {
     ]);
   };
 
-  const handleTestSubmitBtn = () => {
+  // Function to save test data to AsyncStorage
+  const saveTestData = async (testData) => {
+    try {
+      const jsonTestData = JSON.stringify(testData);
+      await AsyncStorage.setItem("testData", jsonTestData);
+      // console.log("Test data saved successfully" + jsonTestData);
+    } catch (error) {
+      console.error("Error saving test data:", error);
+    }
+  };
+
+  // Question Paper Result Data we are forwarding
+  const [correctAnsNo, setCorrectAnsNo] = useState("");
+  const [incorrectAnsNo, setInCorrectAnsNo] = useState("");
+  const [unAttempt, setUnAttempt] = useState("");
+  const [score, setScore] = useState("");
+  const [timeValue, setTimeValue] = useState(""); // setting time with another state
+  const [scorePercentage, setScorePercentage] = useState("");
+
+  const getTotalCorrectQuestions = () => {
+    let correctAnswersCount = 0;
+    let incorrectAnswersCount = 0;
+    let unAttemptedQuestion = 0;
+
+    questionData.forEach((question, index) => {
+      const selectedOptionKey = selectedOptions[index];
+      const correctAnswer = question.answer;
+
+      if (selectedOptionKey === correctAnswer) {
+        correctAnswersCount++;
+      } else if (selectedOptionKey) {
+        incorrectAnswersCount++;
+      } else {
+        unAttemptedQuestion++;
+      }
+    });
+
+    // console.log("===1=>" + correctAnswersCount);
+    // console.log("===2=>" + incorrectAnswersCount);
+    // console.log("===3=>" + unAttemptedQuestion);
+    const timeTaken = 60 - timer.minutes;
+    setTotalTime(timeTaken);
+    setCorrectAnsNo(correctAnswersCount);
+    setInCorrectAnsNo(incorrectAnswersCount);
+    setUnAttempt(unAttemptedQuestion);
+    setScore(correctAnswersCount);
+
+    let totalQuestions = questionData.length;
+    let scorePercentageText = (
+      (correctAnswersCount / totalQuestions) *
+      100
+    ).toFixed(2);
+
+    setScorePercentage(scorePercentageText);
+  };
+
+  const handleTestSubmitBtn = async () => {
+    getTotalCorrectQuestions();
     setTimerRunning(false);
     setShowAlert(true); // Show the custom alert when the Submit button is clicked
   };
 
-  let totalTimeTaken = 60 - timer.minutes;
   // Inside the custom alert handler for the "Yes" button
-  const handleYesButton = () => {
-    // let correctAnswersCount = 0;
-    // let incorrectAnswersCount = 0;
+  const handleYesButton = async () => {
+    const currentTime = new Date().getTime(); // Get current time as a string
+    const solvedTestEntry = {
+      testId,
+      selectedOptions,
+      questionData,
+      correctAnsNo,
+      incorrectAnsNo,
+      unAttempt,
+      score,
+      scorePercentage,
+      totalTime,
+      timestamp: currentTime,
+    };
 
-    // // Iterate through each question's index
-    // questionData.forEach((question, index) => {
-    //   const selectedOptionKey = selectedOptions[index];
-    //   // console.log("Selected Option Key : " + selectedOptionKey);
-    //   const correctAnswer = question.answer; // Assuming correctAnswer is stored in question data
-    //   // console.log("Selected Answer Key : " + correctAnswer);
-
-    //   // Check if the selected option key matches the correct answer
-    //   if (selectedOptionKey === correctAnswer) {
-    //     correctAnswersCount++;
-    //   } else {
-    //     incorrectAnswersCount++;
-    //   }
-    // });
-
-    // // Now you have the count of correct answers
-    // console.log("Total Correct Answers:", correctAnswersCount);
-    // console.log("Total InCorrect Answers:", incorrectAnswersCount);
+    try {
+      await AsyncStorage.setItem(
+        `solvedTestEntry_${currentTime}`,
+        JSON.stringify(solvedTestEntry)
+      );
+      // console.log("Test entry saved successfully:", solvedTestEntry);
+    } catch (error) {
+      console.error("Error saving test entry:", error);
+    }
 
     setShowAlert(false); // Hide the custom alert
+    navigation.navigate("TestResult", {
+      testId,
+      selectedOptions,
+      questionData,
+      correctAnsNo,
+      incorrectAnsNo,
+      unAttempt,
+      score,
+      scorePercentage,
+      totalTime,
+    }); // Navigate to the test result page
+    await ScreenOrientation.lockAsync(
+      ScreenOrientation.OrientationLock.PORTRAIT
+    );
   };
 
+  const panX = useRef(new Animated.Value(0)).current;
+
+  const handleGestureEvent = Animated.event(
+    [{ nativeEvent: { translationX: panX } }],
+    { useNativeDriver: false }
+  );
+
+  const handleGestureStateChange = (event) => {
+    if (event.nativeEvent.state === State.END) {
+      const swipeX = event.nativeEvent.translationX;
+
+      if (swipeX > 50 && currentQuestionIndex > 0) {
+        handlePreviousQuestion();
+      } else if (
+        swipeX < -50 &&
+        currentQuestionIndex < questionData.length - 1
+      ) {
+        handleNextQuestion();
+      }
+
+      Animated.timing(panX, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: false,
+      }).start();
+    }
+  };
+
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+
+  const openBottomSheet = () => {
+    setBottomSheetVisible(true);
+  };
+
+  const handleNextQuestion = () => {
+    if (currentQuestionIndex < questionData.length - 1) {
+      // console.log("next button:" + currentQuestionIndex);
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    }
+  };
+
+  const handlePreviousQuestion = () => {
+    if (currentQuestionIndex >= 0) {
+      // console.log("previous button:" + currentQuestionIndex);
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    }
+  };
+
+  const isImageUrl = (text) => {
+    return text.startsWith("http://") || text.startsWith("https://");
+  };
+
+  const extractImageUrlFromHTML = (html) => {
+    // Regex to extract image src URLs
+    const urlPattern = /<img\s+[^>]*src="([^"]+)"[^>]*>/g;
+    const matches = [];
+    let match;
+    while ((match = urlPattern.exec(html)) !== null) {
+      matches.push(match[1]);
+    }
+    return matches;
+  };
+
+  const getDriveImageUrl = (url) => {
+    // console.log("url: " + url);
+    const match = url.match(/drive.google.com\/file\/d\/(.+?)\/view/);
+    if (match) {
+      return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+    return url;
+  };
+
+  const replaceDriveUrlsInHtml = (html) => {
+    return html.replace(
+      /<img[^>]+src="(https:\/\/drive\.google\.com\/file\/d\/[^"]+)"/g,
+      (match, p1) => {
+        const accessibleUrl = getDriveImageUrl(p1);
+        // console.log("url" + match.replace(p1, accessibleUrl));
+
+        return match.replace(p1, accessibleUrl);
+      }
+    );
+  };
+
+  // // const isImageUrl = (url) => {
+  // //   return url?.match(/\.(jpeg|jpg|gif|png)$/) != null;
+  // // };
+  const { width } = useWindowDimensions(); // Destructure width from useWindowDimensions()
+
+  // return htmlContent?.includes("<table>");
+  const containsHTML = /<[a-z][\s\S]*>/i.test(currentQuestion.question);
+
   return (
-    <View style={styles.mainCanvas}>
+    // <GestureHandlerRootView style={{ flex: 1 }}>
+    //   <PanGestureHandler
+    //     onGestureEvent={handleGestureEvent}
+    //     onHandlerStateChange={handleGestureStateChange}
+    //   >
+    <Animated.View style={styles.mainCanvas}>
+      <StatusBar backgroundColor="#34448B" barStyle="light-content" />
+
       <CustomAlert
+        alertText="Are you Sure? Want to Exit Test"
         visible={showAlert} // Pass the visibility state to the custom alert component
         onClose={() => {
           setShowAlert(false);
@@ -160,14 +402,6 @@ const TestPage = ({ route }) => {
         onYes={async () => {
           // setShowAlert(false); // Close the alert
           handleYesButton();
-          navigation.navigate("TestResult", {
-            selectedOptions,
-            questionData,
-            totalTimeTaken,
-          }); // Navigate to the test result page
-          await ScreenOrientation.lockAsync(
-            ScreenOrientation.OrientationLock.PORTRAIT
-          );
         }}
       />
       <View style={styles.header}>
@@ -177,7 +411,7 @@ const TestPage = ({ route }) => {
         </View>
         <View style={styles.lables}>
           <Text style={styles.labelText}>ExamID :</Text>
-          <Text style={styles.labelTextValue}> MPSCGRPB2024</Text>
+          <Text style={styles.labelTextValue}> {testId}</Text>
         </View>
         <View style={styles.lables}>
           <Text style={styles.labelText}>Total Questions :</Text>
@@ -198,7 +432,7 @@ const TestPage = ({ route }) => {
       {/* =========================================================================== Header ========================================================================== */}
 
       <View style={styles.queCanvas}>
-        <ScrollView
+        {/* <ScrollView
           style={styles.questionScroll}
           showsVerticalScrollIndicator={false}
         >
@@ -206,44 +440,7 @@ const TestPage = ({ route }) => {
             <Text style={[styles.questionText]}>
               {currentQuestion.question}
             </Text>
-            {/* <View style={styles.options}>
-              <View style={[styles.optionBorder, styles.firstOption]}>
-                <Text style={[styles.optionTxt]}>
-                  {currentQuestion.option1}
-                </Text>
-              </View>
-              <View style={[styles.optionBorder]}>
-                <Text style={[styles.optionTxt]}>
-                  {currentQuestion.option2}
-                </Text>
-              </View>
-              <View style={[styles.optionBorder]}>
-                <Text style={[styles.optionTxt]}>
-                  {" "}
-                  {currentQuestion.option3}
-                </Text>
-              </View>
-              <View style={[styles.optionBorder, styles.lastOption]}>
-                <Text style={[styles.optionTxt]}>
-                  {" "}
-                  {currentQuestion.option4}
-                </Text>
-              </View>
-            </View> */}
 
-            {/* <View style={styles.options}> */}
-            {/* {Array.from({ length: 4 }, (_, i) => i + 1).map((index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleOptionClick(index - 1)}
-                style={[
-                  styles.optionBorder,
-                  selectedOptionIndex === index - 1 && styles.selectedOption,
-                ]}
-              >
-                <Text>{currentQuestion[`option${index}`]}</Text>
-              </TouchableOpacity>
-            ))} */}
             {[1, 2, 3, 4].map((optionIndex, arrayIndex) => (
               <TouchableOpacity
                 key={optionIndex}
@@ -252,62 +449,244 @@ const TestPage = ({ route }) => {
                   styles.optionBorder,
                   selectedOptionKey === `option${optionIndex}` &&
                     styles.selectedOption,
-                  arrayIndex === 3 && { marginTop: 10, marginBottom: "30%" }, // Add margin to the fourth option
+                  arrayIndex === 3 && {
+                    marginTop: 10,
+                    marginBottom: "30%",
+                  }, // Add margin to the fourth option
                 ]}
               >
-                <Text>{currentQuestion[`option${optionIndex}`]}</Text>
+                <Text
+                  style={[
+                    selectedOptionKey === `option${optionIndex}` && {
+                      color: Color.colorWhite,
+                    },
+                  ]}
+                >
+                  {currentQuestion[`option${optionIndex}`]}
+                </Text>
               </TouchableOpacity>
             ))}
-            {/* </View> */}
+          
           </View>
-        </ScrollView>
-        {/* <ScrollView style={styles.sideDrawerScroll}>
-          <View style={styles.questionNumberList}>
-            {questionData.map((_, index) => (
+        </ScrollView> */}
+
+        {/* <ScrollView
+          style={styles.questionScroll}
+          showsVerticalScrollIndicator={true}
+        >
+          <View style={styles.question}>
+            {isImageUrl(currentQuestion.question) ? (
+              <Image
+                source={{ uri: currentQuestion.question }}
+                style={{
+                  width: "100%",
+                  height: 200,
+                  aspectRatio: 1.3,
+                  alignSelf: "center",
+                }}
+                // resizeMode="contain"
+              />
+            ) : (
+              <Text style={[styles.questionText]}>
+                {currentQuestion.question}
+              </Text>
+            )}
+
+            {[1, 2, 3, 4].map((optionIndex, arrayIndex) => (
               <TouchableOpacity
-                key={index}
-                onPress={() => handleQuestionClick(index)}
+                key={optionIndex}
+                onPress={() => handleOptionClick(`option${optionIndex}`)}
                 style={[
-                  styles.circle,
-                  selectedQuestionCircle === index && styles.selectedCircle,
+                  styles.optionBorder,
+                  selectedOptionKey === `option${optionIndex}` &&
+                    styles.selectedOption,
+                  arrayIndex === 3 && {
+                    marginTop: 10,
+                    marginBottom: "30%",
+                  }, // Add margin to the fourth option
                 ]}
               >
-                <View style={styles.circle}>
-                  <Text style={styles.circleText}>{index + 1}</Text>
-                </View>
+                {isImageUrl(currentQuestion[`option${optionIndex}`]) ? (
+                  <Image
+                    source={{ uri: currentQuestion[`option${optionIndex}`] }}
+                    style={{
+                      width: "90%",
+                      height: 200,
+                      aspectRatio: 1.3,
+                      alignSelf: "center",
+                    }}
+                    // resizeMode="contain"
+                  />
+                ) : (
+                  <Text
+                    style={[
+                      selectedOptionKey === `option${optionIndex}` && {
+                        color: Color.colorWhite,
+                      },
+                    ]}
+                  >
+                    {currentQuestion[`option${optionIndex}`]}
+                  </Text>
+                )}
               </TouchableOpacity>
             ))}
           </View>
         </ScrollView> */}
 
-        <ScrollView style={styles.sideDrawerScroll}>
-          <View style={styles.questionNumberList}>
-            {questionData.map((_, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleQuestionClick(index)}
-                style={[
-                  styles.circle,
-                  // selectedQuestionCircle === index && styles.selectedCircle,
-                  selectedOptions[index] !== undefined &&
-                    selectedOptions[index] !== null &&
-                    styles.selectedCircle,
-                  index >= 25 && { marginBottom: "30%" }, // Add marginBottom when index reaches 25
-                ]}
-              >
-                <Text
+        <ScrollView
+          style={styles.questionScroll}
+          showsVerticalScrollIndicator={true}
+        >
+          <ReactNativeZoomableView
+            minZoom={1}
+            onZoomAfter={this.logOutZoomState}
+            initialZoom={1}
+          >
+            <View style={styles.question}>
+              {
+                // isImageUrl(currentQuestion.question) ? (
+                //   <Image
+                //     // source={{ uri: currentQuestion.question }}
+                //     // source={{ uri: getDriveImageUrl(currentQuestion.question) }}
+                //     source={{
+                //       html: replaceDriveUrlsInHtml(currentQuestion.question),
+                //     }}
+                //     style={{
+                //       width: "100%",
+                //       height: 150,
+                //       // aspectRatio: 2,
+                //       // alignSelf: "center",
+                //     }}
+                //     // resizeMode="contain"
+                //   />
+                // ) :
+                containsHTML ? (
+                  // Case 3: Table
+                  <HTML
+                    source={{
+                      html: replaceDriveUrlsInHtml(currentQuestion.question),
+                    }}
+                    contentWidth={width}
+                    tagsStyles={{
+                      table: {
+                        width: "85%", // Adjust width of table
+                        margin: 15, // Adjust margin of table
+                        borderWidth: 0.2,
+                        borderColor: "#000",
+                        justifyContent: "center",
+                        alignContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
+                      },
+                      td: {
+                        borderWidth: 0.2,
+                        borderColor: "#000",
+                        padding: 5,
+                        justifyContent: "center",
+                        alignContent: "center",
+                        alignItems: "center",
+                      },
+                      img: {
+                        width: "100%",
+                        height: 150,
+                        // aspectRatio: 1,
+
+                        resizeMode: "contain",
+                      },
+                    }}
+                  />
+                ) : (
+                  <Text style={[styles.questionText]}>
+                    {currentQuestion.question}
+                  </Text>
+                )
+              }
+
+              {[1, 2, 3, 4].map((optionIndex, arrayIndex) => (
+                <TouchableOpacity
+                  key={optionIndex}
+                  onPress={() => handleOptionClick(`option${optionIndex}`)}
                   style={[
-                    styles.circleText,
-                    selectedOptions[index] !== undefined &&
-                      selectedOptions[index] !== null &&
-                      styles.selectedCircleText,
+                    styles.optionBorder,
+                    selectedOptionKey === `option${optionIndex}` &&
+                      styles.selectedOption,
+                    arrayIndex === 3 && {
+                      marginTop: 10,
+                      marginBottom: "30%",
+                    }, // Add margin to the fourth option
                   ]}
                 >
-                  {index + 1}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+                  {isImageUrl(currentQuestion[`option${optionIndex}`]) ? (
+                    <Image
+                      source={{ uri: currentQuestion[`option${optionIndex}`] }}
+                      style={{
+                        width: "90%",
+                        height: 200,
+                        aspectRatio: 1.3,
+                        alignSelf: "center",
+                      }}
+                      // resizeMode="contain"
+                    />
+                  ) : (
+                    <Text
+                      style={[
+                        selectedOptionKey === `option${optionIndex}` && {
+                          color: Color.colorWhite,
+                        },
+                      ]}
+                    >
+                      {currentQuestion[`option${optionIndex}`]}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ReactNativeZoomableView>
+        </ScrollView>
+
+        <ScrollView
+          style={styles.sideDrawerScroll}
+          showsVerticalScrollIndicator={true}
+        >
+          <ImageBackground
+            source={aboutImage} // Replace with your image path
+            style={{ width: "100%", alignSelf: "center" }}
+            imageStyle={{ opacity: 0.1, resizeMode: "cover" }} // Set the opacity of the image
+          >
+            <View style={styles.questionNumberList}>
+              {questionData.map((_, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => handleQuestionClick(index)}
+                  style={[
+                    styles.circle,
+                    // selectedQuestionCircle === index && styles.selectedCircle,
+                    selectedOptions[index] !== undefined &&
+                      selectedOptions[index] !== null &&
+                      styles.selectedCircle,
+                    index >= 97 && { marginBottom: "50%" }, // Add marginBottom when index reaches 25
+                    currentQuestionIndex === index && {
+                      backgroundColor: "green",
+                    }, // Set background color to green for the current question
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.circleText,
+                      selectedOptions[index] !== undefined &&
+                        selectedOptions[index] !== null &&
+                        styles.selectedCircleText,
+                      currentQuestionIndex === index && {
+                        color: Color.colorWhite,
+                      },
+                    ]}
+                  >
+                    {index + 1}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ImageBackground>
         </ScrollView>
       </View>
 
@@ -315,10 +694,30 @@ const TestPage = ({ route }) => {
 
       <View style={styles.footer}>
         <View style={styles.lables}>
-          <Text style={styles.labelText}>Time Left :</Text>
-          <Text style={styles.labelTextValue}>
-            {timer.hours} : {timer.minutes} : {timer.seconds}
-          </Text>
+          {selectedTimer === "1" && (
+            <>
+              <Text style={styles.labelText}>Time Left :</Text>
+              <Text style={styles.labelTextValue}>
+                {timer.hours} : {timer.minutes} : {timer.seconds}
+              </Text>
+            </>
+          )}
+
+          {selectedTimer === "2" && (
+            <>
+              <Text style={styles.labelText}>Time Left :</Text>
+              <Text style={styles.labelTextValue}> Unlimited</Text>
+            </>
+          )}
+
+          {!selectedTimer && (
+            <>
+              <Text style={styles.labelText}>Time Left :</Text>
+              <Text style={styles.labelTextValue}>
+                {timer.hours} : {timer.minutes} : {timer.seconds}
+              </Text>
+            </>
+          )}
         </View>
 
         <TouchableOpacity
@@ -337,17 +736,17 @@ const TestPage = ({ route }) => {
           <Text style={styles.btnTxt}>Privious</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.button, styles.nxtBtn]}>
-          <Text
-            style={styles.btnTxt}
-            onPress={handleNextQuestion}
-            disabled={currentQuestionIndex === questionData.length - 1}
-          >
-            Next
-          </Text>
+        <TouchableOpacity
+          style={[styles.button, styles.nxtBtn]}
+          onPress={handleNextQuestion}
+          disabled={currentQuestionIndex === questionData.length - 1}
+        >
+          <Text style={styles.btnTxt}>Next</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Animated.View>
+    //   </PanGestureHandler>
+    // </GestureHandlerRootView>
   );
 };
 
@@ -363,8 +762,8 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    paddingHorizontal: 10,
-    paddingVertical: 10,
+    // paddingHorizontal: 10,
+    // paddingVertical: 10,
   },
   circle: {
     width: 30,
@@ -395,7 +794,7 @@ const styles = StyleSheet.create({
   },
   sideDrawerScroll: {
     height: "100%",
-    backgroundColor: Color.green,
+    // backgroundColor: Color.lighYellow,
     width: "25%",
     marginHorizontal: "2%",
   },
@@ -415,14 +814,18 @@ const styles = StyleSheet.create({
   question: {
     height: "100%",
     // width: 451,
-    width: "100%",
+    width: "95%",
     left: "5%",
     top: "1%",
     // bottom: "5%",
     // flexWrap: "wrap",
     // bottom: "100%",
   },
-  selectedOption: { borderColor: Color.green },
+  selectedOption: {
+    // borderColor: Color.green
+    backgroundColor: Color.darkGreen,
+    // color: Color.colorWhite,
+  },
   optionBorder: {
     padding: Padding.p_3xs,
     borderWidth: 1,
@@ -460,9 +863,12 @@ const styles = StyleSheet.create({
 
   mainCanvas: {
     backgroundColor: Color.colorWhite,
-    marginVertical: "5%",
+    // marginVertical: "5%", ------------------
+    top: "1%",
     marginHorizontal: "1%",
-    height: "89%",
+    height: "99%",
+    flex: 1,
+
     // bottom: 0,
   },
 
@@ -529,10 +935,11 @@ const styles = StyleSheet.create({
     backgroundColor: Color.secoundaryBtnColor,
     display: "flex",
     flexDirection: "row",
-    height: "12%",
+    // height: "12%",
+    height: 60,
     justifyContent: "space-between",
     alignContent: "center",
-    alignSelf: "center",
+    // alignSelf: "center",
     alignItems: "center",
     position: "absolute",
     bottom: 0,

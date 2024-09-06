@@ -62,7 +62,7 @@ export const handlePaymentWithRazorPay = (
       console.log(`Payment successful: ${data.razorpay_payment_id}`);
       console.log(`Payment successful Data : ${JSON.stringify(data)}`);
       // if (onSuccess) onSuccess(data); // Call the success callback
-      if (onSuccess) onSuccess(data, subscriptionPlanID); // Pass subscriptionPlanID to the success callback
+      if (onSuccess) onSuccess(data, subscriptionPlanID, amount); // Pass subscriptionPlanID to the success callback
     })
     .catch((error) => {
       console.log("Payment error:", error.description, error.code);

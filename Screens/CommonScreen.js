@@ -442,7 +442,7 @@ const CommonScreen = () => {
   return (
     // <NavigationContainer>
     <View style={styles.container}>
-      {/* <HeaderMenu /> */}
+      <HeaderMenu />
 
       <Tab.Navigator
         // tabBarOptions={{

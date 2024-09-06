@@ -46,6 +46,8 @@ import HTML from "react-native-render-html";
 import ChooseExamUpdated from "./examDropdown/ChooseExamUpdated";
 import FetchCatSubcatYearDropdown from "./examDropdown/FetchCatSubcatYearDropdown";
 import { AuthContext } from "../Context/authContext";
+import SubjectFilter from "../Components/FilterExam/SubjectFilter";
+import TopicFilter from "../Components/FilterExam/TopicFilter";
 
 const CustomTestPage = () => {
   const [state, setState] = useContext(AuthContext);
@@ -1803,21 +1805,15 @@ const CustomTestPage = () => {
             )}
 
             {subActiveTab === "subject" && (
-              <TouchableOpacity
-                onPress={handleSearch}
-                style={styles.searchButton}
-              >
-                <Text style={styles.searchButtonText}>Search Subject</Text>
-              </TouchableOpacity>
+              <View>
+                <SubjectFilter></SubjectFilter>
+              </View>
             )}
 
             {subActiveTab === "topic" && (
-              <TouchableOpacity
-                onPress={handleSearch}
-                style={styles.searchButton}
-              >
-                <Text style={styles.searchButtonText}>Search Topic</Text>
-              </TouchableOpacity>
+              <View>
+                <TopicFilter></TopicFilter>
+              </View>
             )}
           </View>
         )}

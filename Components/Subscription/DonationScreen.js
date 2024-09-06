@@ -15,6 +15,7 @@ import { AuthContext } from "../../Context/authContext";
 import LottieView from "lottie-react-native";
 import loadingAnimation from "../../assets/donationfile.json";
 import RazorpayPaymentAlert from "../Alert/RazorpayPaymentAlert";
+import axios from "axios";
 
 const DonationScreen = () => {
   const [fadeAnim] = useState(new Animated.Value(0));
@@ -25,16 +26,45 @@ const DonationScreen = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(true);
+  const [donationAmountFinal, setDonationAmountFinal] = useState(null);
 
-  const handlePaymentSuccess = (data) => {
-    // setAlertMessage("Payment Successful! Thank you for your purchase." + data);
+  // const handlePaymentSuccess = (data) => {
+  //   // setAlertMessage("Payment Successful! Thank you for your purchase." + data);
+  //   setIsSuccess(true);
+
+  //   setAlertMessage(
+  //     "Your generosity helps us make a difference. Thank you for your support!"
+  //   );
+
+  //   setAlertVisible(true);
+  // };
+
+  // Ensure you have axios installed and imported
+
+  const handlePaymentSuccess = async (data, subscriptionPlanID, amount) => {
     setIsSuccess(true);
-
     setAlertMessage(
       "Your generosity helps us make a difference. Thank you for your support!"
     );
-
     setAlertVisible(true);
+
+    // console.log("---donation data " + JSON.stringify(amount));
+
+    try {
+      const response = await axios.post("donation/donate", {
+        userId: state.user._id, // Get user ID from state
+        donatePaymentId: data.razorpay_payment_id,
+        amount: amount,
+      });
+
+      if (response.data.success) {
+        console.log("Donation recorded successfully");
+      } else {
+        console.error("Failed to record donation");
+      }
+    } catch (error) {
+      console.error("Error posting donation:", error);
+    }
   };
 
   const handlePaymentFailure = (error) => {
@@ -53,6 +83,7 @@ const DonationScreen = () => {
   const handleDonate = (amount) => {
     setSelectedAmount(amount);
     // console.log(`Donating ₹${amount}`);
+    setDonationAmountFinal(amount);
     handlePaymentWithRazorPay(
       state,
       amount,

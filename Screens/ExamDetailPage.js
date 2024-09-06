@@ -223,6 +223,8 @@ import RNFS from "react-native-fs";
 import IosAlertWithImage from "../Components/Alert/IosAlertWithImage";
 import LoadingAnimation from "../Components/Loader/loader";
 import { Color } from "../GlobalStyles";
+import LottieView from "lottie-react-native";
+import loadingAnimation from "../assets/yogaboy.json";
 
 const getDrivePdfUrl = (url) => {
   const match = url.match(/drive.google.com\/file\/d\/(.+?)\/view/);
@@ -266,7 +268,11 @@ const ExamDetailPage = ({ route }) => {
       catName: examDetailCatName,
     };
 
-    navigation.navigate("ChooseExamUpdated", {
+    // navigation.navigate("ChooseExamUpdated", {
+    //   detailPageValue: detailPageValue,
+    // });
+
+    navigation.navigate("FilterExam", {
       detailPageValue: detailPageValue,
     });
   };
@@ -382,8 +388,21 @@ const ExamDetailPage = ({ route }) => {
       <SecoundaryHeader pageName="Exam Details" />
       <View style={{ flex: 1, margin: 10 }}>
         <Text style={styles.title}>{eDetails?.catName}</Text>
-
-        <PDFViewer pdfFiles={pdfFiles} handleDownlaodPdf={handleDownlaodPdf} />
+        {pdfFiles.length == 0 ? (
+          <>
+            <LottieView
+              source={loadingAnimation}
+              autoPlay
+              loop={true}
+              style={styles.animation}
+            />
+          </>
+        ) : (
+          <PDFViewer
+            pdfFiles={pdfFiles}
+            handleDownlaodPdf={handleDownlaodPdf}
+          />
+        )}
       </View>
 
       <TouchableOpacity style={styles.fabContainer} onPress={handleSolveBtn}>
@@ -414,6 +433,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
     color: Color.primaryColor,
+  },
+
+  animation: {
+    width: "100%",
+    height: "100%",
+    alignSelf: "center",
   },
 });
 

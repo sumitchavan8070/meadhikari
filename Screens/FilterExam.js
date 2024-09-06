@@ -5,12 +5,15 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { Color, Padding } from "../GlobalStyles";
 import SubjectFilter from "../Components/FilterExam/SubjectFilter";
 import TopicFilter from "../Components/FilterExam/TopicFilter";
+import ChooseExamUpdated from "./examDropdown/ChooseExamUpdated";
+import HeaderMenu from "../Components/Menus/HeaderMenu";
 
 const FilterExam = () => {
   const Tab = createMaterialTopTabNavigator();
 
   return (
     <View style={{ flex: 1 }}>
+      <HeaderMenu></HeaderMenu>
       <Tab.Navigator
         screenOptions={{
           tabBarActiveTintColor: Color.primaryColor, // Active tab text color
@@ -24,7 +27,7 @@ const FilterExam = () => {
           },
         }}
       >
-        <Tab.Screen name="Exam" component={ChooseExam} />
+        <Tab.Screen name="Exam" component={ChooseExamUpdated} />
         <Tab.Screen name="Subject" component={SubjectFilter} />
         <Tab.Screen name="Topic" component={TopicFilter} />
       </Tab.Navigator>

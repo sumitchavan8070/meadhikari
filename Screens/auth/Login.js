@@ -863,8 +863,19 @@ const Login = ({ navigation }) => {
       setLoading(false);
       navigation.navigate("Home");
     } catch (error) {
-      showAlert(error.message, false);
-      setLoading(false);
+      // showAlert(error.message, false);
+      // setLoading(false);
+      if (error.response && error.response.status === 404) {
+        showAlert(
+          "🚫 Oops! We couldn't find your account. Please double-check your credentials and give it another try! 🔍😊",
+          false
+        ); // Show "User Not Found" if 404 error
+        setLoading(false);
+      } else {
+        // For other errors, show the error message returned from the server
+        showAlert(error.message || "Login Error", false);
+        setLoading(false);
+      }
     }
   };
 

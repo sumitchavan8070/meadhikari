@@ -28,7 +28,7 @@ import HeaderMenu from "../Components/Menus/HeaderMenu";
 import { Color } from "../GlobalStyles";
 import CreatedTestComponent from "../Components/HistoryComp/CreatedTestComponent";
 import LottieView from "lottie-react-native";
-import loadingAnimation from "../assets/testhistory.json";
+import loadingAnimation from "../assets/boyalarm.json";
 import GroupSelectionModal from "../Components/Group/GroupSelectionModal";
 import axios from "axios";
 import * as Print from "expo-print";
@@ -336,6 +336,12 @@ const History = () => {
     navigation.navigate("SummaryPage", {
       questionData: testEntry.questionData,
       selectedOptions: testEntry.selectedOptions,
+      testid: testEntry.testId,
+      correctAnsNo: testEntry.correctAnsNo,
+      incorrectAnsNo: testEntry.incorrectAnsNo,
+      unAttempt: testEntry.unAttempt,
+      totalTime: testEntry.totalTime,
+      historyPageData: true,
     });
   };
 
@@ -346,7 +352,7 @@ const History = () => {
   };
 
   const handleTakeTestBtn = () => {
-    navigation.navigate("ChooseExam");
+    navigation.navigate("ChooseExamUpdated");
   };
 
   const handleCreateTestBtn = () => {
@@ -382,7 +388,6 @@ const History = () => {
           <View
             style={{
               height: 500,
-              backgroundColor: Color.secoundaryBtnColor,
               flex: 1,
             }}
           >
@@ -464,7 +469,7 @@ const History = () => {
           <View
             style={{
               height: 500,
-              backgroundColor: Color.secoundaryBtnColor,
+              // backgroundColor: Color.secoundaryBtnColor,
               flex: 1,
             }}
           >

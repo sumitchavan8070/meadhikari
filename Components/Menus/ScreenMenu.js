@@ -116,7 +116,7 @@ const ScreenMenu = () => {
           <Stack.Screen
             name="FilterExam"
             component={FilterExam}
-            options={{ headerShown: true, headerTitle: "CHOOSE EXAM" }}
+            options={{ headerShown: false, headerTitle: "CHOOSE EXAM" }}
           />
 
           <Stack.Screen
@@ -134,7 +134,7 @@ const ScreenMenu = () => {
           <Stack.Screen
             name="SummaryPage"
             component={SummaryPage}
-            options={{ headerShown: true, headerTitle: "Test Summary" }}
+            options={{ headerShown: false, headerTitle: "Test Summary" }}
           />
 
           <Stack.Screen
@@ -152,7 +152,7 @@ const ScreenMenu = () => {
           <Stack.Screen
             name="CommonScreen"
             component={CommonScreen}
-            options={{ headerShown: true, headerTitle: "Explore" }}
+            options={{ headerShown: false, headerTitle: "Explore" }}
           />
 
           <Stack.Screen
@@ -191,7 +191,7 @@ const ScreenMenu = () => {
           <Stack.Screen
             name="QuestionPaperCardPage"
             component={QuestionPaperCardPage}
-            options={{ headerShown: true, headerTitle: "Papers" }}
+            options={{ headerShown: false, headerTitle: "Papers" }}
           />
 
           <Stack.Screen

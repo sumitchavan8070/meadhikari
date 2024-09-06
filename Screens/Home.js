@@ -514,7 +514,7 @@ const HomeScreen = () => {
         </Animatable.View>
 
         {/* Category Component */}
-        <Animatable.View animation="slideInUp" duration={3000} delay={800}>
+        <Animatable.View animation="slideInUp" duration={3000} delay={1100}>
           <CategoryComponent mainCatName="Exams" />
         </Animatable.View>
 

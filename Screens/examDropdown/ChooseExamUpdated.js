@@ -121,7 +121,7 @@ const ChooseExamUpdated = ({}) => {
 
       // Send POST request with combinedQuestions
       const responseMainTest = await axios.post("/question-papers/main-test", {
-        testName: selectedExamCategory,
+        testName: selectedExamCategory ? selectedExamCategory : "testName",
         totalQuestions: myTestData.length,
         passingMarks: 0, // You can set this as required
         creatorId: creatorId,
@@ -174,7 +174,7 @@ const ChooseExamUpdated = ({}) => {
     <>
       {loading && <LoadingAnimation visible={loading} loop={true} />}
 
-      <HeaderMenu />
+      {/* <HeaderMenu /> */}
 
       {showAlert && (
         <ChooseExamAlert

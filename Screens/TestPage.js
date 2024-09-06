@@ -9,6 +9,7 @@ import {
   PanResponder,
   ImageBackground,
   useWindowDimensions,
+  StatusBar,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import * as ScreenOrientation from "expo-screen-orientation";
@@ -26,6 +27,7 @@ import {
 import aboutImage from "../assets/mpsc.jpeg"; // Import your local image
 import { Image } from "expo-image";
 import HTML from "react-native-render-html";
+import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
 
 const TestPage = ({ route }) => {
   const navigation = useNavigation();
@@ -250,9 +252,9 @@ const TestPage = ({ route }) => {
   const handleYesButton = async () => {
     const currentTime = new Date().getTime(); // Get current time as a string
     const solvedTestEntry = {
-      testId,
       selectedOptions,
       questionData,
+      testId,
       correctAnsNo,
       incorrectAnsNo,
       unAttempt,
@@ -388,6 +390,8 @@ const TestPage = ({ route }) => {
     //     onHandlerStateChange={handleGestureStateChange}
     //   >
     <Animated.View style={styles.mainCanvas}>
+      <StatusBar backgroundColor="#34448B" barStyle="light-content" />
+
       <CustomAlert
         alertText="Are you Sure? Want to Exit Test"
         visible={showAlert} // Pass the visibility state to the custom alert component
@@ -533,105 +537,111 @@ const TestPage = ({ route }) => {
           style={styles.questionScroll}
           showsVerticalScrollIndicator={true}
         >
-          <View style={styles.question}>
-            {
-              // isImageUrl(currentQuestion.question) ? (
-              //   <Image
-              //     // source={{ uri: currentQuestion.question }}
-              //     // source={{ uri: getDriveImageUrl(currentQuestion.question) }}
-              //     source={{
-              //       html: replaceDriveUrlsInHtml(currentQuestion.question),
-              //     }}
-              //     style={{
-              //       width: "100%",
-              //       height: 150,
-              //       // aspectRatio: 2,
-              //       // alignSelf: "center",
-              //     }}
-              //     // resizeMode="contain"
-              //   />
-              // ) :
-              containsHTML ? (
-                // Case 3: Table
-                <HTML
-                  source={{
-                    html: replaceDriveUrlsInHtml(currentQuestion.question),
-                  }}
-                  contentWidth={width}
-                  tagsStyles={{
-                    table: {
-                      width: "85%", // Adjust width of table
-                      margin: 15, // Adjust margin of table
-                      borderWidth: 0.2,
-                      borderColor: "#000",
-                      justifyContent: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      alignSelf: "center",
-                    },
-                    td: {
-                      borderWidth: 0.2,
-                      borderColor: "#000",
-                      padding: 5,
-                      justifyContent: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                    },
-                    img: {
-                      width: "100%",
-                      height: 150,
-                      // aspectRatio: 1,
-
-                      resizeMode: "contain",
-                    },
-                  }}
-                />
-              ) : (
-                <Text style={[styles.questionText]}>
-                  {currentQuestion.question}
-                </Text>
-              )
-            }
-
-            {[1, 2, 3, 4].map((optionIndex, arrayIndex) => (
-              <TouchableOpacity
-                key={optionIndex}
-                onPress={() => handleOptionClick(`option${optionIndex}`)}
-                style={[
-                  styles.optionBorder,
-                  selectedOptionKey === `option${optionIndex}` &&
-                    styles.selectedOption,
-                  arrayIndex === 3 && {
-                    marginTop: 10,
-                    marginBottom: "30%",
-                  }, // Add margin to the fourth option
-                ]}
-              >
-                {isImageUrl(currentQuestion[`option${optionIndex}`]) ? (
-                  <Image
-                    source={{ uri: currentQuestion[`option${optionIndex}`] }}
-                    style={{
-                      width: "90%",
-                      height: 200,
-                      aspectRatio: 1.3,
-                      alignSelf: "center",
+          <ReactNativeZoomableView
+            minZoom={1}
+            onZoomAfter={this.logOutZoomState}
+            initialZoom={1}
+          >
+            <View style={styles.question}>
+              {
+                // isImageUrl(currentQuestion.question) ? (
+                //   <Image
+                //     // source={{ uri: currentQuestion.question }}
+                //     // source={{ uri: getDriveImageUrl(currentQuestion.question) }}
+                //     source={{
+                //       html: replaceDriveUrlsInHtml(currentQuestion.question),
+                //     }}
+                //     style={{
+                //       width: "100%",
+                //       height: 150,
+                //       // aspectRatio: 2,
+                //       // alignSelf: "center",
+                //     }}
+                //     // resizeMode="contain"
+                //   />
+                // ) :
+                containsHTML ? (
+                  // Case 3: Table
+                  <HTML
+                    source={{
+                      html: replaceDriveUrlsInHtml(currentQuestion.question),
                     }}
-                    // resizeMode="contain"
+                    contentWidth={width}
+                    tagsStyles={{
+                      table: {
+                        width: "85%", // Adjust width of table
+                        margin: 15, // Adjust margin of table
+                        borderWidth: 0.2,
+                        borderColor: "#000",
+                        justifyContent: "center",
+                        alignContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
+                      },
+                      td: {
+                        borderWidth: 0.2,
+                        borderColor: "#000",
+                        padding: 5,
+                        justifyContent: "center",
+                        alignContent: "center",
+                        alignItems: "center",
+                      },
+                      img: {
+                        width: "100%",
+                        height: 150,
+                        // aspectRatio: 1,
+
+                        resizeMode: "contain",
+                      },
+                    }}
                   />
                 ) : (
-                  <Text
-                    style={[
-                      selectedOptionKey === `option${optionIndex}` && {
-                        color: Color.colorWhite,
-                      },
-                    ]}
-                  >
-                    {currentQuestion[`option${optionIndex}`]}
+                  <Text style={[styles.questionText]}>
+                    {currentQuestion.question}
                   </Text>
-                )}
-              </TouchableOpacity>
-            ))}
-          </View>
+                )
+              }
+
+              {[1, 2, 3, 4].map((optionIndex, arrayIndex) => (
+                <TouchableOpacity
+                  key={optionIndex}
+                  onPress={() => handleOptionClick(`option${optionIndex}`)}
+                  style={[
+                    styles.optionBorder,
+                    selectedOptionKey === `option${optionIndex}` &&
+                      styles.selectedOption,
+                    arrayIndex === 3 && {
+                      marginTop: 10,
+                      marginBottom: "30%",
+                    }, // Add margin to the fourth option
+                  ]}
+                >
+                  {isImageUrl(currentQuestion[`option${optionIndex}`]) ? (
+                    <Image
+                      source={{ uri: currentQuestion[`option${optionIndex}`] }}
+                      style={{
+                        width: "90%",
+                        height: 200,
+                        aspectRatio: 1.3,
+                        alignSelf: "center",
+                      }}
+                      // resizeMode="contain"
+                    />
+                  ) : (
+                    <Text
+                      style={[
+                        selectedOptionKey === `option${optionIndex}` && {
+                          color: Color.colorWhite,
+                        },
+                      ]}
+                    >
+                      {currentQuestion[`option${optionIndex}`]}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ReactNativeZoomableView>
         </ScrollView>
 
         <ScrollView
@@ -813,7 +823,7 @@ const styles = StyleSheet.create({
   },
   selectedOption: {
     // borderColor: Color.green
-    backgroundColor: Color.green,
+    backgroundColor: Color.darkGreen,
     // color: Color.colorWhite,
   },
   optionBorder: {
