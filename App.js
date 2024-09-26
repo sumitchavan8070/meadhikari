@@ -8,6 +8,7 @@ import { requestUserPermission } from "./utils/notificationService";
 import { useColorScheme } from "react-native";
 import { DefaultTheme } from "@react-navigation/native";
 import PushNotification from "react-native-push-notification";
+import NoInternetWarning from "./Components/InternetWarning/NoInternetWarning";
 
 export default function App() {
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function App() {
     <NavigationContainer theme={lightTheme}>
       <GlobalRefreshProvider>
         <RouteNavigation></RouteNavigation>
+        <NoInternetWarning />
       </GlobalRefreshProvider>
     </NavigationContainer>
   );
