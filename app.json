@@ -1,10 +1,11 @@
 {
   "expo": {
-    "name": "meadhikari",
+    "name": "Meadhikari",
     "slug": "client",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+
     "plugins": [
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf"
@@ -66,9 +67,7 @@
         "projectId": "5c77bf90-37b0-4d90-bb57-735bf279d114"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/5c77bf90-37b0-4d90-bb57-735bf279d114"
     },
