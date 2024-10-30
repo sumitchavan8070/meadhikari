@@ -53,7 +53,7 @@ const CreatedTestComponent = ({
               Test Name: <Text>{testName}</Text>
             </Text>
             <Text>
-              Toatl Question : <Text>{questionLength}</Text>
+              Total Question : <Text>{questionLength}</Text>
             </Text>
             <Text>
               Date : <Text>{formattedDateTime}</Text>

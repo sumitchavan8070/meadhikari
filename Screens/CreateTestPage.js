@@ -288,60 +288,6 @@ const CreateTestPage = ({
           ""
         )}
       </View>
-
-      {/* //============================================== Select District ===================================== */}
-      {/* <View style={[styles.dropContainer]}>
-        {distDropIsVisible ? (
-          <SelectList
-            onSelect={async () => {
-              // await fetchExamYears(selectedExamCategory, selectedSubExamType); // Fetch exam years based on selected exam category and sub-exam type
-            }}
-            setSelected={setSelectedExamYear}
-            // fontFamily="lato"
-            data={examYears}
-            arrowicon={
-              <FontAwesome5
-                name="chevron-down"
-                size={12}
-                color={Color.primaryColor}
-              />
-            }
-            searchicon={
-              <FontAwesome5
-                name="search"
-                size={12}
-                color={Color.primaryColor}
-              />
-            }
-            search={false}
-            boxStyles={{
-              borderRadius: 15,
-              borderColor: Color.colorBlack,
-              borderWidth: 1,
-              borderStyle: "solid",
-            }}
-            placeholder="Please Select District/Region"
-            dropdownStyles={{
-              borderColor: Color.primaryColor,
-              borderWidth: 1,
-              borderStyle: "solid",
-            }}
-          />
-        ) : (
-          // <View style={[styles.disabledDropdown]}>
-          //   <Text style={styles.disabledText}>
-          //     Please Select District/Region
-          //   </Text>
-          //   <FontAwesome5
-          //     name="chevron-down"
-          //     size={12}
-          //     color={Color.colorRed}
-          //     style={{ marginRight: 5 }}
-          //   />
-          // </View>
-          ""
-        )}
-      </View> */}
     </View>
   );
 };

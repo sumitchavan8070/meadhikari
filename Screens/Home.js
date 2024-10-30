@@ -261,7 +261,15 @@
 
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, Text, View, Pressable, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  ScrollView,
+  Alert,
+  Button,
+} from "react-native";
 import {
   useFocusEffect,
   useNavigation,
@@ -290,6 +298,9 @@ import { Platform } from "react-native";
 import DeviceInfo from "react-native-device-info";
 import * as Linking from "expo-linking"; // Uncomment if using Expo
 import * as Animatable from "react-native-animatable";
+
+import ExpiredSubscriptionSheet from "../Components/BottomSheet/ExpiredSubscriptionSection";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -327,7 +338,7 @@ const HomeScreen = () => {
   //   getUsername();
   // }, []); // Empty dependency array to run effect only once
 
-  const [state] = React.useContext(AuthContext);
+  const [state, setState] = React.useContext(AuthContext);
   //auth condition true false
   const authenticatedUser = state?.user && state?.token;
 
@@ -393,7 +404,7 @@ const HomeScreen = () => {
           const response = await axios.put(`/fcm/${userId}/update`, {
             fcmToken: token,
           });
-          console.log("FCM token updated on focus:", response.data);
+          // console.log("FCM token updated on focus:", response.data);
         }
       };
 
@@ -476,6 +487,8 @@ const HomeScreen = () => {
         setBannerLoading(false);
       }
     };
+
+    socketServices.initialzeSocekt(state.user._id);
 
     fetchBanners();
   }, []);

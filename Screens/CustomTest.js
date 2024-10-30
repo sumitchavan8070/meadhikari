@@ -48,6 +48,8 @@ import FetchCatSubcatYearDropdown from "./examDropdown/FetchCatSubcatYearDropdow
 import { AuthContext } from "../Context/authContext";
 import SubjectFilter from "../Components/FilterExam/SubjectFilter";
 import TopicFilter from "../Components/FilterExam/TopicFilter";
+import { checkSubscription } from "../Api/checkSubscription";
+import IosAlertWithImageWithCallBack from "../Components/Alert/IosAlertWithImageWithCallBack";
 
 const CustomTestPage = () => {
   const [state, setState] = useContext(AuthContext);
@@ -87,7 +89,7 @@ const CustomTestPage = () => {
   const [testId, setTestId] = useState("");
   const navigation = useNavigation();
 
-  const [minQueLimit, setMinQueLimit] = useState(1);
+  const [minQueLimit, setMinQueLimit] = useState(10);
   const [maxQueLimit, setMaxQueLimit] = useState(100);
 
   // const handleShareTest = () => {
@@ -371,7 +373,24 @@ const CustomTestPage = () => {
     }
   };
 
-  const handleAddQuestionOwnQuestion = () => {
+  const handleAddQuestionOwnQuestion = async () => {
+    // ----------------
+
+    const subscriptionStatus = await checkSubscription(state.user._id);
+    // console.log("subscriptionStatus", subscriptionStatus);
+
+    if (!subscriptionStatus) {
+      // alert("Take a subscription");
+      setLoading(false);
+      setAlertMessage(
+        "Your subscription expired! 🚀 Renew now to stay on track!"
+      );
+      setIsSuccess(false);
+      setAlertVisibleWithCounter(true);
+      setsubscriptionExpired(true);
+      return;
+    }
+
     Keyboard.dismiss();
 
     if (selectedQuestions.length > 100) {
@@ -436,10 +455,39 @@ const CustomTestPage = () => {
 
   const handleSearch = async () => {};
 
+  const [subscriptionExpired, setsubscriptionExpired] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(true);
+  const [alertVisibleWithCounter, setAlertVisibleWithCounter] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+
+  const onCloseAlert = () => {
+    setAlertVisible(false);
+    setAlertVisibleWithCounter(false);
+  };
+
+  const onRedirect = () => {
+    navigation.navigate("Profile"); // Adjust the navigation target as needed
+  };
+
   const onSubmitGetQuestionsExamSection = async () => {
     // console.log("selectedExamCategory" + selectedExamCategory);
     // console.log("selectedSubExamType" + selectedSubExamType);
     // console.log("selectedExamYear" + selectedExamYear);
+
+    const subscriptionStatus = await checkSubscription(state.user._id);
+    // console.log("subscriptionStatus", subscriptionStatus);
+
+    if (!subscriptionStatus) {
+      // alert("Take a subscription");
+      setLoading(false);
+      setAlertMessage(
+        "Your subscription expired! 🚀 Renew now to stay on track!"
+      );
+      setIsSuccess(false);
+      setAlertVisibleWithCounter(true);
+      setsubscriptionExpired(true);
+      return;
+    }
 
     if (!catId) {
       alert("Please select an exam category");
@@ -685,18 +733,18 @@ const CustomTestPage = () => {
       }
 
       .background-image {
-        position: fixed; /* Fixed position for full-page background */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1; /* Ensure the background is behind the content */
-        opacity: 0.05; /* Adjust the opacity as needed */
-        background-image: url('https://i0.wp.com/examtipsindia.com/wp-content/uploads/2022/05/logo.png');
-        background-repeat: repeat; /* Adjust as needed */
-        background-size: cover;
-      }
-      
+                position: fixed; /* Fixed position for full-page background */
+                top: 0;
+                right: 0;
+            
+                width: 100%;
+                height: 100%;
+                z-index: -1; /* Ensure the background is behind the content */
+                opacity: 0.3; /* Adjust the opacity as needed */
+                background-image: url('https://res.cloudinary.com/sdchavan/image/upload/v1730219215/xqhqdzggmwwdn2ws63eq.png');
+                background-repeat: repeat; /* Adjust as needed */
+                background-size: contain;
+              }
       .container {
         padding: 80px;
         z-index: 1; /* Ensure the content is above the background */
@@ -934,6 +982,17 @@ const CustomTestPage = () => {
         />
       )}
       {loading && <LoadingAnimation visible={loading} loop={true} />}
+
+      {subscriptionExpired && (
+        <IosAlertWithImageWithCallBack
+          visible={alertVisibleWithCounter}
+          message={alertMessage}
+          onClose={onCloseAlert}
+          isSuccess={isSuccess}
+          countdownTime={5}
+          onRedirect={onRedirect}
+        />
+      )}
 
       <Modal
         visible={showPreviewModal}

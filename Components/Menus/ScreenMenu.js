@@ -33,6 +33,9 @@ import FilterExam from "../../Screens/FilterExam";
 import DonationScreen from "../Subscription/DonationScreen";
 import SplashScreen from "../../Screens/auth/SplashScreen";
 import ChooseExamUpdated from "../../Screens/examDropdown/ChooseExamUpdated";
+import TermsAndConditions from "../../Screens/PrivacyPolicyPage/TermsAndConditions";
+import CancellationAndRefundPolicy from "../../Screens/PrivacyPolicyPage/CancellationAndRefundPolicy";
+import ShippingAndDeliveryPolicy from "../../Screens/PrivacyPolicyPage/ShippingAndDeliveryPolicy";
 
 const ScreenMenu = () => {
   //global state
@@ -209,6 +212,31 @@ const ScreenMenu = () => {
             name="DonationScreen"
             component={DonationScreen}
             options={{ headerShown: false, headerTitle: "Donation" }}
+          />
+
+          <Stack.Screen
+            name="Terms"
+            component={TermsAndConditions}
+            options={{
+              headerShown: true,
+              headerTitle: "Terms and Conditions",
+            }}
+          />
+          <Stack.Screen
+            name="Refund"
+            component={CancellationAndRefundPolicy}
+            options={{
+              headerShown: true,
+              headerTitle: "Cancellation and Refund Policy",
+            }}
+          />
+          <Stack.Screen
+            name="Shipping"
+            component={ShippingAndDeliveryPolicy}
+            options={{
+              headerShown: true,
+              headerTitle: "Shipping and Delivery Policy",
+            }}
           />
         </>
       ) : (

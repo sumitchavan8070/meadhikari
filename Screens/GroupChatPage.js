@@ -23,6 +23,8 @@ import { Feather } from "@expo/vector-icons";
 import CustomInputToolbar from "../Components/Group/CustomInputToolbar";
 import LoadingAnimation from "../Components/Loader/loader";
 import ChooseExamAlertSuccess from "../Components/Alert/ChooseExamAlertSuccess";
+import { checkSubscription } from "../Api/checkSubscription";
+import { AuthContext } from "../Context/authContext";
 
 const limit = 50;
 const GroupChatPage = ({ route }) => {
@@ -47,6 +49,8 @@ const GroupChatPage = ({ route }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const [state] = React.useContext(AuthContext);
+
   // useEffect(() => {
   //   // console.log("==Groupid===>" + groupId);
   //   apiHit(groupId);
@@ -55,7 +59,7 @@ const GroupChatPage = ({ route }) => {
     React.useCallback(() => {
       apiHit(groupId);
       if (sharedTestId) {
-        console.log();
+        // console.log("----------");
         setModalVisible(true);
       }
     }, [])
@@ -322,7 +326,7 @@ const GroupChatPage = ({ route }) => {
                         borderWidth: 1,
                       },
                     ]}
-                    onPress={() => {
+                    onPress={async () => {
                       console.log("Button pressed!");
                       // console.log(
                       //   "====>" + JSON.stringify(currentMessage.text)
@@ -335,6 +339,13 @@ const GroupChatPage = ({ route }) => {
                       // setClickedTestId(
                       //   currentMessage.text.split("\n")[0].split(":")[1]
                       // );
+
+                      const isActive = await checkSubscription(state.user._id); // Get subscription status
+                      if (!isActive) {
+                        return alert(
+                          "Oops! Your subscription has expired. Renew to solve this test! 🚀"
+                        );
+                      }
 
                       getCustomTestById(
                         currentMessage.text.split("\n")[0].split(":")[1]
@@ -407,7 +418,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     backgroundColor: Color.colorWhite,
-    paddingTop: 40,
+    paddingTop: 10,
     padding: 10,
   },
   headerLeft: {

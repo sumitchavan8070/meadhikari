@@ -16,6 +16,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { setGestureState } from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MessageAlert from "../Alert/MessageAlert";
+import { checkSubscription } from "../../Api/checkSubscription";
+import { AuthContext } from "../../Context/authContext";
+import IosAlertWithImageWithCallBack from "../Alert/IosAlertWithImageWithCallBack";
 
 const JoinBox = () => {
   const [testId, setTestId] = useState("");
@@ -26,6 +29,8 @@ const JoinBox = () => {
   const [messageAlertVisible, setMessageAlertVisible] = useState(false);
   const [messageAlertText, setMessageAlertText] = useState("");
   const [messageAlertTitle, setMessageAlertTitle] = useState("");
+
+  const [state, setState] = React.useContext(AuthContext);
 
   const handleTestJoin = () => {
     if (!testId) {
@@ -77,6 +82,21 @@ const JoinBox = () => {
 
   const getCustomTestById = async () => {
     try {
+      const subscriptionStatus = await checkSubscription(state.user._id);
+      // console.log("subscriptionStatus", subscriptionStatus);
+
+      if (!subscriptionStatus) {
+        // alert("Take a subscription");
+        setLoading(false);
+        setAlertMessage(
+          "Your subscription expired! 🚀 Renew now to stay on track!"
+        );
+        setIsSuccess(false);
+        setAlertVisibleWithCounter(true);
+        setsubscriptionExpired(true);
+        return;
+      }
+
       const response = await axios.get(`/customtest/custom-test/${testId}`);
       // const testData = response.data;
       if (response.data) {
@@ -104,6 +124,21 @@ const JoinBox = () => {
 
   const onMessageAlertClose = () => {
     setMessageAlertVisible(false);
+  };
+
+  const [subscriptionExpired, setsubscriptionExpired] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(true);
+  const [alertVisibleWithCounter, setAlertVisibleWithCounter] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+
+  const onCloseAlert = () => {
+    setAlertVisible(false);
+    setAlertVisibleWithCounter(false);
+  };
+
+  const onRedirect = () => {
+    navigation.navigate("Profile"); // Adjust the navigation target as needed
   };
 
   return (
@@ -194,6 +229,17 @@ const JoinBox = () => {
           {/* </View> */}
         </View>
       </View>
+
+      {subscriptionExpired && (
+        <IosAlertWithImageWithCallBack
+          visible={alertVisibleWithCounter}
+          message={alertMessage}
+          onClose={onCloseAlert}
+          isSuccess={isSuccess}
+          countdownTime={5}
+          onRedirect={onRedirect}
+        />
+      )}
     </>
   );
 };

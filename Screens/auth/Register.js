@@ -167,6 +167,7 @@ import { Color } from "../../GlobalStyles";
 import IosAlertWithImage from "../../Components/Alert/IosAlertWithImage"; // Adjust the path as needed
 import LoadingAnimation from "../../Components/Loader/loader";
 import IosAlertWithImageWithCallBack from "../../Components/Alert/IosAlertWithImageWithCallBack";
+import BouncyCheckbox from "react-native-bouncy-checkbox"; // Import the BouncyCheckbox
 
 const COLORS = {
   primary: Color.primaryColor,
@@ -195,6 +196,7 @@ const Register = ({ navigation }) => {
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(true);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [isChecked, setIsChecked] = useState(true); // State for checkbox
 
   // Helper function for email validation
   const isValidEmail = (email) => {
@@ -226,6 +228,13 @@ const Register = ({ navigation }) => {
   // Function to handle registration
   const onSubmitRegisterBtn = async () => {
     try {
+      if (!isChecked) {
+        setAlertMessage("You must accept Terms and Conditions");
+        setIsSuccess(false);
+        setAlertVisible(true);
+        setLoading(false);
+        return;
+      }
       setLoading(true);
 
       if (!name || !username || !email || !password) {
@@ -304,7 +313,7 @@ const Register = ({ navigation }) => {
         <Text style={styles.text_header}>Register Now!</Text>
       </View>
       <Animatable.View animation="fadeInUpBig" style={styles.footer}>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={styles.text_footer}>Name</Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color={COLORS.textPrimary} size={20} />
@@ -351,12 +360,17 @@ const Register = ({ navigation }) => {
           </View>
 
           <View style={styles.textPrivate}>
+            <BouncyCheckbox
+              isChecked={isChecked}
+              fillColor={COLORS.primary}
+              onPress={() => setIsChecked(!isChecked)}
+            />
             <Text style={styles.color_textPrivate}>
               By signing up you agree to our
             </Text>
             <Text style={[styles.color_textPrivate, { fontWeight: "bold" }]}>
               {" "}
-              Terms of service
+              Terms and Conditions
             </Text>
             <Text style={styles.color_textPrivate}> and</Text>
             <Text style={[styles.color_textPrivate, { fontWeight: "bold" }]}>

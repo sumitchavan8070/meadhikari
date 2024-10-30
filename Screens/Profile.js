@@ -37,6 +37,9 @@ import { Entypo } from "@expo/vector-icons";
 import BetaHomePageBanner from "../Components/BetaBanner/BetaHomePageBanner";
 import PricingPlanComponent from "../Components/Subscription/PricingPlanComponent";
 import ActiveSubscriptionPlan from "../Components/Subscription/ActiveSubscriptionPlan";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Button } from "react-native";
+import ExpiredSubscriptionSection from "../Components/BottomSheet/ExpiredSubscriptionSection";
 
 const UserProfilePage = () => {
   const [state, setState] = useContext(AuthContext);
@@ -449,6 +452,40 @@ const UserProfilePage = () => {
                           dedicated support team for prompt and reliable
                           assistance
                         </Text>
+
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignSelf: "center",
+                            gap: 10,
+                            marginTop: 15,
+                          }}
+                        >
+                          <Text
+                            style={{ fontSize: 8 }}
+                            onPress={() => {
+                              navigation.navigate("Terms");
+                            }}
+                          >
+                            Terms and Conditions
+                          </Text>
+                          <Text
+                            style={{ fontSize: 8 }}
+                            onPress={() => {
+                              navigation.navigate("Refund");
+                            }}
+                          >
+                            Cancellation and Refund Policy
+                          </Text>
+                          <Text
+                            style={{ fontSize: 8 }}
+                            onPress={() => {
+                              navigation.navigate("Shipping");
+                            }}
+                          >
+                            Shipping and Delivery Policy
+                          </Text>
+                        </View>
                       </View>
                     </>
                   ) : aboutActive ? (
@@ -672,6 +709,8 @@ const UserProfilePage = () => {
   //   }, [state.user.profilePic])
   // );
 
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
+
   return (
     <View style={styles.profileScreen}>
       {loading && <LoadingAnimation visible={loading} loop={true} />}
@@ -692,10 +731,25 @@ const UserProfilePage = () => {
         </TouchableOpacity> */}
 
         <HeaderMenu />
+        <ExpiredSubscriptionSection />
         <ActiveSubscriptionPlan></ActiveSubscriptionPlan>
         <PricingPlanComponent></PricingPlanComponent>
 
         {/* <Subscription></Subscription> */}
+
+        {/* <Button
+          onPress={() => {
+            navigation.navigate("TestSheet");
+          }}
+          title=" Navigate to Sheet"
+        ></Button> */}
+        {/* <GestureHandlerRootView style={{ flexGrow: 1, height: 300 }}>
+          <View style={{ flexGrow: 1, zIndex: 99 }}> */}
+        {/* <Button
+              title="Show Expired Plan Sheet"
+              onPress={() => setShowBottomSheet(true)}
+            /> */}
+        {/* {showBottomSheet && ( */}
 
         <View style={styles.infoContainer}>
           <View style={styles.tabsContainer}>

@@ -11,10 +11,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
+  Alert,
 } from "react-native";
 import RazorpayCheckout from "react-native-razorpay";
 import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome } from "@expo/vector-icons"; // Import FontAwesome for icons
+import { AntDesign, FontAwesome } from "@expo/vector-icons"; // Import FontAwesome for icons
 import globalStrings from "../../utils/globalStrings";
 import axios from "axios";
 import Color from "../../GlobalStyles";
@@ -22,6 +23,10 @@ import { AuthContext } from "../../Context/authContext";
 import { handlePaymentWithRazorPay } from "../Payments/PayWithRazorpayFunction";
 import RazorpayPaymentAlert from "../Alert/RazorpayPaymentAlert";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import IosAlertWithImageWithCallBack from "../Alert/IosAlertWithImageWithCallBack";
+import * as Animatable from "react-native-animatable";
+import MobileNumberInputAlert from "../Alert/MobileNumberInputAlert";
 
 const PricingPlanComponent = () => {
   const flatListRef = useRef(null);
@@ -33,9 +38,11 @@ const PricingPlanComponent = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(true);
   const [selectedPackageAmount, setSelectedPackageAmount] = useState(null);
+  const [paymentSuccess, setpaymentSuccess] = useState(false);
+  const [alertVisibleWithCounter, setAlertVisibleWithCounter] = useState(false);
 
   // Access subscription status and plan ID from AuthContext
-  const { subscriptionPlanID, isSubscriptionActive } = state.user;
+  const { subscriptionPlanID } = state.user;
   // console.log("subscriptionPlanID" + subscriptionPlanID);
   // console.log("isSubscriptionActive" + isSubscriptionActive);
 
@@ -44,6 +51,20 @@ const PricingPlanComponent = () => {
 
   // const subscriptionPlanID = null;
   // const isSubscriptionActive = false;
+
+  const navigation = useNavigation();
+
+  const moveArrow = {
+    0: {
+      transform: [{ translateX: 0 }],
+    },
+    0.5: {
+      transform: [{ translateX: 5 }],
+    },
+    1: {
+      transform: [{ translateX: 0 }],
+    },
+  };
 
   useLayoutEffect(() => {
     const fetchPlans = async () => {
@@ -115,9 +136,16 @@ const PricingPlanComponent = () => {
         user: updatedUser,
       }));
 
-      setIsSuccess(true);
+      // setIsSuccess(true);
+      // setAlertMessage("Congratulations 🎉! Your Subscription is now Active.");
+      // setAlertVisible(true);
+
       setAlertMessage("Congratulations 🎉! Your Subscription is now Active.");
-      setAlertVisible(true);
+      setIsSuccess(true);
+      setAlertVisibleWithCounter(true);
+      setpaymentSuccess(true);
+
+      // navigation.navigate("Home");
     } catch (error) {
       console.error("Error updating subscription:", error);
       setAlertMessage(
@@ -125,6 +153,15 @@ const PricingPlanComponent = () => {
       );
       setAlertVisible(true);
     }
+  };
+
+  const onCloseAlert = () => {
+    setAlertVisible(false);
+    setAlertVisibleWithCounter(false);
+  };
+
+  const onRedirect = () => {
+    navigation.navigate("Home"); // Adjust the navigation target as needed
   };
 
   const handlePaymentFailure = (error) => {
@@ -137,7 +174,96 @@ const PricingPlanComponent = () => {
     setAlertVisible(false);
   };
 
+  const [mobileNumberAvailable, setmobileNumberAvailable] = useState(false);
+
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+
+  const updateMobileNumber = async (mobileNumber) => {
+    const userId = state.user._id; // Replace with the actual user ID
+    const url = `/${userId}/updateMobile`;
+
+    try {
+      const response = await axios.put(url, { mobileNumber });
+
+      // if (response.data.success) {
+      //   Alert.alert("Success", response.data.message);
+      // } else {
+      //   Alert.alert(
+      //     "Error",
+      //     response.data.message || "Failed to update mobile number"
+      //   );
+      // }
+      const updatedUserDetails = response.data.data;
+
+      // console.log("updatedUserDetails", updatedUserDetails);
+
+      if (response.data.success) {
+        // Retrieve existing auth data from AsyncStorage
+        let authData = await AsyncStorage.getItem("@auth");
+        authData = JSON.parse(authData);
+
+        // Prepare updated user data with the new mobile number
+        const updatedUser = {
+          ...authData.user,
+          mobileNumber: updatedUserDetails.mobileNumber,
+        };
+
+        // Update AsyncStorage only if there's a change in mobile number
+        if (authData.user.mobileNumber !== updatedUser.mobileNumber) {
+          authData.user = updatedUser;
+          await AsyncStorage.setItem("@auth", JSON.stringify(authData));
+        }
+
+        // Update global state with the new mobile number
+        setState((prevState) => ({
+          ...prevState,
+          user: updatedUser,
+        }));
+
+        Alert.alert(
+          "Mobile number updated successfully🎉",
+          "You’re all set! 🚀 Unlock exclusive content by choosing a subscription now and stay ahead! 🌟"
+        );
+
+        // handlePayment();
+      } else {
+        Alert.alert("Error", "Failed to update mobile number.");
+        setIsAlertVisible(false); // Close the alert after proceeding
+        setmobileNumberAvailable(false);
+      }
+    } catch (error) {
+      console.error("Error updating mobile number:", error);
+      Alert.alert(
+        "Error",
+        "An error occurred while updating the mobile number."
+      );
+    } finally {
+      setIsAlertVisible(false); // Close the alert after proceeding
+      setmobileNumberAvailable(false);
+    }
+  };
+  const handleProceed = async (mobileNumber) => {
+    // Handle the entered mobile number here
+    // Alert.alert("Mobile Number Entered", `You entered: ${mobileNumber}`);
+    await updateMobileNumber(mobileNumber);
+    setIsAlertVisible(false); // Close the alert after proceeding
+    setmobileNumberAvailable(false);
+  };
+
+  const handleCancel = () => {
+    setIsAlertVisible(false); // Close the alert
+    setmobileNumberAvailable(false);
+  };
+
   const handlePayment = (amount) => {
+    console.log("im here1");
+
+    if (!state.user.mobileNumber) {
+      setmobileNumberAvailable(true);
+      setIsAlertVisible(true); // Close the alert
+      return;
+    }
+
     // console.log("Selected Package Amount: ₹" + amount);
     setSelectedPackageAmount(amount.price);
     handlePaymentWithRazorPay(
@@ -167,92 +293,161 @@ const PricingPlanComponent = () => {
     }
   };
 
+  const [isSubscriptionActive, setisSubscriptionActive] = useState(false);
+
+  useEffect(() => {
+    const updateUserDetails = async () => {
+      const response = await axios.get(`/${state.user._id}`);
+      setisSubscriptionActive(response.data.user.isSubscriptionActive);
+    };
+
+    updateUserDetails();
+  }, []);
+
   const renderPlan = ({ item }) => {
     const isPurchased = isSubscriptionActive && item._id === subscriptionPlanID;
     const isFreePlan = item.name.toLowerCase() === "free"; // Check if the plan is "free"
 
     return (
-      <LinearGradient
-        colors={item.popular ? ["#2c2c2c", "#000000"] : ["#e0e0e0", "#ffffff"]}
-        style={[styles.planContainer, item.popular && styles.popularPlan]}
-      >
-        {item.popular && (
-          <View style={styles.bestsellerContainer}>
-            <LinearGradient
-              colors={["#ffd700", "#ffa500"]}
-              style={styles.bestsellerLabel}
-            >
-              <Text style={styles.bestsellerText}>Bestseller</Text>
-            </LinearGradient>
-          </View>
-        )}
-        <Text style={[styles.planName, item.popular && styles.popularPlanName]}>
-          {item.name}
-        </Text>
-        <Text
-          style={[styles.planPrice, item.popular && styles.popularPlanPrice]}
+      <>
+        <LinearGradient
+          colors={
+            item.popular ? ["#2c2c2c", "#000000"] : ["#e0e0e0", "#ffffff"]
+          }
+          style={[styles.planContainer, item.popular && styles.popularPlan]}
         >
-          ₹{item.price} - {formatDuration(item.durationInDays)}
-        </Text>
-        <View style={styles.featuresList}>
-          {item.features.map((feature, index) => (
-            <View key={index} style={styles.featureItem}>
-              <FontAwesome
-                name="check-circle"
-                size={16}
-                color={item.popular ? "#fff" : "#007bff"}
-                style={styles.featureIcon}
-              />
-              <Text
-                style={[styles.feature, item.popular && styles.popularFeature]}
+          {item.popular && (
+            <View style={styles.bestsellerContainer}>
+              <LinearGradient
+                colors={["#ffd700", "#ffa500"]}
+                style={styles.bestsellerLabel}
               >
-                {feature}
-              </Text>
+                <Text style={styles.bestsellerText}>Bestseller</Text>
+              </LinearGradient>
             </View>
-          ))}
-        </View>
-
-        {!isFreePlan &&
-          (isSubscriptionActive ? (
-            <TouchableOpacity
-              style={[
-                styles.choosePlanButton,
-                isPurchased && styles.purchasedButton,
-                item.popular && styles.popularButton,
-              ]}
-              onPress={() => handlePayment(item)} // Pass the actual price here
-              disabled={isSubscriptionActive} // Disable button if any plan is purchased
-              activeOpacity={0.8}
-            >
-              <View style={styles.buttonContent}>
+          )}
+          <Text
+            style={[styles.planName, item.popular && styles.popularPlanName]}
+          >
+            {item.name}
+          </Text>
+          <Text
+            style={[styles.planPrice, item.popular && styles.popularPlanPrice]}
+          >
+            ₹{item.price} - {formatDuration(item.durationInDays)}
+          </Text>
+          <View style={styles.featuresList}>
+            {item.features.map((feature, index) => (
+              <View key={index} style={styles.featureItem}>
                 <FontAwesome
-                  name="lock"
+                  name="check-circle"
                   size={16}
-                  color="#fff"
-                  style={styles.lockIcon}
+                  color={item.popular ? "#fff" : "#007bff"}
+                  style={styles.featureIcon}
                 />
+                <Text
+                  style={[
+                    styles.feature,
+                    item.popular && styles.popularFeature,
+                  ]}
+                >
+                  {feature}
+                </Text>
+              </View>
+            ))}
+          </View>
+
+          {!isFreePlan &&
+            (isSubscriptionActive ? (
+              <TouchableOpacity
+                style={[
+                  styles.choosePlanButton,
+                  isPurchased && styles.purchasedButton,
+                  item.popular && styles.popularButton,
+                ]}
+                onPress={() => handlePayment(item)} // Pass the actual price here
+                disabled={isSubscriptionActive} // Disable button if any plan is purchased
+                activeOpacity={0.8}
+              >
+                <View style={styles.buttonContent}>
+                  <FontAwesome
+                    name="lock"
+                    size={16}
+                    color="#fff"
+                    style={styles.lockIcon}
+                  />
+                  <Text style={styles.choosePlanText}>
+                    {isPurchased ? "Purchased" : "Choose Plan"}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ) : item.popular ? (
+              <TouchableOpacity
+                style={[
+                  styles.choosePlanButton,
+                  isPurchased && styles.purchasedButton,
+                  item.popular && styles.popularButton,
+                  { flexDirection: "row", justifyContent: "space-around" },
+                ]}
+                onPress={() => handlePayment(item)} // Pass the actual price here
+                disabled={isSubscriptionActive} // Disable button if any plan is purchased
+                activeOpacity={0.8}
+              >
+                <Animatable.View
+                  animation={moveArrow}
+                  iterationCount="infinite"
+                  duration={1000} // Adjust the speed of the animation
+                >
+                  <AntDesign name="doubleright" color={"white"} size={20} />
+                </Animatable.View>
                 <Text style={styles.choosePlanText}>
                   {isPurchased ? "Purchased" : "Choose Plan"}
                 </Text>
-              </View>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={[
-                styles.choosePlanButton,
-                isPurchased && styles.purchasedButton,
-                item.popular && styles.popularButton,
-              ]}
-              onPress={() => handlePayment(item)} // Pass the actual price here
-              disabled={isSubscriptionActive} // Disable button if any plan is purchased
-              activeOpacity={0.8}
-            >
-              <Text style={styles.choosePlanText}>
-                {isPurchased ? "Purchased" : "Choose Plan"}
-              </Text>
-            </TouchableOpacity>
-          ))}
-      </LinearGradient>
+                <Animatable.View
+                  animation={moveArrow}
+                  iterationCount="infinite"
+                  duration={1000} // Adjust the speed of the animation
+                >
+                  <AntDesign name="doubleleft" color={"white"} size={20} />
+                </Animatable.View>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={[
+                  styles.choosePlanButton,
+                  isPurchased && styles.purchasedButton,
+                  item.popular && styles.popularButton,
+                ]}
+                onPress={() => handlePayment(item)} // Pass the actual price here
+                disabled={isSubscriptionActive} // Disable button if any plan is purchased
+                activeOpacity={0.8}
+              >
+                <Text style={styles.choosePlanText}>
+                  {isPurchased ? "Purchased" : "Choose Plan"}
+                </Text>
+              </TouchableOpacity>
+            ))}
+        </LinearGradient>
+
+        {paymentSuccess && (
+          <IosAlertWithImageWithCallBack
+            visible={alertVisibleWithCounter}
+            message={alertMessage}
+            onClose={onCloseAlert}
+            isSuccess={isSuccess}
+            countdownTime={5}
+            onRedirect={onRedirect}
+          />
+        )}
+
+        {mobileNumberAvailable && (
+          <MobileNumberInputAlert
+            visible={isAlertVisible}
+            onProceed={handleProceed}
+            onCancel={handleCancel}
+          />
+        )}
+      </>
     );
   };
 

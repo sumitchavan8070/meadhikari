@@ -10,6 +10,10 @@ import {
 import { Color } from "../../GlobalStyles";
 import ChooseExamAlertSuccess from "../Alert/ChooseExamAlertSuccess";
 import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../../Context/authContext";
+import axios from "axios";
+import MaxTestAllowedAlert from "../Alert/MaxTestAllowedAlert";
+import IosAlertWithImageWithCallBack from "../Alert/IosAlertWithImageWithCallBack";
 
 const PaperCard = ({ data, onPress }) => {
   const { subCatId, yearId, QPYear, subCatName, questions } = data;
@@ -34,6 +38,7 @@ const PaperCard = ({ data, onPress }) => {
 
 const PaperCardsContainer = ({ papers }) => {
   const navigation = useNavigation();
+  const [state] = React.useContext(AuthContext);
 
   const [showAlertTest, setShowAlertTest] = useState(false);
   const [questionData, setQuestionData] = useState([]);
@@ -60,7 +65,46 @@ const PaperCardsContainer = ({ papers }) => {
     }
   };
 
-  const handleOnSkipIntructions = () => {
+  const [planStatus, setPlanStatus] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [attemptsRemaining, setattemptsRemaining] = useState(0);
+  const [maxTestAllowedCount, setmaxTestAllowedCount] = useState(5);
+
+  // Function to check subscription through app
+  const checkSubscription = async () => {
+    try {
+      const userId = state.user._id; // Replace with the actual user ID
+      const response = await axios.get(
+        `/subscription/check-subscription/${userId}`
+      );
+
+      if (response.data.isSubscriptionActive) {
+        // console.log("User has a valid plan");
+        setPlanStatus(true);
+        return true; // Return true if the subscription is active
+      } else {
+        // alert("User doesn't have any plan");
+        setattemptsRemaining(response.data.testsTaken);
+        setmaxTestAllowedCount(response.data.maxTestsAllowed);
+        setPlanStatus(false);
+        setModalVisible(true);
+        return false; // Return false if the subscription is not active
+      }
+    } catch (error) {
+      console.error("Error checking subscription:", error);
+      return false; // Handle error case and return false
+    }
+  };
+
+  const handleOnSkipIntructions = async () => {
+    const isActive = await checkSubscription(); // Get subscription status
+
+    // console.log("planStatus", isActive); // Use isActive instead of planStatus
+
+    if (!isActive) {
+      return;
+    }
+
     if (questionData && questionData.length > 0) {
       navigation.navigate("TestPage", {
         questionData,
@@ -70,6 +114,81 @@ const PaperCardsContainer = ({ papers }) => {
       Alert.alert("No Questions", "No questions are available.");
     }
   };
+
+  // const attemptsRemaining = 1; // Replace with dynamic value from backend
+
+  // const handleProceed = async () => {
+  //   try {
+  //     // Make API call to update testsCompleted count
+  //     await axios.post("/user/update-tests-completed");
+  //     // Navigate to TestPage
+  //     navigation.navigate("TestPage");
+  //   } catch (error) {
+  //     console.error("Failed to update tests:", error);
+  //   } finally {
+  //     setModalVisible(false);
+  //   }
+  // };
+
+  const [maxTestLimitReached, setmaxTestLimitReached] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(true);
+  const [alertVisibleWithCounter, setAlertVisibleWithCounter] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+
+  const handleProceed = async () => {
+    try {
+      const userId = state.user._id; // Assuming user ID is in the state or context
+
+      // Make PUT request to update testsTaken count
+      await axios.put(
+        "/subscription/update-tests-completed-after-expiry-of-plan",
+        {
+          userId,
+        }
+      );
+
+      if (questionData && questionData.length > 0) {
+        navigation.navigate("TestPage", {
+          questionData,
+          testId: "MAPYQ" + qpYear,
+        });
+      } else {
+        Alert.alert("No Questions", "No questions are available.");
+      }
+    } catch (error) {
+      console.error("Failed to update tests:", error);
+
+      // Handle maxTestsAllowed error message
+      if (error.response && error.response.status === 400) {
+        // Alert.alert("Limit Reached", error.response.data.message);
+
+        setAlertMessage(error.response.data.message);
+        setIsSuccess(true);
+        setAlertVisibleWithCounter(true);
+        setmaxTestLimitReached(true);
+      } else {
+        Alert.alert("Error", "Failed to update tests.");
+      }
+    } finally {
+      setModalVisible(false); // Close the modal regardless of the outcome
+    }
+  };
+
+  const onCloseAlert = () => {
+    setAlertVisible(false);
+    setAlertVisibleWithCounter(false);
+  };
+
+  const onRedirect = () => {
+    navigation.navigate("Profile"); // Adjust the navigation target as needed
+  };
+
+  const handleCancel = () => {
+    setModalVisible(false);
+    navigation.navigate("Home");
+  };
+
   return (
     <>
       {showAlertTest && (
@@ -91,6 +210,27 @@ const PaperCardsContainer = ({ papers }) => {
           ))}
         </View>
       </ScrollView>
+
+      {!planStatus && (
+        <MaxTestAllowedAlert
+          visible={modalVisible}
+          attemptsRemaining={attemptsRemaining}
+          onProceed={handleProceed}
+          onCancel={handleCancel}
+          maxTestAllowedCount={maxTestAllowedCount}
+        />
+      )}
+
+      {maxTestLimitReached && (
+        <IosAlertWithImageWithCallBack
+          visible={alertVisibleWithCounter}
+          message={alertMessage}
+          onClose={onCloseAlert}
+          isSuccess={isSuccess}
+          countdownTime={5}
+          onRedirect={onRedirect}
+        />
+      )}
     </>
   );
 };

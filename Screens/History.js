@@ -40,6 +40,11 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Foundation } from "@expo/vector-icons";
 import Watermark from "../Components/BetaBanner/Watermark";
+import { AuthContext } from "../Context/authContext";
+import MaxTestHistoryAllowedAlert from "../Components/Alert/MaxTestHistoryAllowedAlert";
+import IosAlertWithImageWithCallBack from "../Components/Alert/IosAlertWithImageWithCallBack";
+import { checkSubscription } from "../Api/checkSubscription";
+import LoadingAnimation from "../Components/Loader/loader";
 
 const History = () => {
   const navigation = useNavigation();
@@ -206,7 +211,7 @@ const History = () => {
     try {
       const allKeys = await AsyncStorage.getAllKeys();
       const testEntryKeys = allKeys.filter((key) => key.startsWith("created"));
-      console.log("===testEntryKeys=>" + testEntryKeys);
+      // console.log("===testEntryKeys=>" + testEntryKeys);
 
       for (const key of testEntryKeys) {
         const storedData = await AsyncStorage.getItem(key);
@@ -333,6 +338,7 @@ const History = () => {
   };
 
   const navigateToSummary = (testEntry) => {
+    setLoading(false);
     navigation.navigate("SummaryPage", {
       questionData: testEntry.questionData,
       selectedOptions: testEntry.selectedOptions,
@@ -362,6 +368,94 @@ const History = () => {
     setModalVisible(true);
   };
 
+  const [state] = React.useContext(AuthContext);
+
+  const onCloseAlert = () => {
+    setAlertVisible(false);
+    setAlertVisibleWithCounter(false);
+  };
+
+  const onRedirect = () => {
+    navigation.navigate("Profile"); // Adjust the navigation target as needed
+  };
+
+  const handleCancel = () => {
+    setModalVisible(false);
+    navigation.navigate("Home");
+  };
+
+  const [planStatus, setPlanStatus] = useState(false);
+  const [modalVisibleHistory, setModalVisibleHistory] = useState(false);
+  const [attemptsRemaining, setattemptsRemaining] = useState(0);
+  const [maxTestAllowedCount, setmaxTestAllowedCount] = useState(5);
+
+  const [maxTestLimitReached, setmaxTestLimitReached] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(true);
+  const [alertVisibleWithCounter, setAlertVisibleWithCounter] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+
+  const checkSubscriptionLocal = async () => {
+    try {
+      const userId = state.user._id; // Replace with the actual user ID
+      const response = await axios.get(
+        `/subscription/check-history-count/${userId}`
+      );
+
+      if (response.data.isSubscriptionActive) {
+        // console.log("User has a valid plan");
+        setPlanStatus(true);
+        return true; // Return true if the subscription is active
+      } else {
+        // alert("User doesn't have any plan");
+        setattemptsRemaining(response.data.historyViewCount);
+        setmaxTestAllowedCount(response.data.maxHistoryViewCountAllowed);
+        setPlanStatus(false);
+        setModalVisibleHistory(true);
+        return false; // Return false if the subscription is not active
+      }
+    } catch (error) {
+      console.error("Error checking subscription:", error);
+      return false; // Handle error case and return false
+    }
+  };
+
+  // const handleProceedObject = (testEntry) => {
+  //   return testEntry;
+  // };
+
+  const handleProceed = async (testEntry) => {
+    try {
+      const userId = state.user._id; // Assuming user ID is in the state or context
+      // Make PUT request to update testsTaken count
+      const res = await axios.put("/subscription/update-history", {
+        userId,
+      });
+      // console.log("--------------", res.data);
+      if (res.data.historyViewCount < res.data.maxHistoryViewCountAllowed + 1) {
+        // const testEntry = handleProceedObject();
+        navigateToSummary(testEntry);
+      }
+    } catch (error) {
+      console.error("Failed to update history:", error);
+
+      // Handle maxTestsAllowed error message
+      if (error.response && error.response.status === 400) {
+        // Alert.alert("Limit Reached", error.response.data.message);
+        console.log(error.response.data.message);
+
+        setAlertMessage(error.response.data.message);
+        setIsSuccess(true);
+        setAlertVisibleWithCounter(true);
+        setmaxTestLimitReached(true);
+      } else {
+        Alert.alert("Error", "Failed to update history.");
+      }
+    } finally {
+      setModalVisibleHistory(false); // Close the modal regardless of the outcome
+    }
+  };
+
   const renderSelectedTest = () => (
     <View style={styles.historyScreen}>
       {/* <HeaderMenu /> */}
@@ -370,7 +464,10 @@ const History = () => {
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#6949ff" />
           </View>
-        ) : testData.length > 0 ? (
+        ) : // <View style={{ flex: 1 , alignSelf:"center"}}>
+        //   <LoadingAnimation visible={loading} loop={true} />
+        // </View>
+        testData.length > 0 ? (
           testData.map((testEntry, index) => (
             <HistoryCard
               key={index}
@@ -380,7 +477,16 @@ const History = () => {
               onDelete={() =>
                 deleteSolvedTestEntry(testEntry.testId, testEntry.timestamp)
               }
-              onSummary={() => navigateToSummary(testEntry)}
+              onSummary={async () => {
+                setLoading(true);
+                const isActive = await checkSubscriptionLocal(); // Get subscription status
+                if (!isActive) {
+                  // return;
+                  await handleProceed(testEntry);
+                } else {
+                  navigateToSummary(testEntry);
+                }
+              }}
             />
           ))
         ) : (
@@ -455,7 +561,15 @@ const History = () => {
               onShare={() => onShareTestId(testEntry.response.data.data.testId)}
               //  onShare={() => onShareExternal(testEntry.response.data.data.testId)}
 
-              onView={() => viewCreatedTest(testEntry)}
+              onView={async () => {
+                const isActive = await checkSubscription(state.user._id); // Get subscription status
+                if (!isActive) {
+                  return alert(
+                    "Oops! Your subscription has expired. Renew to view this item! 🚀"
+                  );
+                }
+                viewCreatedTest(testEntry);
+              }}
               onDelete={() =>
                 deleteCreatedTestEntry(
                   testEntry.response.data.data.testId,
@@ -561,14 +675,15 @@ const History = () => {
               .background-image {
                 position: fixed; /* Fixed position for full-page background */
                 top: 0;
-                left: 0;
+                right: 0;
+            
                 width: 100%;
                 height: 100%;
                 z-index: -1; /* Ensure the background is behind the content */
-                opacity: 0.05; /* Adjust the opacity as needed */
-                background-image: url('https://i0.wp.com/examtipsindia.com/wp-content/uploads/2022/05/logo.png');
+                opacity: 0.3; /* Adjust the opacity as needed */
+                background-image: url('https://res.cloudinary.com/sdchavan/image/upload/v1730219215/xqhqdzggmwwdn2ws63eq.png');
                 background-repeat: repeat; /* Adjust as needed */
-                background-size: cover;
+                background-size: contain;
               }
               
               .container {
@@ -746,6 +861,29 @@ const History = () => {
     <View style={styles.container}>
       <HeaderMenu />
 
+      {loading && <LoadingAnimation visible={loading} loop={true} />}
+
+      {!planStatus && (
+        <MaxTestHistoryAllowedAlert
+          visible={modalVisibleHistory}
+          attemptsRemaining={attemptsRemaining}
+          // onProceed={handleProceed}
+          // onCancel={handleCancel}
+          maxTestAllowedCount={maxTestAllowedCount}
+        />
+      )}
+
+      {maxTestLimitReached && (
+        <IosAlertWithImageWithCallBack
+          visible={alertVisibleWithCounter}
+          message={alertMessage}
+          onClose={onCloseAlert}
+          isSuccess={isSuccess}
+          countdownTime={5}
+          onRedirect={onRedirect}
+        />
+      )}
+
       <View style={styles.tabBar}>
         <TouchableOpacity
           style={[
@@ -895,7 +1033,7 @@ const History = () => {
             </TouchableOpacity>
           </View> */}
             <View style={{ flexDirection: "row", gap: 40, marginBottom: 20 }}>
-              <LinearGradient
+              {/* <LinearGradient
                 colors={["#FF9800", "#FF5722"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
@@ -912,7 +1050,7 @@ const History = () => {
                   />
                   <Text style={styles.buttonText}>Download</Text>
                 </TouchableOpacity>
-              </LinearGradient>
+              </LinearGradient> */}
 
               <LinearGradient
                 colors={["#2196F3", "#3F51B5"]}
@@ -922,10 +1060,12 @@ const History = () => {
               >
                 <TouchableOpacity
                   onPress={printToFile}
-                  style={[styles.button, styles.buttonProp]}
+                  style={[styles.button, styles.buttonProp, { width: "100%" }]}
                 >
                   <FontAwesome name="telegram" size={24} color="white" />
-                  <Text style={styles.buttonText}>Share</Text>
+                  <Text style={[styles.buttonText, { fontSize: 18 }]}>
+                    Share
+                  </Text>
                 </TouchableOpacity>
               </LinearGradient>
             </View>

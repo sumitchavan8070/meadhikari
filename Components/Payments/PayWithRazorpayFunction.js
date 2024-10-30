@@ -28,12 +28,12 @@ export const handlePaymentWithRazorPay = (
     currency: "INR",
     description: "Thank you for your purchase",
     image:
-      "https://i0.wp.com/examtipsindia.com/wp-content/uploads/2022/05/logo.png", // Default image URL
+      "https://res.cloudinary.com/sdchavan/image/upload/v1730219215/xqhqdzggmwwdn2ws63eq.png", // Default image URL
     keyId: globalStrings.RAZOR_PAY_KEY, // Default Razorpay key ID
     companyName: "MeAdhikari",
     prefill: {
       email: state.user.email,
-      contact: "9888626111",
+      contact: state.user.mobileNumber,
       name: state.user.name,
     },
     themeColor: "#09518e",

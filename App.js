@@ -9,8 +9,14 @@ import { useColorScheme } from "react-native";
 import { DefaultTheme } from "@react-navigation/native";
 import PushNotification from "react-native-push-notification";
 import NoInternetWarning from "./Components/InternetWarning/NoInternetWarning";
+import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "./Context/authContext";
+// import { usePreventScreenCapture } from "expo-screen-capture";
 
 export default function App() {
+  // usePreventScreenCapture();
+
   useEffect(() => {
     const unlockOrientation = async () => {
       await ScreenOrientation.unlockAllOrientations();

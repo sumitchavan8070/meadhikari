@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Dimensions, StatusBar } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -28,10 +28,11 @@ const NoInternetWarning = () => {
         <SafeAreaView
           style={[styles.container, { backgroundColor: Color.colorBlack }]}
         >
+          <StatusBar backgroundColor={"black"}></StatusBar>
           <View
             style={[styles.subContainer, { backgroundColor: Color.colorBlack }]}
           >
-            <Icon name="wifi-off" size={20} color={Color.primaryColor} />
+            <Icon name="wifi-off" size={200} color={Color.primaryColor} />
             <View>
               <Text style={styles.text}>
                 Connection lost? Reconnect and keep conquering! 🌟🔥
@@ -54,6 +55,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     paddingHorizontal: 5,
     flexWrap: "wrap",
+    height: "100%",
+    justifyContent: "center",
   },
   subContainer: {
     justifyContent: "flex-start",
@@ -61,10 +64,10 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingHorizontal: 20,
     paddingVertical: 15,
-    flexDirection: "row",
+    // flexDirection: "row",
     width: "100%",
   },
-  text: { color: Color.colorWhite },
+  text: { color: Color.colorWhite, fontSize: 24, textAlign: "center" },
 });
 
 export default NoInternetWarning;

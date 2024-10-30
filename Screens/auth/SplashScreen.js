@@ -90,11 +90,6 @@ const SplashScreen = ({ navigation }) => {
                   iterationCount="infinite"
                   duration={1000} // Adjust the speed of the animation
                 >
-                  {/* <MaterialIcons
-                    name="navigate-next"
-                    color={COLORS.white}
-                    size={30}
-                  /> */}
                   <AntDesign
                     name="doubleright"
                     color={COLORS.white}
@@ -110,10 +105,11 @@ const SplashScreen = ({ navigation }) => {
             style={styles.footerImage}
             resizeMethod="resize"
           />
-          <Text style={styles.disclaimer}>
+          {/* <Text style={styles.disclaimer}>
             We love our leaders, which is why they're here, but they have no
             affiliation with this app.
-          </Text>
+          </Text> */}
+          <Text style={styles.madeInMaharastra}>❤️ Made in Maharastra ❤️</Text>
         </Animatable.View>
       </LinearGradient>
     </View>
@@ -186,6 +182,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     position: "absolute",
     alignSelf: "center",
-    bottom: "2%",
+    bottom: "7%",
+  },
+
+  madeInMaharastra: {
+    fontSize: 14,
+    textAlign: "center",
+    position: "absolute",
+    alignSelf: "center",
+    bottom: "5%",
   },
 });

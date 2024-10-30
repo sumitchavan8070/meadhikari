@@ -20,6 +20,9 @@ import ChooseExamAlertSuccess from "../../Components/Alert/ChooseExamAlertSucces
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FetchCatSubcatYearDropdown from "./FetchCatSubcatYearDropdown";
 import HeaderMenu from "../../Components/Menus/HeaderMenu";
+import { checkSubscription } from "../../Api/checkSubscription";
+import { AuthContext } from "../../Context/authContext";
+import IosAlertWithImageWithCallBack from "../../Components/Alert/IosAlertWithImageWithCallBack";
 
 const ChooseExamUpdated = ({}) => {
   const navigation = useNavigation();
@@ -55,29 +58,27 @@ const ChooseExamUpdated = ({}) => {
   const [subCatId, setSubCatId] = useState(null);
   const [yearId, setYearId] = useState(null);
 
+  const [state, setState] = React.useContext(AuthContext);
+  const [subscriptionExpired, setsubscriptionExpired] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(true);
+  const [alertVisibleWithCounter, setAlertVisibleWithCounter] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+
   const onSubmitChooseExam = async () => {
-    // console.log("selectedExamCategory" + selectedExamCategory);
-    // console.log("selectedSubExamType" + selectedSubExamType);
-    // console.log("selectedExamYear" + selectedExamYear);
-    // console.log("selectedTimer" + selectedTimer);
-    // console.log("catId" + catId);
-    // console.log("subCatId" + subCatId);
-    // console.log("yearId" + yearId);
+    const subscriptionStatus = await checkSubscription(state.user._id);
+    // console.log("subscriptionStatus", subscriptionStatus);
 
-    // if (!catId) {
-    //   alert("Please select an exam category");
-    //   return;
-    // }
-
-    // if (!subCatId) {
-    //   alert("Please select an exam type");
-    //   return;
-    // }
-
-    // if (!yearId) {
-    //   alert("Please select an exam year");
-    //   return;
-    // }
+    if (!subscriptionStatus) {
+      // alert("Take a subscription");
+      setLoading(false);
+      setAlertMessage(
+        "Your subscription expired! 🚀 Renew now to stay on track!"
+      );
+      setIsSuccess(false);
+      setAlertVisibleWithCounter(true);
+      setsubscriptionExpired(true);
+      return;
+    }
 
     if (!catId || !subCatId || !yearId) {
       alert("Please select correct information");
@@ -170,6 +171,15 @@ const ChooseExamUpdated = ({}) => {
     setShowAlertTest(false);
   };
 
+  const onCloseAlert = () => {
+    setAlertVisible(false);
+    setAlertVisibleWithCounter(false);
+  };
+
+  const onRedirect = () => {
+    navigation.navigate("Profile"); // Adjust the navigation target as needed
+  };
+
   return (
     <>
       {loading && <LoadingAnimation visible={loading} loop={true} />}
@@ -211,6 +221,17 @@ const ChooseExamUpdated = ({}) => {
           disabled={loading}
         />
       </ScrollView>
+
+      {subscriptionExpired && (
+        <IosAlertWithImageWithCallBack
+          visible={alertVisibleWithCounter}
+          message={alertMessage}
+          onClose={onCloseAlert}
+          isSuccess={isSuccess}
+          countdownTime={5}
+          onRedirect={onRedirect}
+        />
+      )}
     </>
   );
 };

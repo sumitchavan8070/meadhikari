@@ -58,12 +58,28 @@ const BetaHomePageBanner = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const {
-    subscriptionPlanID,
-    isSubscriptionActive,
-    subscriptionStartDate,
-    subscriptionExpiryDate,
-  } = state.user;
+  const [subscriptionStartDate, setSubscriptionStartDate] = useState("");
+  const [subscriptionExpiryDate, setSubscriptionExpiryDate] = useState("");
+  const [isSubscriptionActive, setIsSubscriptionActive] = useState("");
+  const [subscriptionPlanID, setSubscriptionPlanID] = useState("");
+  useEffect(() => {
+    const updateUserDetails = async () => {
+      const response = await axios.get(`/${state.user._id}`);
+      setSubscriptionPlanID(response.data.user.subscriptionPlanID);
+      setIsSubscriptionActive(response.data.user.isSubscriptionActive);
+      setSubscriptionStartDate(response.data.user.subscriptionStartDate);
+      setSubscriptionExpiryDate(response.data.user.subscriptionExpiryDate);
+    };
+
+    updateUserDetails();
+  }, []);
+
+  // const {
+  //   subscriptionPlanID,
+  //   isSubscriptionActive,
+  //   subscriptionStartDate,
+  //   subscriptionExpiryDate,
+  // } = state.user;
   // const subscriptionPlanID = "66cae559267f0f6cedde1fff";
   // const isSubscriptionActive = true;
 
