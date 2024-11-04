@@ -762,6 +762,9 @@ import LoadingAnimation from "../../Components/Loader/loader";
 import { Color } from "../../GlobalStyles";
 import IosAlertWithImage from "../../Components/Alert/IosAlertWithImage"; // Import custom alert
 import ProductSlider from "../../Components/SplashScreen/ProductSlider";
+import { err } from "react-native-svg";
+import globalString from "../../utils/globalStrings";
+import constants from "../../utils/constants";
 
 const COLORS = {
   primary: Color.primaryColor,
@@ -871,12 +874,21 @@ const Login = ({ navigation }) => {
           false
         ); // Show "User Not Found" if 404 error
         setLoading(false);
+      } else if (error.response.data.message) {
+        showAlert(error.response.data.message || "Login Error", false);
+        setLoading(false);
       } else {
         // For other errors, show the error message returned from the server
         showAlert(error.message || "Login Error", false);
         setLoading(false);
       }
     }
+  };
+
+  const onForgotPassword = () => {
+    Alert.alert(
+      `Oops! Please drop us email regarding password to: ${constants.contactEmail}`
+    );
   };
 
   return (
@@ -893,7 +905,7 @@ const Login = ({ navigation }) => {
 
       <View style={styles.header}>
         {/* <ProductSlider></ProductSlider> */}
-        <Text style={styles.text_header}>Welcome!</Text>
+        <Text style={styles.text_header}>Welcome to Meadhikari ❤️</Text>
       </View>
       <Animatable.View animation="fadeInUpBig" style={styles.footer}>
         <Text style={[styles.text_footer, { color: colors.text }]}>Email</Text>
@@ -963,7 +975,10 @@ const Login = ({ navigation }) => {
         )}
 
         <TouchableOpacity>
-          <Text style={{ color: COLORS.primary, marginTop: 15 }}>
+          <Text
+            style={{ color: COLORS.primary, marginTop: 15 }}
+            onPress={onForgotPassword}
+          >
             Forgot password?
           </Text>
         </TouchableOpacity>

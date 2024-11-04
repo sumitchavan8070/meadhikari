@@ -29,8 +29,7 @@ const AuthProvider = ({ children }) => {
 
   //default axios setting
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  // axios.defaults.baseURL = "http://192.168.43.78:8080/api/v1/auth";
-  // axios.defaults.baseURL = "https://meadhikari-server.onrender.com/api/v1/auth";
+
   axios.defaults.baseURL = globalStrings.BASE_URL;
   // utils >> globalstring
 

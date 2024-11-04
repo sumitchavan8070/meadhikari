@@ -1,9 +1,10 @@
 import io from "socket.io-client";
 import globalStrings from "../utils/globalStrings";
+import constants from "./constants";
 
-const SOCKET_URL = globalStrings.SOCKET_URL;
+const SOCKET_URL = constants.SOCKET_URL;
 
-console.log(SOCKET_URL);
+// console.log(SOCKET_URL);
 
 //Socket is initilized in home.js
 

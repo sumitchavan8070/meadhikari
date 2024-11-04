@@ -10,6 +10,7 @@ import {
 import RazorpayCheckout from "react-native-razorpay";
 import { AuthContext } from "../../Context/authContext";
 import globalStrings from "../../utils/globalStrings";
+import constants from "../../utils/constants";
 
 // const [paymentSuccess, setPaymentSuccess] = useState(false);
 
@@ -29,7 +30,7 @@ export const handlePaymentWithRazorPay = (
     description: "Thank you for your purchase",
     image:
       "https://res.cloudinary.com/sdchavan/image/upload/v1730219215/xqhqdzggmwwdn2ws63eq.png", // Default image URL
-    keyId: globalStrings.RAZOR_PAY_KEY, // Default Razorpay key ID
+    keyId: constants.RAZOR_PAY_KEY, // Default Razorpay key ID
     companyName: "MeAdhikari",
     prefill: {
       email: state.user.email,
