@@ -854,8 +854,10 @@ const Login = ({ navigation }) => {
 
       requestUserPermission();
 
+      const lowerCaseEmail = data.email.toLowerCase();
+
       const { data: responseData } = await axios.post("/login", {
-        email: data.email,
+        email: lowerCaseEmail,
         password: data.password,
       });
 

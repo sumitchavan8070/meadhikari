@@ -67,13 +67,18 @@ const JoinBox = () => {
       });
 
       if (response.data.status === "success") {
-        navigation.navigate("GroupDetailPage");
+        navigation.navigate("CommonScreen");
         // Alert.alert("Success", "You have successfully joined the group.");
         setMessageAlertVisible(true);
         setMessageAlertText("You have successfully joined the group.");
       }
     } catch (error) {
-      console.error("Error joining group:", error);
+      // console.error("Error joining group:", error);
+      console.log(
+        error.response?.data?.message,
+        "error.response?.data?.message"
+      );
+
       // Alert.alert("Error", error.response?.data?.message || "Server Error");
       setMessageAlertVisible(true);
       setMessageAlertText(error.response?.data?.message || "Server Error");
@@ -211,7 +216,7 @@ const JoinBox = () => {
               style={styles.groupInput}
               placeholder="Enter Group Code here"
               value={GroupShareId}
-              onChangeText={SetGroupShareId}
+              onChangeText={(val) => SetGroupShareId(val)}
               autoCorrect={false}
             />
             <TouchableOpacity onPress={handleGroupJoin}>

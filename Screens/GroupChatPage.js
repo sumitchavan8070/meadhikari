@@ -111,6 +111,8 @@ const GroupChatPage = ({ route }) => {
           username: currentUser.user.username,
         },
       });
+
+      navigation.navigate("CommonScreen");
     } catch (error) {
       console.log("Error", error);
     }

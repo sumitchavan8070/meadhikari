@@ -924,9 +924,12 @@ const CustomTestPage = () => {
       return;
     }
 
+    setLoading(true);
+
     const { uri } = await Print.printToFileAsync({ html });
     console.log("File has been saved to:", uri);
     await shareAsync(uri, { UTI: ".pdf", mimeType: "application/pdf" });
+    setLoading(false);
   };
 
   const selectPrinter = async () => {

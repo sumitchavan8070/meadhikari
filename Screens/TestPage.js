@@ -24,7 +24,7 @@ import {
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 
-import aboutImage from "../assets/mpsc.jpeg"; // Import your local image
+import aboutImage from "../assets/whiteicon.png"; // Import your local image
 import { Image } from "expo-image";
 import HTML from "react-native-render-html";
 import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
@@ -651,7 +651,11 @@ const TestPage = ({ route }) => {
           <ImageBackground
             source={aboutImage} // Replace with your image path
             style={{ width: "100%", alignSelf: "center" }}
-            imageStyle={{ opacity: 0.1, resizeMode: "cover" }} // Set the opacity of the image
+            imageStyle={{
+              opacity: 0.3,
+              resizeMode: "repeat",
+              backgroundColor: "white",
+            }} // Set the opacity of the image
           >
             <View style={styles.questionNumberList}>
               {questionData.map((_, index) => (

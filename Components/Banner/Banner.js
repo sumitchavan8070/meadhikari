@@ -281,21 +281,21 @@ const Banner = ({ banners, bannerLoading }) => {
 
   const renderItem = (data) => (
     <View key={data._id} style={styles.cardContainer}>
-      <Pressable onPress={() => alert(`Banner ID: ${data._id}`)}>
-        <View style={styles.cardWrapper}>
-          <Image style={styles.card} source={{ uri: data.coverImageUri }} />
-          {data.cornerLabelText && (
-            <View
-              style={[
-                styles.cornerLabel,
-                { backgroundColor: data.cornerLabelColor || "#000" },
-              ]}
-            >
-              <Text style={styles.cornerLabelText}>{data.cornerLabelText}</Text>
-            </View>
-          )}
-        </View>
-      </Pressable>
+      {/* <Pressable onPress={() => alert(`Banner ID: ${data._id}`)}> */}
+      <View style={styles.cardWrapper}>
+        <Image style={styles.card} source={{ uri: data.coverImageUri }} />
+        {data.cornerLabelText && (
+          <View
+            style={[
+              styles.cornerLabel,
+              { backgroundColor: data.cornerLabelColor || "#000" },
+            ]}
+          >
+            <Text style={styles.cornerLabelText}>{data.cornerLabelText}</Text>
+          </View>
+        )}
+      </View>
+      {/* </Pressable> */}
     </View>
   );
 

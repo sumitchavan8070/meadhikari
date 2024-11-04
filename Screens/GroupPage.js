@@ -292,8 +292,9 @@ const GroupPage = ({
   const colorTray = [Color.primaryColor, Color.green, Color.red, Color.yellow];
   const [showMenu, setShowMenu] = useState(false);
 
-  const handleJoinGroup = (groupId) => {
+  const handleJoinGroup = () => {
     // Implement join group functionality
+    navigation.navigate("Home");
   };
 
   const handleCreateGroupPress = () => {
@@ -337,10 +338,7 @@ const GroupPage = ({
             <FontAwesome5 name="plus" size={20} color="black" />
             <Text style={styles.menuText}>Create Group</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.menuItem}
-            onPress={() => console.log("Join Group pressed")}
-          >
+          <TouchableOpacity style={styles.menuItem} onPress={handleJoinGroup}>
             <MaterialIcons name="group-add" size={25} color="black" />
             <Text style={styles.menuText}>Join Group</Text>
           </TouchableOpacity>
