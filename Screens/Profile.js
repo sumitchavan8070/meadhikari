@@ -40,6 +40,7 @@ import ActiveSubscriptionPlan from "../Components/Subscription/ActiveSubscriptio
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Button } from "react-native";
 import ExpiredSubscriptionSection from "../Components/BottomSheet/ExpiredSubscriptionSection";
+import constants from "../utils/constants";
 
 const UserProfilePage = () => {
   const [state, setState] = useContext(AuthContext);
@@ -148,7 +149,7 @@ const UserProfilePage = () => {
       subscriptionEndDate: endDate,
     };
     // Simulated API call or logic to handle payment response
-    console.log("Payment success:", paymentData);
+    // console.log("Payment success:", paymentData);
   };
 
   const fetchLocationInfo = async (latitude, longitude) => {
@@ -291,7 +292,7 @@ const UserProfilePage = () => {
       }
     } catch (error) {
       setLoading(false);
-      console.log(error.response.data.message);
+      // console.log(error.response.data.message);
       Alert.alert(error.response.data.message);
     }
   };
@@ -415,9 +416,7 @@ const UserProfilePage = () => {
 
                         <TouchableOpacity
                           onPress={() =>
-                            Linking.openURL(
-                              "mailto:shubhamdchavan1111@gmail.com"
-                            )
+                            Linking.openURL(`mailto: ${constants.contactEmail}`)
                           }
                         >
                           <View
@@ -434,7 +433,7 @@ const UserProfilePage = () => {
                                 fontSize: 16,
                               }}
                             >
-                              shubhamdchavan1111@gmail.com
+                              {constants.contactEmail}
                             </Text>
                           </View>
                         </TouchableOpacity>
@@ -620,7 +619,7 @@ const UserProfilePage = () => {
       setLoading(true);
       setImage(result.assets[0].uri);
       const imageUri = result.assets[0];
-      console.log(imageUri);
+      // console.log(imageUri);
       let newFile = {
         uri: result.assets[0].uri,
         type: `test/${result.assets[0].uri.split(".")[1]}`,

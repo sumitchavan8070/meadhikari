@@ -7,7 +7,7 @@ const fetchConstants = async () => {
 
   try {
     const response = await axios.get("/variable/constants");
-    console.log("response", response.data.data.MEADHIKARI_SOCKET_URL);
+    // console.log("response", response.data.data.MEADHIKARI_SOCKET_URL);
 
     if (response.data.success) {
       // Assign fetched values to constants

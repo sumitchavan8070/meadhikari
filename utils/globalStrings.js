@@ -1,8 +1,11 @@
 export default {
   //================ urls when using local ==================
 
-  BASE_URL: "http://192.168.43.78:8080/api/v1/auth",
-  SOCKET_URL: "http://192.168.43.78:8080/",
+  // BASE_URL: "http://192.168.43.78:8080/api/v1/auth",
+  // SOCKET_URL: "http://192.168.43.78:8080/",
+
+  BASE_URL: "http://43.204.231.152:80/api/v1/auth",
+  SOCKET_URL: "http://43.204.231.152:80/",
 
   //================ urls when using cloud ==================
 

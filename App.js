@@ -14,10 +14,10 @@ import { useContext } from "react";
 import { AuthContext } from "./Context/authContext";
 import fetchConstants from "./Api/fetchConstants";
 import constants from "./utils/constants";
-// import { usePreventScreenCapture } from "expo-screen-capture";
+import { usePreventScreenCapture } from "expo-screen-capture";
 
 export default function App() {
-  // usePreventScreenCapture();
+  usePreventScreenCapture();
 
   useEffect(() => {
     const unlockOrientation = async () => {
@@ -33,7 +33,7 @@ export default function App() {
     const loadConstants = async () => {
       try {
         await fetchConstants(); // Fetch constants on app launch
-        console.log("Constants loaded:", constants);
+        // console.log("Constants loaded:", constants);
       } catch (error) {
         console.error("Error loading constants:", error);
       }

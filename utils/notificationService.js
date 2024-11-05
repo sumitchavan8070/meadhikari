@@ -14,22 +14,22 @@ export async function requestUserPermission() {
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         getFCMToken();
       } else {
-        console.log("Permission denied");
+        console.error("Permission denied");
       }
     } else {
       const authStatus = await firebase.messaging().requestPermission();
-      console.log("authStatus" + authStatus);
+      // console.log("authStatus" + authStatus);
       const enabled =
         authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
         authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
       if (enabled) {
-        console.log("Authorization status:", authStatus);
+        // console.log("Authorization status:", authStatus);
         getFCMToken();
       }
     }
   } catch (error) {
-    console.log("Error requesting permission:", error);
+    console.error("Error requesting permission:", error);
   }
 }
 
@@ -80,7 +80,7 @@ export async function requestUserPermission() {
 const getFCMToken = async () => {
   try {
     if (Platform.OS === "ios") {
-      console.log("User is on iOS device");
+      // console.log("User is on iOS device");
       return; // Skip getting FCM token for iOS
     }
 
@@ -88,13 +88,13 @@ const getFCMToken = async () => {
 
     let fcmToken = await AsyncStorage.getItem("fcm_token");
     if (!!fcmToken) {
-      console.log("OLD FCM_TOKEN FOUND", fcmToken);
+      // console.log("OLD FCM_TOKEN FOUND", fcmToken);
     } else {
       const token = await firebase.messaging().getToken();
       await AsyncStorage.setItem("fcm_token", token);
-      console.log("NEW FCM_TOKEN", token);
+      // console.log("NEW FCM_TOKEN", token);
     }
   } catch (error) {
-    console.log("error during generating token", error);
+    console.error("error during generating token", error);
   }
 };

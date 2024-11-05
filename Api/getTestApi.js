@@ -11,7 +11,7 @@ export const getTest = async () => {
       },
     });
     const data = response.data.data; // Extract data object from the response
-    console.log("Question :" + JSON.stringify(data));
+    // console.log("Question :" + JSON.stringify(data));
     return data;
   } catch (error) {
     console.error("Error fetching exam categories:", error);
