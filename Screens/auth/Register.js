@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -24,6 +24,7 @@ import IosAlertWithImage from "../../Components/Alert/IosAlertWithImage"; // Adj
 import LoadingAnimation from "../../Components/Loader/loader";
 import IosAlertWithImageWithCallBack from "../../Components/Alert/IosAlertWithImageWithCallBack";
 import BouncyCheckbox from "react-native-bouncy-checkbox"; // Import the BouncyCheckbox
+import { trackRegisterPageView } from "../../utils/analyticsUtils";
 
 const COLORS = {
   primary: Color.primaryColor,
@@ -159,6 +160,10 @@ const Register = ({ navigation }) => {
     navigation.navigate("Login");
     console.log("Navigated to Login Page");
   };
+
+  useEffect(() => {
+    trackRegisterPageView(); // Track when the Register page is accessed
+  }, []);
 
   return (
     <View style={styles.container}>

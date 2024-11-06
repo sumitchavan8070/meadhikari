@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import LottieView from "lottie-react-native";
 import loadingAnimation from "../../assets/donationfile.json";
 import RazorpayPaymentAlert from "../Alert/RazorpayPaymentAlert";
 import axios from "axios";
+import { trackDonationScreenView } from "../../utils/analyticsUtils";
 
 const DonationScreen = () => {
   const [fadeAnim] = useState(new Animated.Value(0));
@@ -27,6 +28,10 @@ const DonationScreen = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(true);
   const [donationAmountFinal, setDonationAmountFinal] = useState(null);
+
+  useEffect(() => {
+    trackDonationScreenView(); // Track when the Donation screen is accessed
+  }, []);
 
   // const handlePaymentSuccess = (data) => {
   //   // setAlertMessage("Payment Successful! Thank you for your purchase." + data);

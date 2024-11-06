@@ -15,6 +15,8 @@ import { AuthContext } from "./Context/authContext";
 import fetchConstants from "./Api/fetchConstants";
 import constants from "./utils/constants";
 import { usePreventScreenCapture } from "expo-screen-capture";
+import analytics from "@react-native-firebase/analytics";
+import DeviceInfo from "react-native-device-info";
 
 export default function App() {
   usePreventScreenCapture();
@@ -41,6 +43,33 @@ export default function App() {
 
     loadConstants();
   }, []);
+
+  useEffect(() => {
+    const trackUserData = async () => {
+      const deviceId = DeviceInfo.getUniqueId(); // Unique ID for the device
+      const deviceType = DeviceInfo.getDeviceType(); // Get device type
+      const systemVersion = DeviceInfo.getSystemVersion(); // Get system version
+      const brand = DeviceInfo.getBrand(); // Get brand name of the device
+      const country = await DeviceInfo.getCountry(); // Get country
+
+      // Log user properties
+      await analytics().setUserProperties({
+        device_id: deviceId,
+        device_type: deviceType,
+        system_version: systemVersion,
+        brand,
+        country,
+      });
+
+      // Log app start event
+      await analytics().logEvent("meadhikari_app_started", {
+        timestamp: new Date().toISOString(),
+      });
+    };
+
+    trackUserData();
+  }, []);
+
   const scheme = useColorScheme();
 
   // Force light mode

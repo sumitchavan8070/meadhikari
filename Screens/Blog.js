@@ -21,6 +21,7 @@ import PostCard from "../Components/Post/PostCard";
 import LoadingAnimation from "../Components/Loader/loader";
 import loadingAnimation from "../assets/girl.json";
 import LottieView from "lottie-react-native";
+import { trackBlogPageView } from "../utils/analyticsUtils";
 
 const Blog = () => {
   const navigation = useNavigation();
@@ -122,6 +123,10 @@ const Blog = () => {
       }
     });
   };
+
+  useEffect(() => {
+    trackBlogPageView(); // Track when the Blog page is accessed
+  }, []);
 
   return (
     <View style={styles.blogscreen}>

@@ -242,7 +242,7 @@
 
 // export default FeedbackForm;
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -260,6 +260,7 @@ import LoadingAnimation from "../Loader/loader";
 import HeaderMenu from "../Menus/HeaderMenu";
 import MessageAlert from "../Alert/MessageAlert";
 import { Color } from "../../GlobalStyles";
+import { trackFeedbackScreenView } from "../../utils/analyticsUtils";
 
 const FeedbackForm = () => {
   const [feedback, setFeedback] = useState("");
@@ -269,6 +270,10 @@ const FeedbackForm = () => {
   const [messageAlertVisible, setMessageAlertVisible] = useState(false);
   const [messageAlertText, setMessageAlertText] = useState("");
   const [messageAlertTitle, setMessageAlertTitle] = useState("");
+
+  useEffect(() => {
+    trackFeedbackScreenView(); // Track when the Feedback screen is accessed
+  }, []);
 
   const icons = [
     "emoticon-sad-outline",

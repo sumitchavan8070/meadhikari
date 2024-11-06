@@ -41,6 +41,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Button } from "react-native";
 import ExpiredSubscriptionSection from "../Components/BottomSheet/ExpiredSubscriptionSection";
 import constants from "../utils/constants";
+import { trackProfilePageView } from "../utils/analyticsUtils";
 
 const UserProfilePage = () => {
   const [state, setState] = useContext(AuthContext);
@@ -69,6 +70,10 @@ const UserProfilePage = () => {
     setErrors({ ...errors, [name]: null });
     setSuccessMessage("");
   };
+
+  useEffect(() => {
+    trackProfilePageView(); // Track when the Profile page is accessed
+  }, []);
 
   const handleLogout = async () => {
     setState({

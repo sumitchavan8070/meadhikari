@@ -301,6 +301,7 @@ import * as Animatable from "react-native-animatable";
 
 import ExpiredSubscriptionSheet from "../Components/BottomSheet/ExpiredSubscriptionSection";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { trackHomePageView } from "../utils/analyticsUtils";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -491,6 +492,10 @@ const HomeScreen = () => {
     socketServices.initialzeSocekt(state.user._id);
 
     fetchBanners();
+  }, []);
+
+  useEffect(() => {
+    trackHomePageView(); // Track when the Home page is accessed
   }, []);
 
   return (

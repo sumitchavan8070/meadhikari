@@ -2,7 +2,7 @@ import io from "socket.io-client";
 import globalStrings from "../utils/globalStrings";
 import constants from "./constants";
 
-const SOCKET_URL = constants.SOCKET_URL;
+const SOCKET_URL = globalStrings.SOCKET_URL;
 
 // console.log(SOCKET_URL);
 
@@ -18,14 +18,14 @@ class WSService {
       // console.log("initialzing socket", this.socket);
 
       this.socket.on("connect", (data) => {
-        // console.log("=== socket connected ===");
+        console.log("=== socket connected ===");
         this.socket.emit("user_online", { userId });
       });
       this.socket.on("disconnect", (data) => {
-        // console.log("=== socket disconnected ===");
+        console.log("=== socket disconnected ===");
       });
       this.socket.on("error", (data) => {
-        // console.log("=== socket error ===", data);
+        console.log("=== socket error ===", data);
       });
     } catch (error) {
       console.error("=== socket is not initialized ===", error);

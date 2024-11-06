@@ -4,6 +4,11 @@ import RazorpayCheckout from "react-native-razorpay";
 import { AuthContext } from "../../Context/authContext";
 import globalStrings from "../../utils/globalStrings";
 import constants from "../../utils/constants";
+import {
+  trackSubscriptionCancelled,
+  trackSubscriptionCompleted,
+  trackSubscriptionStarted,
+} from "../../utils/analyticsUtils";
 
 const [state, setState] = useContext(AuthContext);
 
@@ -40,6 +45,8 @@ const PayWithRazorpay = ({
   const handlePayment = () => {
     console.log(`Payment started from ${pageName}`);
 
+    trackSubscriptionStarted(); // Track subscription start
+
     const options = {
       description: description || defaultConfig.description,
       image: image || defaultConfig.image,
@@ -53,11 +60,15 @@ const PayWithRazorpay = ({
 
     RazorpayCheckout.open(options)
       .then((data) => {
-        console.log(`Payment successful: ${data.razorpay_payment_id}`);
+        // console.log(`Payment successful: ${data.razorpay_payment_id}`);
+        trackSubscriptionCompleted(); // Track subscription completion
+
         setPaymentSuccess(true);
         if (onSuccess) onSuccess(data); // Trigger onSuccess callback
       })
       .catch((error) => {
+        trackSubscriptionCancelled(); // Track subscription cancel
+
         console.log("Payment error:", error.description, error.code);
         if (onFailure) onFailure(error); // Trigger onFailure callback
       });

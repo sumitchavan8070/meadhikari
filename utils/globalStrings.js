@@ -4,8 +4,8 @@ export default {
   // BASE_URL: "http://192.168.43.78:8080/api/v1/auth",
   // SOCKET_URL: "http://192.168.43.78:8080/",
 
-  BASE_URL: "http://43.204.231.152:80/api/v1/auth",
-  SOCKET_URL: "http://43.204.231.152:80/",
+  BASE_URL: "https://meadhikari.ddns.net/api/v1/auth",
+  SOCKET_URL: "https://meadhikari.ddns.net",
 
   //================ urls when using cloud ==================
 

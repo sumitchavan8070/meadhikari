@@ -11,6 +11,11 @@ import RazorpayCheckout from "react-native-razorpay";
 import { AuthContext } from "../../Context/authContext";
 import globalStrings from "../../utils/globalStrings";
 import constants from "../../utils/constants";
+import {
+  trackSubscriptionCancelled,
+  trackSubscriptionCompleted,
+  trackSubscriptionStarted,
+} from "../../utils/analyticsUtils";
 
 // const [paymentSuccess, setPaymentSuccess] = useState(false);
 
@@ -24,6 +29,8 @@ export const handlePaymentWithRazorPay = (
   image,
   subscriptionPlanID // Optional parameter for subscription plan ID
 ) => {
+  trackSubscriptionStarted(); // Track subscription start
+
   // Default configuration values
   const defaultConfig = {
     currency: "INR",
@@ -60,12 +67,17 @@ export const handlePaymentWithRazorPay = (
 
   RazorpayCheckout.open(options)
     .then((data) => {
-      console.log(`Payment successful: ${data.razorpay_payment_id}`);
-      console.log(`Payment successful Data : ${JSON.stringify(data)}`);
+      // console.log(`Payment successful: ${data.razorpay_payment_id}`);
+      // console.log(`Payment successful Data : ${JSON.stringify(data)}`);
+
+      trackSubscriptionCompleted(); // Track subscription completion
+
       // if (onSuccess) onSuccess(data); // Call the success callback
       if (onSuccess) onSuccess(data, subscriptionPlanID, amount); // Pass subscriptionPlanID to the success callback
     })
     .catch((error) => {
+      trackSubscriptionCancelled(); // Track subscription cancel
+
       console.log("Payment error:", error.description, error.code);
       if (onFailure) onFailure(error); // Call the failure callback
     });

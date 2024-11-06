@@ -4,6 +4,7 @@ import NetInfo from "@react-native-community/netinfo";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Color } from "../../GlobalStyles";
+import { trackInternetWarningPageView } from "../../utils/analyticsUtils";
 
 const NoInternetWarning = () => {
   const [isConnected, setIsConnected] = useState(true);
@@ -16,6 +17,10 @@ const NoInternetWarning = () => {
     return () => {
       unsubscribe();
     };
+  }, []);
+
+  useEffect(() => {
+    trackInternetWarningPageView(); // Track when the Internet Warning page is accessed
   }, []);
 
   // if (isConnected) {

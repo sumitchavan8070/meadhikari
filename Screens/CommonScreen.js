@@ -255,6 +255,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import socketServices from "../utils/sockertService";
 import { AuthContext } from "../Context/authContext";
 import HeaderMenu from "../Components/Menus/HeaderMenu";
+import { trackGroupPageView } from "../utils/analyticsUtils";
 
 const Tab = createMaterialTopTabNavigator(); // Create a Tab navigator using createMaterialTopTabNavigator
 
@@ -265,6 +266,10 @@ const CommonScreen = () => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState("");
+
+  useEffect(() => {
+    trackGroupPageView(); // Track when the Group page is accessed
+  }, []);
 
   // const [state] = useContext(AuthContext);
   // //auth condition true false

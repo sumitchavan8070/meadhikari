@@ -737,7 +737,7 @@
 
 // export default Login;
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -765,6 +765,7 @@ import ProductSlider from "../../Components/SplashScreen/ProductSlider";
 import { err } from "react-native-svg";
 import globalString from "../../utils/globalStrings";
 import constants from "../../utils/constants";
+import { trackLoginPageView } from "../../utils/analyticsUtils";
 
 const COLORS = {
   primary: Color.primaryColor,
@@ -892,6 +893,10 @@ const Login = ({ navigation }) => {
       `Oops! Please drop us email regarding password to: ${constants.contactEmail}`
     );
   };
+
+  useEffect(() => {
+    trackLoginPageView(); // Track when the Login page is accessed
+  }, []);
 
   return (
     <View style={styles.container}>
