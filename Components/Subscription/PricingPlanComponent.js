@@ -256,7 +256,7 @@ const PricingPlanComponent = () => {
   };
 
   const handlePayment = (amount) => {
-    console.log("im here1");
+    // console.log("im here1");
 
     if (!state.user.mobileNumber) {
       setmobileNumberAvailable(true);
