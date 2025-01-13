@@ -4,8 +4,14 @@ export default {
   // BASE_URL: "http://192.168.43.78:8080/api/v1/auth",
   // SOCKET_URL: "http://192.168.43.78:8080/",
 
-  BASE_URL: "https://meadhikari.ddns.net/api/v1/auth",
-  SOCKET_URL: "https://meadhikari.ddns.net",
+  // BASE_URL: "http://localhost:8080/api/v1/auth",
+  // SOCKET_URL: "http://localhost:8080/",
+
+  // BASE_URL: "https://meadhikari.ddns.net/api/v1/auth",
+  // SOCKET_URL: "https://meadhikari.ddns.net",
+
+  BASE_URL: "https://meadhikari-sever.vercel.app/api/v1/auth",
+  SOCKET_URL: "https://meadhikari-sever.vercel.app/",
 
   //================ urls when using cloud ==================
 

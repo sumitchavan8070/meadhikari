@@ -12,6 +12,7 @@ import {
   StyleSheet,
   FlatList,
   Alert,
+  TextInput,
 } from "react-native";
 import RazorpayCheckout from "react-native-razorpay";
 import { LinearGradient } from "expo-linear-gradient";
@@ -27,6 +28,7 @@ import { useNavigation } from "@react-navigation/native";
 import IosAlertWithImageWithCallBack from "../Alert/IosAlertWithImageWithCallBack";
 import * as Animatable from "react-native-animatable";
 import MobileNumberInputAlert from "../Alert/MobileNumberInputAlert";
+import Fontisto from "@expo/vector-icons/Fontisto";
 
 const PricingPlanComponent = () => {
   const flatListRef = useRef(null);
@@ -43,14 +45,6 @@ const PricingPlanComponent = () => {
 
   // Access subscription status and plan ID from AuthContext
   const { subscriptionPlanID } = state.user;
-  // console.log("subscriptionPlanID" + subscriptionPlanID);
-  // console.log("isSubscriptionActive" + isSubscriptionActive);
-
-  // const subscriptionPlanID = "66cae559267f0f6cedde1fff";
-  // const isSubscriptionActive = true;
-
-  // const subscriptionPlanID = null;
-  // const isSubscriptionActive = false;
 
   const navigation = useNavigation();
 
@@ -102,6 +96,7 @@ const PricingPlanComponent = () => {
         {
           newPlanId: subscriptionPlanID,
           purchasePaymentId: data.razorpay_payment_id, // Payment ID from Razorpay
+          couponCode: couponCode,
         }
       );
 
@@ -265,10 +260,20 @@ const PricingPlanComponent = () => {
     }
 
     // console.log("Selected Package Amount: ₹" + amount);
-    setSelectedPackageAmount(amount.price);
+    setSelectedPackageAmount(
+      amount.discountedPrice !== undefined
+        ? // ? amount.discountedPrice
+          // : amount.price
+          Math.floor(amount.discountedPrice) // Use Math.floor to remove decimals
+        : Math.floor(amount.price)
+    );
     handlePaymentWithRazorPay(
       state,
-      amount.price,
+      amount.discountedPrice !== undefined
+        ? // ? amount.discountedPrice
+          // : amount.price,
+          Math.floor(amount.discountedPrice)
+        : Math.floor(amount.price),
       "Congratulations ! Subscription is added of ₹" + amount.price,
       "Subscription Page",
       handlePaymentSuccess,
@@ -304,6 +309,83 @@ const PricingPlanComponent = () => {
     updateUserDetails();
   }, []);
 
+  const [couponCode, setCouponCode] = useState("");
+  const [discountDetails, setDiscountDetails] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) {
+      setErrorMessage("Please enter a valid coupon code.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Send request to the backend to validate the coupon
+      const response = await axios.post("/coupons/validate", {
+        code: couponCode, // Sending coupon code to the backend
+      });
+
+      const { discountPercentage, maxDiscountAmount, associatedPlan } =
+        response.data;
+
+      // Find the associated plan
+      const planIndex = pricingPlans.findIndex(
+        (plan) => plan._id === associatedPlan
+      );
+
+      if (planIndex !== -1) {
+        const originalPrice = pricingPlans[planIndex].price;
+        const discountAmount = (originalPrice * discountPercentage) / 100;
+        const finalDiscount =
+          discountAmount > maxDiscountAmount
+            ? maxDiscountAmount
+            : discountAmount;
+        const discountedPrice = originalPrice - finalDiscount;
+
+        // Update the price of the associated plan in the state
+        const updatedPlans = [...pricingPlans];
+        updatedPlans[planIndex] = {
+          ...updatedPlans[planIndex],
+          discountedPrice, // Set the discounted price
+        };
+        setPricingPlans(updatedPlans); // Update the state with the new plan price
+
+        // Notify the user about the successful coupon application
+        setErrorMessage(""); // Clear any previous error
+        setDiscountDetails(true);
+        alert(
+          `Coupon applied successfully! Discount: ₹${Math.floor(finalDiscount)}`
+        );
+      } else {
+        setErrorMessage("Coupon is not valid for any existing plans.");
+      }
+    } catch (error) {
+      console.error("Error applying coupon:", error);
+      if (error.response && error.response.data) {
+        setErrorMessage(
+          error.response.data.message ||
+            "Something went wrong. Please try again."
+        );
+      } else {
+        setErrorMessage("Something went wrong. Please try again.");
+      }
+    }
+    setLoading(false);
+  };
+
+  const removeCoupon = () => {
+    setCouponCode(""); // Clear the coupon code input
+    setDiscountDetails(null); // Reset the discount details
+    setErrorMessage(""); // Clear error messages
+    setPricingPlans((prevPlans) =>
+      prevPlans.map((plan) => ({
+        ...plan,
+        discountedPrice: undefined, // Remove discounted price
+      }))
+    );
+  };
+
   const renderPlan = ({ item }) => {
     const isPurchased = isSubscriptionActive && item._id === subscriptionPlanID;
     const isFreePlan = item.name.toLowerCase() === "free"; // Check if the plan is "free"
@@ -334,7 +416,16 @@ const PricingPlanComponent = () => {
           <Text
             style={[styles.planPrice, item.popular && styles.popularPlanPrice]}
           >
-            ₹{item.price} - {formatDuration(item.durationInDays)}
+            {/* ₹{item.price} - {formatDuration(item.durationInDays)} */}₹
+            {item.discountedPrice !== undefined
+              ? // ? `${item.discountedPrice}`
+                // : item.price}
+                Math.floor(item.discountedPrice) // Use Math.floor to remove decimals
+              : Math.floor(item.price)}
+            - {formatDuration(item.durationInDays)}
+            {/* {item.discountedPrice !== undefined
+              ? `${item.discountedPrice}`
+              : item.price } */}
           </Text>
           <View style={styles.featuresList}>
             {item.features.map((feature, index) => (
@@ -453,6 +544,54 @@ const PricingPlanComponent = () => {
 
   return (
     <>
+      {!isSubscriptionActive && (
+        <>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              marginLeft: "5%",
+              marginTop: 20,
+            }}
+          >
+            <Fontisto name="ticket-alt" size={24} color="purple" />
+            <Text
+              style={{
+                color: "purple",
+                fontSize: 16,
+                marginBottom: 10,
+              }}
+            >
+              Have A Coupon code?
+            </Text>
+          </View>
+
+          <View style={styles.couponContainer}>
+            <TextInput
+              style={styles.couponInput}
+              placeholder="Enter coupon code"
+              value={couponCode}
+              onChangeText={setCouponCode}
+              editable={!discountDetails} // Disable input if a coupon is applied
+            />
+            <TouchableOpacity
+              style={styles.couponButton}
+              onPress={discountDetails ? removeCoupon : applyCoupon}
+            >
+              <Text style={styles.couponButtonText}>
+                {discountDetails ? "Remove" : "Apply"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {errorMessage ? (
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          ) : null}
+          {discountDetails && (
+            <Text style={styles.successText}>Coupon applied!</Text>
+          )}
+        </>
+      )}
+
       <RazorpayPaymentAlert
         visible={alertVisible}
         message={alertMessage}
@@ -473,6 +612,59 @@ const PricingPlanComponent = () => {
 };
 
 const styles = StyleSheet.create({
+  successText: {
+    color: "green",
+    marginTop: 10,
+    fontSize: 14,
+    marginLeft: "8%",
+  },
+
+  errorText: {
+    color: "red",
+    marginTop: 10,
+    fontSize: 14,
+    marginLeft: "8%",
+  },
+  couponContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    // marginBottom: 15,
+    paddingHorizontal: 20,
+  },
+  couponInput: {
+    flex: 1,
+    height: 50,
+    borderRadius: 12,
+    backgroundColor: "#f0f0f0", // Light gray for input background
+    paddingHorizontal: 15,
+    fontSize: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2, // For Android shadow compatibility
+    marginRight: 10,
+  },
+  couponButton: {
+    height: 50,
+    paddingHorizontal: 20,
+    backgroundColor: "#007aff", // iOS-style blue
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#007aff",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  couponButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+    letterSpacing: 0.5,
+  },
   buttonContent: {
     flexDirection: "row",
     alignItems: "center",

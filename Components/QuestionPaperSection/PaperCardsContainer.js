@@ -16,7 +16,8 @@ import MaxTestAllowedAlert from "../Alert/MaxTestAllowedAlert";
 import IosAlertWithImageWithCallBack from "../Alert/IosAlertWithImageWithCallBack";
 
 const PaperCard = ({ data, onPress }) => {
-  const { subCatId, yearId, QPYear, subCatName, questions } = data;
+  const { subCatId, yearId, QPYear, subCatName, questions, questionPaperName } =
+    data;
 
   return (
     <TouchableOpacity
@@ -29,6 +30,9 @@ const PaperCard = ({ data, onPress }) => {
       <Text>QPYear: {QPYear}</Text>
       <Text>Total Questions: {questions.length}</Text> */}
       <Text style={[styles.subCatLabel]}>{subCatName}</Text>
+      <Text style={{ marginVertical: 5, color: "blue" }}>
+        {questionPaperName}
+      </Text>
       <Text style={styles.content}>Year : {QPYear}</Text>
       <Text style={styles.content}>Total Questions: {questions.length}</Text>
       <Text style={[styles.attemptNowBtn]}>Attempt Paper</Text>
@@ -141,7 +145,7 @@ const PaperCardsContainer = ({ papers }) => {
       const userId = state.user._id; // Assuming user ID is in the state or context
 
       // Make PUT request to update testsTaken count
-      await axios.put(
+      const response = await axios.put(
         "/subscription/update-tests-completed-after-expiry-of-plan",
         {
           userId,
@@ -280,3 +284,165 @@ const styles = StyleSheet.create({
 });
 
 export default PaperCardsContainer;
+
+// import React, { useEffect, useState } from "react";
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   TouchableOpacity,
+//   ScrollView,
+//   Alert,
+//   Dimensions,
+// } from "react-native";
+// import { Color } from "../../GlobalStyles";
+// import ChooseExamAlertSuccess from "../Alert/ChooseExamAlertSuccess";
+// import { useNavigation } from "@react-navigation/native";
+// import { AuthContext } from "../../Context/authContext";
+// import axios from "axios";
+// import MaxTestAllowedAlert from "../Alert/MaxTestAllowedAlert";
+// import IosAlertWithImageWithCallBack from "../Alert/IosAlertWithImageWithCallBack";
+
+// const { width } = Dimensions.get("window");
+
+// const PaperCard = ({ data, onPress }) => {
+//   const { subCatId, yearId, QPYear, subCatName, questions } = data;
+
+//   return (
+//     <TouchableOpacity
+//       style={styles.card}
+//       onPress={() => onPress(questions, QPYear)}
+//     >
+//       <Text style={styles.subCatLabel}>{subCatName}</Text>
+//       <Text style={styles.content}>Year : {QPYear}</Text>
+//       <Text style={styles.content}>Total Questions: {questions.length}</Text>
+//       <Text style={styles.attemptNowBtn}>Attempt Paper</Text>
+//     </TouchableOpacity>
+//   );
+// };
+
+// const PaperCardsContainer = ({ papers }) => {
+//   const navigation = useNavigation();
+//   const [state] = React.useContext(AuthContext);
+//   const [showAlertTest, setShowAlertTest] = useState(false);
+//   const [questionData, setQuestionData] = useState([]);
+//   const [alertMessageTest, setAlertMessageTest] = useState("");
+//   const [qpYear, setQpYear] = useState("");
+
+//   const handleAttempt = (questions, QPYear) => {
+//     setShowAlertTest(true);
+//     setAlertMessageTest("Quick Tips: There are no Tips. Best of luck!");
+//     setQuestionData(questions);
+//     setQpYear(QPYear);
+//   };
+
+//   const handleOnInstructions = () => {
+//     if (questionData && questionData.length > 0) {
+//       navigation.navigate("InstructionPage", {
+//         questionData,
+//         testId: "MAPYQ" + qpYear,
+//       });
+//     } else {
+//       Alert.alert("No Questions", "No questions are available.");
+//     }
+//   };
+
+//   const handleOnSkipIntructions = async () => {
+//     const isActive = await checkSubscription();
+//     if (!isActive) {
+//       return;
+//     }
+
+//     if (questionData && questionData.length > 0) {
+//       navigation.navigate("TestPage", {
+//         questionData,
+//         testId: "MAPYQ" + qpYear,
+//       });
+//     } else {
+//       Alert.alert("No Questions", "No questions are available.");
+//     }
+//   };
+
+//   const checkSubscription = async () => {
+//     try {
+//       const userId = state.user._id;
+//       const response = await axios.get(
+//         `/subscription/check-subscription/${userId}`
+//       );
+
+//       if (response.data.isSubscriptionActive) {
+//         return true;
+//       } else {
+//         setattemptsRemaining(response.data.testsTaken);
+//         setmaxTestAllowedCount(response.data.maxTestsAllowed);
+//         setPlanStatus(false);
+//         setModalVisible(true);
+//         return false;
+//       }
+//     } catch (error) {
+//       console.error("Error checking subscription:", error);
+//       return false;
+//     }
+//   };
+
+//   return (
+//     <>
+//       {showAlertTest && (
+//         <ChooseExamAlertSuccess
+//           isVisible={showAlertTest}
+//           onInstructions={handleOnInstructions}
+//           onSkipIntructions={handleOnSkipIntructions}
+//           message={alertMessageTest}
+//           onClose={() => setShowAlertTest(false)}
+//         />
+//       )}
+//       <ScrollView>
+//         <View style={styles.container}>
+//           {papers.map((paper, index) => (
+//             <PaperCard key={index} data={paper} onPress={handleAttempt} />
+//           ))}
+//         </View>
+//       </ScrollView>
+//     </>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flexDirection: "row",
+//     flexWrap: "wrap",
+//     justifyContent: "space-between",
+//     padding: 10,
+//   },
+//   card: {
+//     width: "47%",
+//     marginBottom: 10,
+//     padding: 15,
+//     borderRadius: 10,
+//     borderWidth: 1,
+//     borderColor: Color.primaryColor,
+//   },
+//   subCatLabel: {
+//     color: Color.primaryColor,
+//     fontWeight: "bold",
+//     backgroundColor: Color.secoundaryBtnColor,
+//     padding: 8,
+//     borderRadius: 5,
+//     marginBottom: 10,
+//   },
+//   content: {
+//     marginVertical: 5,
+//   },
+//   attemptNowBtn: {
+//     color: Color.colorWhite,
+//     alignSelf: "center",
+//     fontWeight: "bold",
+//     backgroundColor: Color.primaryColor,
+//     paddingVertical: 10,
+//     paddingHorizontal: 20,
+//     borderRadius: 20,
+//     marginTop: 15,
+//   },
+// });
+
+// export default PaperCardsContainer;

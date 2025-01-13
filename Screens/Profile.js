@@ -42,6 +42,7 @@ import { Button } from "react-native";
 import ExpiredSubscriptionSection from "../Components/BottomSheet/ExpiredSubscriptionSection";
 import constants from "../utils/constants";
 import { trackProfilePageView } from "../utils/analyticsUtils";
+import Fontisto from "@expo/vector-icons/Fontisto";
 
 const UserProfilePage = () => {
   const [state, setState] = useContext(AuthContext);
@@ -737,6 +738,7 @@ const UserProfilePage = () => {
         <HeaderMenu />
         <ExpiredSubscriptionSection />
         <ActiveSubscriptionPlan></ActiveSubscriptionPlan>
+
         <PricingPlanComponent></PricingPlanComponent>
 
         {/* <Subscription></Subscription> */}

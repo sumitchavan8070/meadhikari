@@ -153,6 +153,7 @@ const QuestionPaperSection = () => {
         .sort((a, b) => a.categoryNumber - b.categoryNumber); // Sort by categoryNumber
 
       setCategoryData(sortedData);
+      // console.log("-------------------> cat data :", sortedData);
     } catch (error) {
       console.error("Error fetching category data:", error);
     }

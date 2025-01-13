@@ -13,7 +13,6 @@ import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "./Context/authContext";
 import fetchConstants from "./Api/fetchConstants";
-import constants from "./utils/constants";
 import { usePreventScreenCapture } from "expo-screen-capture";
 import analytics from "@react-native-firebase/analytics";
 import DeviceInfo from "react-native-device-info";

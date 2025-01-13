@@ -39,6 +39,8 @@ const QuestionPaperCardPage = ({ route }) => {
       //   response.data.every((paper) => paper.questions.length > 0)
       // ) {
       setPapers(response.data);
+      // console.log("-------------------> paper data :", response.data);
+
       setLoading(false);
       // } else {
       //   setPapers([]);

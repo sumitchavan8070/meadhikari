@@ -1,133 +1,4 @@
-// // // // // import { View, Text, StyleSheet, Alert, Keyboard } from "react-native";
-// // // // // import React, { useState, useContext } from "react";
-// // // // // import { AuthContext } from "../../Context/authContext";
-// // // // // import InputBox from "../../Components/Forms/InputBox";
-// // // // // import { Color, FontSize } from "../../GlobalStyles";
-// // // // // import PrimaryButton from "../../Components/Forms/PrimaryButton";
-// // // // // import SecoundaryButton from "../../Components/Forms/SecoundaryButton";
-// // // // // import axios from "axios";
-// // // // // import AsyncStorage from "@react-native-async-storage/async-storage";
-// // // // // import LoadingAnimation from "../../Components/Loader/loader";
-// // // // // import { requestUserPermission } from "../../utils/notificationService";
-
-// // // // // const Login = ({ navigation }) => {
-// // // // //   //global state
-// // // // //   const [state, setState] = useContext(AuthContext);
-
-// // // // //   //Setting Getter and Setter to Get Input
-// // // // //   const [email, setEmail] = useState("");
-// // // // //   const [password, setPassword] = useState("");
-// // // // //   // We will Get Values and SetValues
-// // // // //   const [loading, setLoading] = useState(false);
-
-// // // // //   const onSubmitLoginBtn = async () => {
-// // // // //     Keyboard.dismiss;
-
-// // // // //     try {
-// // // // //       setLoading(true);
-// // // // //       if (!email || !password) {
-// // // // //         Alert.alert("All Fileds are Required");
-// // // // //         setLoading(false);
-// // // // //         return;
-// // // // //       }
-// // // // //       requestUserPermission();
-
-// // // // //       Keyboard.dismiss;
-// // // // //       const { data } = await axios.post("/login", {
-// // // // //         email,
-// // // // //         password,
-// // // // //       });
-// // // // //       setState(data);
-// // // // //       //Setting Local Storage
-// // // // //       await AsyncStorage.setItem("@auth", JSON.stringify(data));
-// // // // //       alert(data && data.message);
-
-// // // // //       setLoading(false);
-
-// // // // //       navigation.navigate("Home");
-// // // // //       // console.log("Login Data==> ", { email, password });
-// // // // //       // console.log("Information Entered By User : ", { email, password });
-// // // // //     } catch (error) {
-// // // // //       alert(error.message);
-// // // // //       setLoading(false);
-// // // // //       console.log(error);
-// // // // //     }
-// // // // //   };
-
-// // // // //   //Naviagte to Register Page
-// // // // //   const onSubmitNewUserBtn = () => {
-// // // // //     console.log("Naviagted to Register Page");
-// // // // //     navigation.navigate("Register");
-// // // // //   };
-
-// // // // //   //temp function to check local storage data
-// // // // //   const getLcoalStorageData = async () => {
-// // // // //     let data = await AsyncStorage.getItem("@auth");
-// // // // //     console.log("Local Storage ==> ", data);
-// // // // //   };
-// // // // //   getLcoalStorageData();
-
-// // // // //   return (
-// // // // //     <View style={styles.loginScreen}>
-// // // // //       {loading && <LoadingAnimation visible={loading} loop={true} />}
-
-// // // // //       <Text style={styles.login}>Login</Text>
-
-// // // // //       <InputBox
-// // // // //         inputPlaceholderText={"Enter email "}
-// // // // //         inputLabel={"Email"}
-// // // // //         keyboardType="email-address"
-// // // // //         // propTop={294}
-// // // // //         value={email}
-// // // // //         setValue={setEmail}
-// // // // //       />
-// // // // //       <InputBox
-// // // // //         inputPlaceholderText={"Enter password"}
-// // // // //         inputLabel={"Password"}
-// // // // //         secureTextEntry={true}
-// // // // //         // propTop={374}
-// // // // //         value={password}
-// // // // //         setValue={setPassword}
-// // // // //       />
-// // // // //       {/* <Text style={{ marginTop: 400 }}>
-// // // // //         {JSON.stringify({ email, password }, null, 4)}
-// // // // //       </Text> */}
-
-// // // // //       <PrimaryButton
-// // // // //         buttonTitle="Login"
-// // // // //         loading={loading}
-// // // // //         handleOnSubmit={onSubmitLoginBtn}
-// // // // //       />
-
-// // // // //       <SecoundaryButton
-// // // // //         buttonTitle="New User ? Register here."
-// // // // //         handleOnSubmit={onSubmitNewUserBtn}
-// // // // //       />
-// // // // //     </View>
-// // // // //   );
-// // // // // };
-
-// // // // // const styles = StyleSheet.create({
-// // // // //   login: {
-// // // // //     left: "10%",
-// // // // //     fontSize: FontSize.size_5xl,
-// // // // //     fontWeight: "600",
-// // // // //     // fontFamily: FontFamily.interSemiBold,
-// // // // //     color: Color.primaryColor,
-// // // // //     textAlign: "left",
-// // // // //     marginVertical: 20,
-// // // // //   },
-// // // // //   loginScreen: {
-// // // // //     backgroundColor: Color.colorWhite,
-// // // // //     flex: 1,
-// // // // //     width: "100%",
-// // // // //     justifyContent: "center",
-// // // // //   },
-// // // // // });
-
-// // // // // export default Login;
-
-// // import React, { useState, useContext } from "react";
+// // import React, { useState, useContext, useEffect } from "react";
 // // import {
 // //   View,
 // //   Text,
@@ -149,6 +20,25 @@
 // // import { AuthContext } from "../../Context/authContext";
 // // import { requestUserPermission } from "../../utils/notificationService";
 // // import LoadingAnimation from "../../Components/Loader/loader";
+// // import { Color } from "../../GlobalStyles";
+// // import IosAlertWithImage from "../../Components/Alert/IosAlertWithImage"; // Import custom alert
+// // import ProductSlider from "../../Components/SplashScreen/ProductSlider";
+// // import { err } from "react-native-svg";
+// // import globalString from "../../utils/globalStrings";
+// // import constants from "../../utils/constants";
+// // import { trackLoginPageView } from "../../utils/analyticsUtils";
+
+// // const COLORS = {
+// //   primary: Color.primaryColor,
+// //   background: "#fff",
+// //   textPrimary: "#05375a",
+// //   textSecondary: "#666666",
+// //   buttonStart: "#8f94fb",
+// //   buttonEnd: "#4e54c8",
+// //   error: "#FF0000",
+// //   icon: "grey",
+// //   success: "green",
+// // };
 
 // // const Login = ({ navigation }) => {
 // //   const [data, setData] = useState({
@@ -161,11 +51,13 @@
 
 // //   const [state, setState] = useContext(AuthContext);
 // //   const [loading, setLoading] = useState(false);
+// //   const [alertVisible, setAlertVisible] = useState(false);
+// //   const [alertMessage, setAlertMessage] = useState("");
+// //   const [alertSuccess, setAlertSuccess] = useState(false);
 
 // //   const { colors } = useTheme();
 
 // //   const textInputChange = (val) => {
-// //     // Validate email format
 // //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // //     if (emailRegex.test(val)) {
 // //       setData({
@@ -183,7 +75,6 @@
 // //   };
 
 // //   const handlePasswordChange = (val) => {
-// //     // Validate password length
 // //     if (val.trim().length >= 8) {
 // //       setData({
 // //         ...data,
@@ -206,44 +97,83 @@
 // //     });
 // //   };
 
+// //   const showAlert = (message, isSuccess) => {
+// //     setAlertMessage(message);
+// //     setAlertSuccess(isSuccess);
+// //     setAlertVisible(true);
+// //   };
+
 // //   const onSubmitLoginBtn = async () => {
 // //     Keyboard.dismiss();
 // //     setLoading(true);
 
 // //     try {
 // //       if (!data.email || !data.password) {
-// //         Alert.alert("All fields are required");
+// //         showAlert("All fields are required", false);
 // //         setLoading(false);
 // //         return;
 // //       }
 
 // //       requestUserPermission();
 
+// //       const lowerCaseEmail = data.email.toLowerCase();
+
 // //       const { data: responseData } = await axios.post("/login", {
-// //         email: data.email,
+// //         email: lowerCaseEmail,
 // //         password: data.password,
 // //       });
 
 // //       setState(responseData);
 // //       await AsyncStorage.setItem("@auth", JSON.stringify(responseData));
-// //       Alert.alert("Success", responseData.message);
+// //       showAlert(responseData.message, true);
 
 // //       setLoading(false);
 // //       navigation.navigate("Home");
 // //     } catch (error) {
-// //       Alert.alert("Error", error.message);
-// //       setLoading(false);
+// //       // showAlert(error.message, false);
+// //       // setLoading(false);
+// //       if (error.response && error.response.status === 404) {
+// //         showAlert(
+// //           "🚫 Oops! We couldn't find your account. Please double-check your credentials and give it another try! 🔍😊",
+// //           false
+// //         ); // Show "User Not Found" if 404 error
+// //         setLoading(false);
+// //       } else if (error.response.data.message) {
+// //         showAlert(error.response.data.message || "Login Error", false);
+// //         setLoading(false);
+// //       } else {
+// //         // For other errors, show the error message returned from the server
+// //         showAlert(error.message || "Login Error", false);
+// //         setLoading(false);
+// //       }
 // //     }
 // //   };
 
+// //   const onForgotPassword = () => {
+// //     Alert.alert(
+// //       `Oops! Please drop us email regarding password to: ${constants.contactEmail}`
+// //     );
+// //   };
+
+// //   useEffect(() => {
+// //     trackLoginPageView(); // Track when the Login page is accessed
+// //   }, []);
+
 // //   return (
 // //     <View style={styles.container}>
-// //       <StatusBar backgroundColor="#009387" barStyle="light-content" />
-// //       {/* {loading && <Text style={styles.loading}>Loading...</Text>} */}
+// //       <StatusBar backgroundColor={COLORS.primary} barStyle="light-content" />
 // //       {loading && <LoadingAnimation visible={loading} loop={true} />}
 
+// //       <IosAlertWithImage
+// //         visible={alertVisible}
+// //         message={alertMessage}
+// //         onClose={() => setAlertVisible(false)}
+// //         isSuccess={alertSuccess}
+// //       />
+
 // //       <View style={styles.header}>
-// //         <Text style={styles.text_header}>Welcome!</Text>
+// //         {/* <ProductSlider></ProductSlider> */}
+// //         <Text style={styles.text_header}>Welcome to Meadhikari ❤️</Text>
 // //       </View>
 // //       <Animatable.View animation="fadeInUpBig" style={styles.footer}>
 // //         <Text style={[styles.text_footer, { color: colors.text }]}>Email</Text>
@@ -251,19 +181,19 @@
 // //           <FontAwesome name="envelope" color={colors.text} size={20} />
 // //           <TextInput
 // //             placeholder="Your Email"
-// //             placeholderTextColor="#666666"
+// //             placeholderTextColor={COLORS.textSecondary}
 // //             style={[styles.textInput, { color: colors.text }]}
 // //             autoCapitalize="none"
 // //             keyboardType="email-address"
 // //             onChangeText={(val) => textInputChange(val)}
 // //           />
-// //           {data.isValidEmail ? (
+// //           {data.isValidEmail && data.email ? (
 // //             <Animatable.View
 // //               animation="fadeIn"
 // //               duration={1000}
 // //               style={styles.icon}
 // //             >
-// //               <Feather name="check-circle" color="green" size={20} />
+// //               <Feather name="check-circle" color={COLORS.success} size={20} />
 // //             </Animatable.View>
 // //           ) : null}
 // //         </View>
@@ -286,7 +216,7 @@
 // //           <Feather name="lock" color={colors.text} size={20} />
 // //           <TextInput
 // //             placeholder="Your Password"
-// //             placeholderTextColor="#666666"
+// //             placeholderTextColor={COLORS.textSecondary}
 // //             secureTextEntry={data.secureTextEntry}
 // //             style={[styles.textInput, { color: colors.text }]}
 // //             autoCapitalize="none"
@@ -294,9 +224,9 @@
 // //           />
 // //           <TouchableOpacity onPress={updateSecureTextEntry}>
 // //             {data.secureTextEntry ? (
-// //               <Feather name="eye-off" color="grey" size={20} />
+// //               <Feather name="eye-off" color={COLORS.icon} size={20} />
 // //             ) : (
-// //               <Feather name="eye" color="grey" size={20} />
+// //               <Feather name="eye" color={COLORS.icon} size={20} />
 // //             )}
 // //           </TouchableOpacity>
 // //         </View>
@@ -313,31 +243,60 @@
 // //         )}
 
 // //         <TouchableOpacity>
-// //           <Text style={{ color: "#009387", marginTop: 15 }}>
+// //           <Text
+// //             style={{ color: COLORS.primary, marginTop: 15 }}
+// //             onPress={onForgotPassword}
+// //           >
 // //             Forgot password?
 // //           </Text>
 // //         </TouchableOpacity>
 
 // //         <View style={styles.button}>
-// //           <LinearGradient colors={["#08d4c4", "#01ab9d"]} style={styles.signIn}>
-// //             <TouchableOpacity onPress={onSubmitLoginBtn}>
+// //           {/* <TouchableOpacity onPress={onSubmitLoginBtn}>
+// //             <LinearGradient
+// //               colors={[COLORS.buttonStart, COLORS.buttonEnd]}
+// //               style={styles.signIn}
+// //             >
 // //               <Text style={[styles.textSign, { color: "#fff" }]}>Sign In</Text>
-// //             </TouchableOpacity>
-// //           </LinearGradient>
+// //             </LinearGradient>
+// //           </TouchableOpacity> */}
+// //           <TouchableOpacity
+// //             style={styles.signIn}
+// //             onPress={onSubmitLoginBtn}
+// //             disabled={loading}
+// //           >
+// //             <LinearGradient
+// //               colors={[COLORS.buttonStart, COLORS.buttonEnd]}
+// //               style={styles.signIn}
+// //             >
+// //               <Text style={[styles.textSign, { color: "#fff" }]}>
+// //                 {loading ? "Loading..." : "Login"}
+// //               </Text>
+// //             </LinearGradient>
+// //           </TouchableOpacity>
 
 // //           <TouchableOpacity
-// //             onPress={() => navigation.navigate("SignUpScreen")}
+// //             onPress={() => navigation.navigate("Register")}
 // //             style={[
 // //               styles.signIn,
 // //               {
-// //                 borderColor: "#009387",
+// //                 borderColor: COLORS.primary,
 // //                 borderWidth: 1,
 // //                 marginTop: 15,
 // //               },
 // //             ]}
 // //           >
-// //             <Text style={[styles.textSign, { color: "#009387" }]}>Sign Up</Text>
+// //             <Text style={[styles.textSign, { color: COLORS.primary }]}>
+// //               Register
+// //             </Text>
 // //           </TouchableOpacity>
+// //           {/* <TouchableOpacity
+// //             onPress={() => {
+// //               navigation.navigate("Splash");
+// //             }}
+// //           >
+// //             <Text>Splash</Text>
+// //           </TouchableOpacity> */}
 // //         </View>
 // //       </Animatable.View>
 // //     </View>
@@ -347,17 +306,17 @@
 // // const styles = StyleSheet.create({
 // //   container: {
 // //     flex: 1,
-// //     backgroundColor: "#009387",
+// //     backgroundColor: COLORS.primary,
 // //   },
 // //   header: {
 // //     flex: 1,
 // //     justifyContent: "flex-end",
 // //     paddingHorizontal: 20,
-// //     paddingBottom: 50,
+// //     paddingBottom: 20,
 // //   },
 // //   footer: {
 // //     flex: 3,
-// //     backgroundColor: "#fff",
+// //     backgroundColor: COLORS.background,
 // //     borderTopLeftRadius: 30,
 // //     borderTopRightRadius: 30,
 // //     paddingHorizontal: 20,
@@ -367,9 +326,10 @@
 // //     color: "#fff",
 // //     fontWeight: "bold",
 // //     fontSize: 30,
+// //     marginBottom: 15,
 // //   },
 // //   text_footer: {
-// //     color: "#05375a",
+// //     color: COLORS.textPrimary,
 // //     fontSize: 18,
 // //   },
 // //   action: {
@@ -381,12 +341,12 @@
 // //   },
 // //   textInput: {
 // //     flex: 1,
-// //     marginTop: Platform.OS === "ios" ? 0 : -12,
+// //     marginTop: Platform.OS === "ios" ? 0 : -5,
 // //     paddingLeft: 10,
-// //     color: "#05375a",
+// //     color: COLORS.textPrimary,
 // //   },
 // //   errorMsg: {
-// //     color: "#FF0000",
+// //     color: COLORS.error,
 // //     fontSize: 14,
 // //   },
 // //   icon: {
@@ -394,7 +354,7 @@
 // //     alignItems: "center",
 // //   },
 // //   errorContainer: {
-// //     marginTop: 10,
+// //     marginTop: 5,
 // //   },
 // //   button: {
 // //     alignItems: "center",
@@ -411,17 +371,11 @@
 // //     fontSize: 18,
 // //     fontWeight: "bold",
 // //   },
-// //   loading: {
-// //     color: "#fff",
-// //     fontSize: 18,
-// //     textAlign: "center",
-// //     marginTop: 20,
-// //   },
 // // });
 
 // // export default Login;
 
-// import React, { useState, useContext } from "react";
+// import React, { useState, useContext, useEffect } from "react";
 // import {
 //   View,
 //   Text,
@@ -432,6 +386,7 @@
 //   StatusBar,
 //   Alert,
 //   Keyboard,
+//   Dimensions,
 // } from "react-native";
 // import { LinearGradient } from "expo-linear-gradient";
 // import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -444,17 +399,20 @@
 // import { requestUserPermission } from "../../utils/notificationService";
 // import LoadingAnimation from "../../Components/Loader/loader";
 // import { Color } from "../../GlobalStyles";
+// import IosAlertWithImage from "../../Components/Alert/IosAlertWithImage";
+// import constants from "../../utils/constants";
+// import { trackLoginPageView } from "../../utils/analyticsUtils";
 
-// // Define color constants
+// const { width, height } = Dimensions.get("window");
+
+// const responsiveFontSize = (size) => (width > 360 ? size : size - 2);
+// const responsivePadding = (padding) => (width > 360 ? padding : padding - 5);
+
 // const COLORS = {
-//   // primary: "#009387",
 //   primary: Color.primaryColor,
-
 //   background: "#fff",
 //   textPrimary: "#05375a",
 //   textSecondary: "#666666",
-//   // buttonStart: "#08d4c4",
-//   // buttonEnd: "#01ab9d",
 //   buttonStart: "#8f94fb",
 //   buttonEnd: "#4e54c8",
 //   error: "#FF0000",
@@ -473,42 +431,31 @@
 
 //   const [state, setState] = useContext(AuthContext);
 //   const [loading, setLoading] = useState(false);
+//   const [alertVisible, setAlertVisible] = useState(false);
+//   const [alertMessage, setAlertMessage] = useState("");
+//   const [alertSuccess, setAlertSuccess] = useState(false);
 
 //   const { colors } = useTheme();
 
+//   useEffect(() => {
+//     trackLoginPageView();
+//   }, []);
+
 //   const textInputChange = (val) => {
-//     // Validate email format
 //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//     if (emailRegex.test(val)) {
-//       setData({
-//         ...data,
-//         email: val,
-//         isValidEmail: true,
-//       });
-//     } else {
-//       setData({
-//         ...data,
-//         email: val,
-//         isValidEmail: false,
-//       });
-//     }
+//     setData({
+//       ...data,
+//       email: val,
+//       isValidEmail: emailRegex.test(val),
+//     });
 //   };
 
 //   const handlePasswordChange = (val) => {
-//     // Validate password length
-//     if (val.trim().length >= 8) {
-//       setData({
-//         ...data,
-//         password: val,
-//         isValidPassword: true,
-//       });
-//     } else {
-//       setData({
-//         ...data,
-//         password: val,
-//         isValidPassword: false,
-//       });
-//     }
+//     setData({
+//       ...data,
+//       password: val,
+//       isValidPassword: val.trim().length >= 8,
+//     });
 //   };
 
 //   const updateSecureTextEntry = () => {
@@ -524,26 +471,35 @@
 
 //     try {
 //       if (!data.email || !data.password) {
-//         Alert.alert("All fields are required");
+//         setAlertMessage("All fields are required");
+//         setAlertSuccess(false);
+//         setAlertVisible(true);
 //         setLoading(false);
 //         return;
 //       }
 
-//       requestUserPermission();
+//       const lowerCaseEmail = data.email.toLowerCase();
 
 //       const { data: responseData } = await axios.post("/login", {
-//         email: data.email,
+//         email: lowerCaseEmail,
 //         password: data.password,
 //       });
 
 //       setState(responseData);
 //       await AsyncStorage.setItem("@auth", JSON.stringify(responseData));
-//       Alert.alert("Success", responseData.message);
-
+//       setAlertMessage(responseData.message);
+//       setAlertSuccess(true);
+//       setAlertVisible(true);
 //       setLoading(false);
+
 //       navigation.navigate("Home");
 //     } catch (error) {
-//       Alert.alert("Error", error.message);
+//       const errorMessage =
+//         error.response?.data?.message ||
+//         "Something went wrong, please try again.";
+//       setAlertMessage(errorMessage);
+//       setAlertSuccess(false);
+//       setAlertVisible(true);
 //       setLoading(false);
 //     }
 //   };
@@ -553,8 +509,15 @@
 //       <StatusBar backgroundColor={COLORS.primary} barStyle="light-content" />
 //       {loading && <LoadingAnimation visible={loading} loop={true} />}
 
+//       <IosAlertWithImage
+//         visible={alertVisible}
+//         message={alertMessage}
+//         onClose={() => setAlertVisible(false)}
+//         isSuccess={alertSuccess}
+//       />
+
 //       <View style={styles.header}>
-//         <Text style={styles.text_header}>Welcome!</Text>
+//         <Text style={styles.text_header}>Welcome to Meadhikari ❤️</Text>
 //       </View>
 //       <Animatable.View animation="fadeInUpBig" style={styles.footer}>
 //         <Text style={[styles.text_footer, { color: colors.text }]}>Email</Text>
@@ -566,92 +529,66 @@
 //             style={[styles.textInput, { color: colors.text }]}
 //             autoCapitalize="none"
 //             keyboardType="email-address"
-//             onChangeText={(val) => textInputChange(val)}
+//             onChangeText={textInputChange}
 //           />
-//           {data.isValidEmail ? (
-//             <Animatable.View
-//               animation="fadeIn"
-//               duration={1000}
-//               style={styles.icon}
-//             >
-//               <Feather name="check-circle" color={COLORS.success} size={20} />
-//             </Animatable.View>
-//           ) : null}
 //         </View>
 //         {!data.isValidEmail && (
-//           <Animatable.View
-//             animation="fadeIn"
-//             duration={1000}
-//             style={styles.errorContainer}
-//           >
-//             <Text style={styles.errorMsg}>Invalid email format.</Text>
-//           </Animatable.View>
+//           <Text style={styles.errorMsg}>Invalid email format.</Text>
 //         )}
 
-//         <Text
-//           style={[styles.text_footer, { color: colors.text, marginTop: 35 }]}
-//         >
-//           Password
-//         </Text>
+//         <Text style={[styles.text_footer, { marginTop: 35 }]}>Password</Text>
 //         <View style={styles.action}>
 //           <Feather name="lock" color={colors.text} size={20} />
 //           <TextInput
 //             placeholder="Your Password"
 //             placeholderTextColor={COLORS.textSecondary}
 //             secureTextEntry={data.secureTextEntry}
-//             style={[styles.textInput, { color: colors.text }]}
-//             autoCapitalize="none"
-//             onChangeText={(val) => handlePasswordChange(val)}
+//             style={styles.textInput}
+//             onChangeText={handlePasswordChange}
 //           />
 //           <TouchableOpacity onPress={updateSecureTextEntry}>
-//             {data.secureTextEntry ? (
-//               <Feather name="eye-off" color={COLORS.icon} size={20} />
-//             ) : (
-//               <Feather name="eye" color={COLORS.icon} size={20} />
-//             )}
+//             <Feather
+//               name={data.secureTextEntry ? "eye-off" : "eye"}
+//               color={COLORS.icon}
+//               size={20}
+//             />
 //           </TouchableOpacity>
 //         </View>
 //         {!data.isValidPassword && (
-//           <Animatable.View
-//             animation="fadeIn"
-//             duration={1000}
-//             style={styles.errorContainer}
-//           >
-//             <Text style={styles.errorMsg}>
-//               Password must be 8 characters long.
-//             </Text>
-//           </Animatable.View>
+//           <Text style={styles.errorMsg}>
+//             Password must be 8 characters long.
+//           </Text>
 //         )}
 
-//         <TouchableOpacity>
-//           <Text style={{ color: COLORS.primary, marginTop: 15 }}>
-//             Forgot password?
-//           </Text>
+//         <TouchableOpacity
+//           onPress={() => {
+//             Alert.alert("Please contact us on contact@meadhikari.com");
+//           }}
+//         >
+//           <Text style={styles.forgotPassword}>Forgot password?</Text>
 //         </TouchableOpacity>
 
 //         <View style={styles.button}>
-//           <LinearGradient
-//             colors={[COLORS.buttonStart, COLORS.buttonEnd]}
-//             style={styles.signIn}
-//           >
-//             <TouchableOpacity onPress={onSubmitLoginBtn}>
-//               <Text style={[styles.textSign, { color: "#fff" }]}>Sign In</Text>
-//             </TouchableOpacity>
-//           </LinearGradient>
-
 //           <TouchableOpacity
-//             onPress={() => navigation.navigate("SignUpScreen")}
-//             style={[
-//               styles.signIn,
-//               {
-//                 borderColor: COLORS.primary,
-//                 borderWidth: 1,
-//                 marginTop: 15,
-//               },
-//             ]}
+//             style={styles.signIn}
+//             onPress={onSubmitLoginBtn}
+//             disabled={loading}
+//           >
+//             <LinearGradient
+//               colors={[COLORS.buttonStart, COLORS.buttonEnd]}
+//               style={styles.signIn}
+//             >
+//               <Text style={[styles.textSign, { color: "#fff" }]}>
+//                 {loading ? "Loading..." : "Login"}
+//               </Text>
+//             </LinearGradient>
+//           </TouchableOpacity>
+//           <TouchableOpacity
+//             onPress={() => navigation.navigate("Register")}
+//             style={[styles.signIn, styles.register]}
 //           >
 //             <Text style={[styles.textSign, { color: COLORS.primary }]}>
-//               Sign Up
+//               Register
 //             </Text>
 //           </TouchableOpacity>
 //         </View>
@@ -667,26 +604,24 @@
 //   },
 //   header: {
 //     flex: 1,
-//     justifyContent: "flex-end",
-//     paddingHorizontal: 20,
-//     paddingBottom: 50,
+//     justifyContent: "center",
+//     alignItems: "center",
+//   },
+//   text_header: {
+//     color: "#fff",
+//     fontWeight: "bold",
+//     fontSize: responsiveFontSize(28),
 //   },
 //   footer: {
 //     flex: 3,
 //     backgroundColor: COLORS.background,
 //     borderTopLeftRadius: 30,
 //     borderTopRightRadius: 30,
-//     paddingHorizontal: 20,
-//     paddingVertical: 30,
-//   },
-//   text_header: {
-//     color: "#fff",
-//     fontWeight: "bold",
-//     fontSize: 30,
+//     paddingHorizontal: responsivePadding(20),
+//     paddingVertical: responsivePadding(30),
 //   },
 //   text_footer: {
-//     color: COLORS.textPrimary,
-//     fontSize: 18,
+//     fontSize: responsiveFontSize(18),
 //   },
 //   action: {
 //     flexDirection: "row",
@@ -697,24 +632,19 @@
 //   },
 //   textInput: {
 //     flex: 1,
-//     marginTop: Platform.OS === "ios" ? 0 : -12,
 //     paddingLeft: 10,
-//     color: COLORS.textPrimary,
 //   },
 //   errorMsg: {
 //     color: COLORS.error,
-//     fontSize: 14,
+//     fontSize: responsiveFontSize(12),
 //   },
-//   icon: {
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-//   errorContainer: {
-//     marginTop: 10,
+//   forgotPassword: {
+//     color: COLORS.primary,
+//     marginTop: 15,
 //   },
 //   button: {
 //     alignItems: "center",
-//     marginTop: 50,
+//     marginTop: responsivePadding(50),
 //   },
 //   signIn: {
 //     width: "100%",
@@ -723,15 +653,14 @@
 //     alignItems: "center",
 //     borderRadius: 10,
 //   },
-//   textSign: {
-//     fontSize: 18,
-//     fontWeight: "bold",
+//   register: {
+//     borderColor: COLORS.primary,
+//     borderWidth: 1,
+//     marginTop: 15,
 //   },
-//   loading: {
-//     color: "#fff",
-//     fontSize: 18,
-//     textAlign: "center",
-//     marginTop: 20,
+//   textSign: {
+//     fontSize: responsiveFontSize(16),
+//     fontWeight: "bold",
 //   },
 // });
 
@@ -743,11 +672,10 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  Platform,
   StyleSheet,
   StatusBar,
-  Alert,
   Keyboard,
+  Dimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -757,15 +685,15 @@ import * as Animatable from "react-native-animatable";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../../Context/authContext";
-import { requestUserPermission } from "../../utils/notificationService";
 import LoadingAnimation from "../../Components/Loader/loader";
 import { Color } from "../../GlobalStyles";
-import IosAlertWithImage from "../../Components/Alert/IosAlertWithImage"; // Import custom alert
-import ProductSlider from "../../Components/SplashScreen/ProductSlider";
-import { err } from "react-native-svg";
-import globalString from "../../utils/globalStrings";
+import IosAlertWithImage from "../../Components/Alert/IosAlertWithImage";
 import constants from "../../utils/constants";
-import { trackLoginPageView } from "../../utils/analyticsUtils";
+
+const { width, height } = Dimensions.get("window");
+
+const responsiveFontSize = (size) => (width > 360 ? size : size - 2);
+const responsivePadding = (padding) => (width > 360 ? padding : padding - 5);
 
 const COLORS = {
   primary: Color.primaryColor,
@@ -790,43 +718,32 @@ const Login = ({ navigation }) => {
 
   const [state, setState] = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-  const [alertVisible, setAlertVisible] = useState(false);
+  const [isForgotPasswordLoading, setIsForgotPasswordLoading] = useState(false);
+  const [showCustomAlert, setShowCustomAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSuccess, setAlertSuccess] = useState(false);
 
   const { colors } = useTheme();
 
+  useEffect(() => {
+    // Track login page view (if needed)
+  }, []);
+
   const textInputChange = (val) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailRegex.test(val)) {
-      setData({
-        ...data,
-        email: val,
-        isValidEmail: true,
-      });
-    } else {
-      setData({
-        ...data,
-        email: val,
-        isValidEmail: false,
-      });
-    }
+    setData({
+      ...data,
+      email: val,
+      isValidEmail: emailRegex.test(val),
+    });
   };
 
   const handlePasswordChange = (val) => {
-    if (val.trim().length >= 8) {
-      setData({
-        ...data,
-        password: val,
-        isValidPassword: true,
-      });
-    } else {
-      setData({
-        ...data,
-        password: val,
-        isValidPassword: false,
-      });
-    }
+    setData({
+      ...data,
+      password: val,
+      isValidPassword: val.trim().length >= 8,
+    });
   };
 
   const updateSecureTextEntry = () => {
@@ -836,10 +753,43 @@ const Login = ({ navigation }) => {
     });
   };
 
-  const showAlert = (message, isSuccess) => {
-    setAlertMessage(message);
-    setAlertSuccess(isSuccess);
-    setAlertVisible(true);
+  const handleForgotPassword = async () => {
+    if (!data.email || !data.isValidEmail) {
+      setAlertMessage("Please enter a valid email address.");
+      setAlertSuccess(false);
+      setShowCustomAlert(true);
+      return;
+    }
+
+    try {
+      setIsForgotPasswordLoading(true);
+
+      const response = await axios.post(`/forgot-password`, {
+        email: data.email.toLowerCase(),
+      });
+
+      if (response.data.success) {
+        setAlertMessage("Password reset email sent. Please check your inbox.");
+        setAlertSuccess(true);
+        setShowCustomAlert(true);
+      } else {
+        setAlertMessage(
+          response.data.message || "Failed to send password reset email."
+        );
+        setAlertSuccess(false);
+        setShowCustomAlert(true);
+      }
+    } catch (error) {
+      console.error("Error sending forgot password request:", error);
+      setAlertMessage(
+        error.response?.data?.message ||
+          "An error occurred while processing your request."
+      );
+      setAlertSuccess(false);
+      setShowCustomAlert(true);
+    } finally {
+      setIsForgotPasswordLoading(false);
+    }
   };
 
   const onSubmitLoginBtn = async () => {
@@ -848,12 +798,12 @@ const Login = ({ navigation }) => {
 
     try {
       if (!data.email || !data.password) {
-        showAlert("All fields are required", false);
+        setAlertMessage("All fields are required");
+        setAlertSuccess(false);
+        setShowCustomAlert(true);
         setLoading(false);
         return;
       }
-
-      requestUserPermission();
 
       const lowerCaseEmail = data.email.toLowerCase();
 
@@ -864,39 +814,22 @@ const Login = ({ navigation }) => {
 
       setState(responseData);
       await AsyncStorage.setItem("@auth", JSON.stringify(responseData));
-      showAlert(responseData.message, true);
-
+      setAlertMessage(responseData.message);
+      setAlertSuccess(true);
+      setShowCustomAlert(true);
       setLoading(false);
+
       navigation.navigate("Home");
     } catch (error) {
-      // showAlert(error.message, false);
-      // setLoading(false);
-      if (error.response && error.response.status === 404) {
-        showAlert(
-          "🚫 Oops! We couldn't find your account. Please double-check your credentials and give it another try! 🔍😊",
-          false
-        ); // Show "User Not Found" if 404 error
-        setLoading(false);
-      } else if (error.response.data.message) {
-        showAlert(error.response.data.message || "Login Error", false);
-        setLoading(false);
-      } else {
-        // For other errors, show the error message returned from the server
-        showAlert(error.message || "Login Error", false);
-        setLoading(false);
-      }
+      const errorMessage =
+        error.response?.data?.message ||
+        "Something went wrong, please try again.";
+      setAlertMessage(errorMessage);
+      setAlertSuccess(false);
+      setShowCustomAlert(true);
+      setLoading(false);
     }
   };
-
-  const onForgotPassword = () => {
-    Alert.alert(
-      `Oops! Please drop us email regarding password to: ${constants.contactEmail}`
-    );
-  };
-
-  useEffect(() => {
-    trackLoginPageView(); // Track when the Login page is accessed
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -904,14 +837,13 @@ const Login = ({ navigation }) => {
       {loading && <LoadingAnimation visible={loading} loop={true} />}
 
       <IosAlertWithImage
-        visible={alertVisible}
+        visible={showCustomAlert}
         message={alertMessage}
-        onClose={() => setAlertVisible(false)}
+        onClose={() => setShowCustomAlert(false)}
         isSuccess={alertSuccess}
       />
 
       <View style={styles.header}>
-        {/* <ProductSlider></ProductSlider> */}
         <Text style={styles.text_header}>Welcome to Meadhikari ❤️</Text>
       </View>
       <Animatable.View animation="fadeInUpBig" style={styles.footer}>
@@ -924,81 +856,47 @@ const Login = ({ navigation }) => {
             style={[styles.textInput, { color: colors.text }]}
             autoCapitalize="none"
             keyboardType="email-address"
-            onChangeText={(val) => textInputChange(val)}
+            onChangeText={textInputChange}
           />
-          {data.isValidEmail && data.email ? (
-            <Animatable.View
-              animation="fadeIn"
-              duration={1000}
-              style={styles.icon}
-            >
-              <Feather name="check-circle" color={COLORS.success} size={20} />
-            </Animatable.View>
-          ) : null}
         </View>
         {!data.isValidEmail && (
-          <Animatable.View
-            animation="fadeIn"
-            duration={1000}
-            style={styles.errorContainer}
-          >
-            <Text style={styles.errorMsg}>Invalid email format.</Text>
-          </Animatable.View>
+          <Text style={styles.errorMsg}>Invalid email format.</Text>
         )}
 
-        <Text
-          style={[styles.text_footer, { color: colors.text, marginTop: 35 }]}
-        >
-          Password
-        </Text>
+        <Text style={[styles.text_footer, { marginTop: 35 }]}>Password</Text>
         <View style={styles.action}>
           <Feather name="lock" color={colors.text} size={20} />
           <TextInput
             placeholder="Your Password"
             placeholderTextColor={COLORS.textSecondary}
             secureTextEntry={data.secureTextEntry}
-            style={[styles.textInput, { color: colors.text }]}
-            autoCapitalize="none"
-            onChangeText={(val) => handlePasswordChange(val)}
+            style={styles.textInput}
+            onChangeText={handlePasswordChange}
           />
           <TouchableOpacity onPress={updateSecureTextEntry}>
-            {data.secureTextEntry ? (
-              <Feather name="eye-off" color={COLORS.icon} size={20} />
-            ) : (
-              <Feather name="eye" color={COLORS.icon} size={20} />
-            )}
+            <Feather
+              name={data.secureTextEntry ? "eye-off" : "eye"}
+              color={COLORS.icon}
+              size={20}
+            />
           </TouchableOpacity>
         </View>
         {!data.isValidPassword && (
-          <Animatable.View
-            animation="fadeIn"
-            duration={1000}
-            style={styles.errorContainer}
-          >
-            <Text style={styles.errorMsg}>
-              Password must be 8 characters long.
-            </Text>
-          </Animatable.View>
+          <Text style={styles.errorMsg}>
+            Password must be 8 characters long.
+          </Text>
         )}
 
-        <TouchableOpacity>
-          <Text
-            style={{ color: COLORS.primary, marginTop: 15 }}
-            onPress={onForgotPassword}
-          >
-            Forgot password?
+        <TouchableOpacity
+          onPress={handleForgotPassword}
+          disabled={isForgotPasswordLoading}
+        >
+          <Text style={styles.forgotPassword}>
+            {isForgotPasswordLoading ? "Sending email..." : "Forgot password?"}
           </Text>
         </TouchableOpacity>
 
         <View style={styles.button}>
-          {/* <TouchableOpacity onPress={onSubmitLoginBtn}>
-            <LinearGradient
-              colors={[COLORS.buttonStart, COLORS.buttonEnd]}
-              style={styles.signIn}
-            >
-              <Text style={[styles.textSign, { color: "#fff" }]}>Sign In</Text>
-            </LinearGradient>
-          </TouchableOpacity> */}
           <TouchableOpacity
             style={styles.signIn}
             onPress={onSubmitLoginBtn}
@@ -1013,29 +911,14 @@ const Login = ({ navigation }) => {
               </Text>
             </LinearGradient>
           </TouchableOpacity>
-
           <TouchableOpacity
             onPress={() => navigation.navigate("Register")}
-            style={[
-              styles.signIn,
-              {
-                borderColor: COLORS.primary,
-                borderWidth: 1,
-                marginTop: 15,
-              },
-            ]}
+            style={[styles.signIn, styles.register]}
           >
             <Text style={[styles.textSign, { color: COLORS.primary }]}>
               Register
             </Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Splash");
-            }}
-          >
-            <Text>Splash</Text>
-          </TouchableOpacity> */}
         </View>
       </Animatable.View>
     </View>
@@ -1049,27 +932,24 @@ const styles = StyleSheet.create({
   },
   header: {
     flex: 1,
-    justifyContent: "flex-end",
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text_header: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: responsiveFontSize(28),
   },
   footer: {
     flex: 3,
     backgroundColor: COLORS.background,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
-  },
-  text_header: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 30,
-    marginBottom: 15,
+    paddingHorizontal: responsivePadding(20),
+    paddingVertical: responsivePadding(30),
   },
   text_footer: {
-    color: COLORS.textPrimary,
-    fontSize: 18,
+    fontSize: responsiveFontSize(18),
   },
   action: {
     flexDirection: "row",
@@ -1080,24 +960,19 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    marginTop: Platform.OS === "ios" ? 0 : -5,
     paddingLeft: 10,
-    color: COLORS.textPrimary,
   },
   errorMsg: {
     color: COLORS.error,
-    fontSize: 14,
+    fontSize: responsiveFontSize(12),
   },
-  icon: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  errorContainer: {
-    marginTop: 5,
+  forgotPassword: {
+    color: COLORS.primary,
+    marginTop: 15,
   },
   button: {
     alignItems: "center",
-    marginTop: 50,
+    marginTop: responsivePadding(50),
   },
   signIn: {
     width: "100%",
@@ -1106,8 +981,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 10,
   },
+  register: {
+    borderColor: COLORS.primary,
+    borderWidth: 1,
+    marginTop: 15,
+  },
   textSign: {
-    fontSize: 18,
+    fontSize: responsiveFontSize(16),
     fontWeight: "bold",
   },
 });

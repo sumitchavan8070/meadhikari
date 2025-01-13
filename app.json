@@ -1,11 +1,10 @@
 {
   "expo": {
-    "name": "Meadhikari",
+    "name": "Meadhikari - MPSC Preparation",
     "slug": "client",
-    "version": "1.0.0",
+    "version": "1.0.5",  
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-
     "plugins": [
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf"
@@ -36,28 +35,12 @@
       "permissions": [
         "INTERNET",
         "ACCESS_NETWORK_STATE",
-        "ACCESS_WIFI_STATE",
-        "CAMERA",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
         "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION",
-        "RECORD_AUDIO",
-        "READ_PHONE_STATE",
-        "SEND_SMS",
-        "RECEIVE_SMS",
-        "READ_SMS",
-        "RECEIVE_WAP_PUSH",
-        "MANAGE_NETWORK_POLICY",
-        "CHANGE_WIFI_STATE",
-        "READ_CONTACTS",
-        "WRITE_CONTACTS",
-        "READ_CALENDAR",
-        "WRITE_CALENDAR",
-        "CALL_PHONE",
-        "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION"
-      ]
+      ],
+      "versionCode": 4 
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -67,14 +50,13 @@
         "projectId": "5c77bf90-37b0-4d90-bb57-735bf279d114"
       }
     },
-    "runtimeVersion": "1.0.0",
+    "runtimeVersion": "1.0.5", 
     "updates": {
       "url": "https://u.expo.dev/5c77bf90-37b0-4d90-bb57-735bf279d114"
     },
-    "experiments":{
-      "typedRoutes":true,
-      "tsconfigPaths":true
+    "experiments": {
+      "typedRoutes": true,
+      "tsconfigPaths": true
     }
-    
   }
 }
